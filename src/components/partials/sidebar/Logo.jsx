@@ -4,7 +4,6 @@ import useSidebar from "@/hooks/useSidebar";
 
 // import images
 import Logo from "@/assets/images/logo/logo.png";
-//import MobileLogoWhite from "@/assets/images/logo/logo-c-white.svg";
 
 const SidebarLogo = ({ menuHover }) => {
   const [collapsed, setMenuCollapsed] = useSidebar();
@@ -21,20 +20,9 @@ const SidebarLogo = ({ menuHover }) => {
         <div className="flex items-center space-x-4">
           <div className="logo-icon">
           <img src={Logo} alt="Scooton Logo" width={170}  />
-            {/* {!isDark && !isSemiDark ? (
-              <img src={MobileLogo} alt="Spakrs Logo" width={170}  />
-            ) : (
-              <img src={MobileLogoWhite} alt="erere" />
-            )} */}
+            
           </div>
 
-          {/* {(!collapsed || menuHover) && (
-            <div>
-              <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-                S
-              </h1>
-            </div>
-          )} */}
         </div>
       </Link>
 

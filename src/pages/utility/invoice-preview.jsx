@@ -5,8 +5,7 @@ import TotalTable from "./TotalTable";
 import userDarkMode from "@/hooks/useDarkMode";
 
 // import images
-import MainLogo from "@/assets/images/logo/logo.svg";
-import LogoWhite from "@/assets/images/logo/logo-white.svg";
+import Logo from "@/assets/images/logo/logo.png";
 
 const InvoicePreviewPage = () => {
   const printPage = () => {
@@ -52,7 +51,7 @@ const InvoicePreviewPage = () => {
       <Card bodyClass="p-0">
         <div className="flex justify-between flex-wrap space-y-4 px-6 pt-6 bg-slate-50 dark:bg-slate-800 pb-6 rounded-t-md">
           <div>
-            <img src={isDark ? LogoWhite : MainLogo} alt="" />
+            <img src={Logo} alt="" />
 
             <div className="text-slate-500 dark:text-slate-300 font-normal leading-5 mt-4 text-sm">
             Scooton <br />

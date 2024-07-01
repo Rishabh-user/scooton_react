@@ -6,7 +6,6 @@ import "swiper/css/effect-cards";
 
 // image import
 import visaCardImage from "@/assets/images/all-img/visa-card-bg.png";
-import visaCardImage2 from "@/assets/images/logo/visa.svg";
 const cardLists = [
   {
     bg: "from-[#1EABEC] to-primary-500 ",
@@ -37,7 +36,7 @@ const CardSlider = () => {
                   className="h-full w-full object-cover"
                 />
               </div>
-              <img src={visaCardImage2} alt="" />
+              <img src={visaCardImage} alt="" />
               <div className="mt-[18px] font-semibold text-lg mb-[17px]">
                 {item.cardNo}
               </div>

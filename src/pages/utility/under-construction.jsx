@@ -4,9 +4,8 @@ import Icon from "@/components/ui/Icon";
 import { Link } from "react-router-dom";
 import useDarkMode from "@/hooks/useDarkMode";
 
-import LogoWhite from "@/assets/images/logo/logo-white.svg";
-import Logo from "@/assets/images/logo/logo.svg";
-import SvgImage from "@/assets/images/svg/img-2.svg";
+
+import Logo from "@/assets/images/logo/logo.png";
 
 const UnderConstructionPage = () => {
   const [isDark] = useDarkMode();
@@ -16,7 +15,7 @@ const UnderConstructionPage = () => {
         <div className="flex flex-wrap justify-between items-center py-6 container">
           <div>
             <Link to="/">
-              <img src={isDark ? LogoWhite : Logo} alt="" />
+              <img src={Logo} alt="" />
             </Link>
           </div>
           <div>
