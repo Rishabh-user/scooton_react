@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import useDarkMode from "@/hooks/useDarkMode";
 import RegForm from "./common/reg-from";
-import Social from "./common/social";
+//import Social from "./common/social";
 import { ToastContainer } from "react-toastify";
 // image import
 import LogoWhite from "@/assets/images/logo/logo-white.svg";
@@ -63,7 +63,7 @@ const register = () => {
                   </div>
                 </div>
                 <div className="max-w-[242px] mx-auto mt-8 w-full">
-                  <Social />
+                  {/* <Social /> */}
                 </div>
                 <div className="max-w-[215px] mx-auto font-normal text-slate-500 dark:text-slate-400 2xl:mt-12 mt-6 uppercase text-sm">
                   Already registered?
