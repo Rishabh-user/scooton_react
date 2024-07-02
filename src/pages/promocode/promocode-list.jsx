@@ -5,32 +5,27 @@ import { useTable, useRowSelect, useSortBy, usePagination } from "react-table";
 import Card from "../../components/ui/Card";
 import { BASE_URL } from "../../api";
 import Tooltip from "@/components/ui/Tooltip";
-const roleDisplayNames = {
-    "ROLE_SUPER_ADMIN": "Super Admin",
-    "ROLE_EDITOR": "Viewer",
-    "ROLE_CITY_ADMIN": "Admin",
-  };
+
 const COLUMNS = [
   {
     Header: "Sr. No.",
     accessor: (row, i) => i + 1,
   },
   {
-    Header: "User Name",
-    accessor: "first_name",
+    Header: "Code",
+    accessor: "promoCode",
   },
   {
-    Header: "Phone Number",
-    accessor: "mobile_number",
+    Header: "Code Type",
+    accessor: "promoCodeType",
   },
   {
-    Header: "Email",
-    accessor: "email",
+    Header: "Discount",
+    accessor: "amount",
   },
   {
-    Header: "Role",
-    accessor: "role",
-    Cell: ({ value }) => roleDisplayNames[value] || value,
+    Header: "Expiration",
+    accessor: "expireDate",
   },
   {
     Header: "Action",
@@ -60,9 +55,9 @@ const COLUMNS = [
   },
 ];
 
-const RoleList = () => {
+const PromocodeList = () => {
 
-  const [roleList, setRoleList] = useState([]);
+  const [procodeList, setprocodeList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
 
@@ -71,13 +66,13 @@ const RoleList = () => {
     console.log(token);
     if (token) {
       axios
-        .get(`${BASE_URL}/register/admins/get-all?page=${currentPage}&size=10`, {
+        .get(`${BASE_URL}/promo-code/get-all?page=${currentPage}&size=10`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
-            setRoleList(response.data);
+            setprocodeList(response.data);
             setPageCount(response.data.totalPages);
         })
         .catch((error) => {
@@ -87,7 +82,7 @@ const RoleList = () => {
   }, []);
 
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => roleList, [roleList]);
+  const data = useMemo(() => procodeList, [procodeList]);
 
   const tableInstance = useTable(
     {
@@ -131,7 +126,7 @@ const RoleList = () => {
     <>
       <Card>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Role List</h4>
+          <h4 className="card-title">Promocode List</h4>
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
@@ -264,4 +259,4 @@ const RoleList = () => {
   );
 };
 
-export default RoleList;
+export default PromocodeList;

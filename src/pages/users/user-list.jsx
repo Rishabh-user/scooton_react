@@ -9,6 +9,10 @@ import { BASE_URL } from "../../api";
 
 const COLUMNS = [
   {
+    Header: "Sr. No.",
+    accessor: (row, i) => i + 1,
+  },
+  {
     Header: "User Id",
     accessor: "id",
   },
@@ -43,15 +47,39 @@ const COLUMNS = [
   {
     Header: "Created Date",
     accessor: "createdAt",
-    Cell: (row) => {
-      return <span>{new Date(row?.cell?.value).toLocaleDateString()}</span>;
+    Cell: ({ cell }) => {
+      const date = new Date(cell.value);
+      const formattedDate = date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit"
+      });
+      const formattedTime = date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      });
+      return <span>{`${formattedDate}, ${formattedTime}`}</span>;
     },
   },
   {
     Header: "Last Activity Date",
     accessor: "lastActivity",
-    Cell: (row) => {
-      return <span>{new Date(row?.cell?.value).toLocaleDateString()}</span>;
+    Cell: ({ cell }) => {
+      const date = new Date(cell.value);
+      const formattedDate = date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit"
+      });
+      const formattedTime = date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      });
+      return <span>{`${formattedDate}, ${formattedTime}`}</span>;
     },
   },
   {
@@ -86,20 +114,21 @@ const COLUMNS = [
 const UserList = () => {
   const [userData, setUserData] = useState([]);
   const [search, setSearch] = useState("");
-  const [pageNumber, setPageNumber] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     console.log(token);
     if (token) {
       axios
-        .get(`${BASE_URL}/user/get-all`, {
+        .get(`${BASE_URL}/user/get-all?page=${currentPage}&size=100`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
           setUserData(response.data);
-          console.log(response.data);
+          setPageCount(response.data.totalPages);
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
@@ -116,7 +145,6 @@ const UserList = () => {
           },
           params: {
             mobileNumber: search,
-            pageNumber: pageNumber,
           },
         })
         .then((response) => {
@@ -126,7 +154,7 @@ const UserList = () => {
           console.error("Error fetching user data:", error);
         });
     }
-  }, [search, pageNumber]);
+  }, [search]);
   
   
 
@@ -136,7 +164,7 @@ const UserList = () => {
       columns,
       data: userData,
       initialState: {
-        pageSize: 6,
+        pageSize: 10,
       },
     },
     useSortBy,
@@ -161,6 +189,9 @@ const UserList = () => {
   } = tableInstance;
 
   const { pageIndex, pageSize } = state;
+  useEffect(() => {
+    setCurrentPage(pageIndex);
+  }, [pageIndex]);
   
   return (
     <>

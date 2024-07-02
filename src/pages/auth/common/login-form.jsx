@@ -10,6 +10,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { handleLogin } from "./store";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { BASE_URL } from "../../../api";
+
 const schema = yup
   .object({
     userId: yup.string().required("userId is Required"),
@@ -29,37 +31,16 @@ const LoginForm = () => {
     mode: "all",
   });
   const navigate = useNavigate();
-  // const onSubmit = (data) => {
-  //   const user = users.find(
-  //     (user) => user.userId === data.userId && user.password === data.password
-  //   );
-  //   if (user) {
-  //     dispatch(handleLogin(true));
-  //     setTimeout(() => {
-  //       navigate("/dashboard");
-  //     }, 1500);
-  //   } else {
-  //     toast.error("Invalid credentials", {
-  //       position: "top-right",
-  //       autoClose: 1500,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //       theme: "light",
-  //     });
-  //   }
-  // };
+ 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("https://scooton-api-dev.el.r.appspot.com/auth/login/admin", {
+      const response = await axios.post(`${BASE_URL}/auth/login/admin`, {
         user: data.userId,
         pwd: data.password,
       });  
       if (response.status === 200) {
         localStorage.setItem("jwtToken", response.data.token);
-        localStorage.setItem("id", response.data.id);
+        localStorage.setItem("serviceAreaId", response.data.serviceAreaId);
         dispatch(handleLogin(true));
         setTimeout(() => {
           navigate("/dashboard");

@@ -103,6 +103,8 @@ import UserList from "./pages/users/user-list";
 import ServiceAreaList from "./pages/service-area/service-area-list";
 import AddServiceArea from "./pages/service-area/add-service-area";
 import RoleList from "./pages/role/role-list";
+import AddRole from "./pages/role/add-role";
+import PromocodeList from "./pages/promocode/promocode-list";
 function App() {
   return (
     <main className="App  relative">
@@ -205,6 +207,8 @@ function App() {
           <Route path="service-area-list" element={<ServiceAreaList />} />
           <Route path="add-service-area" element={<AddServiceArea />} />
           <Route path="role-list" element={<RoleList />} />
+          <Route path="add-role" element={<AddRole />} />
+          <Route path="promocode-list" element={<PromocodeList />} />
           <Route path="*" element={<Navigate to="/404" />} />
         </Route>
         <Route

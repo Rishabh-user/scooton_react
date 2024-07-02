@@ -12,6 +12,7 @@ import Icon from "@/components/ui/Icon";
 
 // import images
 import Logo from "@/assets/images/logo/logo.png";
+import svgRabitImage from "@/assets/images/svg/rabit.svg";
 
 const MobileMenu = ({ className = "custom-class" }) => {
   const scrollableNodeRef = useRef();
