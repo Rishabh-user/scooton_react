@@ -7,6 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { BASE_URL } from "../../api";
+import { useNavigate } from "react-router-dom";
 
 const AddRole = () => {
   const serviceAreaId = localStorage.getItem("serviceAreaId");
@@ -17,8 +18,7 @@ const AddRole = () => {
     password: "",
     role: "",
     email: "",
-    service_id: serviceAreaId,
-    deleted: false,
+    service_id: null,
   });
   const [roleOptions, setRoleOptions] = useState([]);
 
@@ -67,15 +67,21 @@ const AddRole = () => {
     }));
   };
 
-  const handleRoleChange = (selectedOption) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      role: selectedOption.value,
-    }));
-  };
+//   const handleRoleChange = (selectedOption) => {
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       role: selectedOption.value,
+//     }));
+//   };
 
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!formData.role) {
+      toast.error("Role can't be empty");
+      return;
+    }
     
     const token = localStorage.getItem("jwtToken");
     if (token) {
@@ -90,8 +96,13 @@ const AddRole = () => {
           console.log("Role added successfully:", response.data);
         })
         .catch((error) => {
-          toast.error("Error adding role. Please try again.");
-          console.error( error);
+          //toast.error("Error adding role. Please try again.");
+          if (error.response && error.response.status === 401) {
+            navigate("/");
+            toast.error("Unauthorized. Please log in again.");
+          } else {
+            toast.error("Error adding role. Please try again.");
+          }
         });
     } else {
       console.error("No token found");
@@ -142,7 +153,7 @@ const AddRole = () => {
             <Select
               label="Select Role"
               options={roleOptions}
-              onChange={handleRoleChange}
+              onChange={handleChange}
               value={roleOptions.find((option) => option.value === formData.role)}
               id="role"
             />
