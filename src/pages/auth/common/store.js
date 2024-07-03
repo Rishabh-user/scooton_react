@@ -67,7 +67,7 @@ export const authSlice = createSlice({
     handleLogin: (state, action) => {
       state.isAuth = action.payload;
       // save isAuth in local storage
-      window.localStorage.setItem("isAuth", JSON.stringify(state.isAuth));
+      //window.localStorage.setItem("isAuth", JSON.stringify(state.isAuth));
       toast.success("User logged in successfully", {
         position: "top-right",
         autoClose: 1500,
@@ -83,6 +83,7 @@ export const authSlice = createSlice({
       state.isAuth = action.payload;
       // remove isAuth from local storage
       window.localStorage.removeItem("isAuth");
+      window.localStorage.clear();
       toast.success("User logged out successfully", {
         position: "top-right",
       });

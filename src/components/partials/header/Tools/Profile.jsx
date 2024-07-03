@@ -62,7 +62,7 @@ const profileLabel = () => {
 const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  
   const ProfileMenu = [
     {
       label: "Profile",
