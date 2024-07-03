@@ -1,5 +1,4 @@
-import React, { useState, useMemo } from "react";
-import { homeTable } from "../../../constant/table-data";
+import React, { useState, useMemo, useEffect } from "react";
 
 import Icon from "@/components/ui/Icon";
 
@@ -13,85 +12,52 @@ import {
 
 const COLUMNS = [
   {
-    Header: "company",
-    accessor: "company",
-    Cell: (row) => {
-      return (
-        <span className="flex items-center">
-          <div className="flex-none">
-            <div className="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-              <img
-                src={row?.cell?.value}
-                alt=""
-                className="w-full h-full rounded-[100%] object-cover"
-              />
-            </div>
-          </div>
-          <div className="flex-1 text-start">
-            <h4 className="text-sm font-medium text-slate-600 whitespace-nowrap">
-              Biffco Enterprises Ltd.
-            </h4>
-            <div className="text-xs font-normal text-slate-600 dark:text-slate-400">
-              Biffco@example.com
-            </div>
-          </div>
-        </span>
-      );
-    },
+    Header: "Order Id",
+    accessor: "orderId"
+  },  
+  {
+    Header: "Mobile Name",
+    accessor: "userInfo",
+    
+  }, 
+  {
+    Header: "Amount",
+    accessor: "totalAmount",   
   },
   {
-    Header: "Category",
-    accessor: "category",
-    Cell: (row) => {
-      return <span>Technology</span>;
-    },
+    Header: "Status",
+    accessor: "orderStatus",   
   },
   {
-    Header: "sales",
-    accessor: "sales",
-    Cell: (row) => {
-      return (
-        <div className="flex space-x-6 items-center rtl:space-x-reverse">
-          <span> {row?.cell?.value + "%"}</span>
-          <span
-            className={` text-xl
-             ${row?.cell?.value > 100 ? "text-success-500" : "text-danger-500"}
-              `}
-          >
-            {row?.cell?.value > 100 ? (
-              <Icon icon="heroicons:arrow-trending-up" />
-            ) : (
-              <Icon icon="heroicons:arrow-trending-down" />
-            )}
-          </span>
-        </div>
-      );
-    },
-  },
-  {
-    Header: "views",
-    accessor: "views",
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
-    },
-  },
-  {
-    Header: "revenue",
-    accessor: "revenue",
-    Cell: (row) => {
-      return <span>{row?.cell?.value}</span>;
-    },
+    Header: "Address",
+    accessor: "addressDetails",   
   },
 ];
 
-const CompanyTable = () => {
+const RecentCompletedOrders = () => {
+  const[orderData, setOrderData] = useState([]);
+  const serviceAreaId = localStorage.getItem('serviceAreaId');
+  useEffect(() => {
+    const fetchOrderData = async () => {
+      const token = localStorage.getItem("jwtToken");
+      try {      
+        const responseDelivered = await axios.post(`${BASE_URL}/order-history/orders/${serviceAreaId}`,{ type: "DELIVERED" }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setOrderData(responseDelivered);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } 
+    };
+    fetchOrderData();
+  }, [serviceAreaId]);
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => homeTable, []);
-
   const tableInstance = useTable(
     {
       columns,
-      data,
+      orderData,
       initialState: {
         pageSize: 6,
       },
@@ -227,4 +193,4 @@ const CompanyTable = () => {
   );
 };
 
-export default CompanyTable;
+export default RecentCompletedOrders;

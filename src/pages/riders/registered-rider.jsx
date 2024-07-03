@@ -127,7 +127,6 @@ const RegisteredRiders = () => {
   const [pageCount, setPageCount] = useState(0);
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
-    console.log(token);
     if (token) {
       axios
         .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/ALL/0?page=${currentPage}&size=100`, {

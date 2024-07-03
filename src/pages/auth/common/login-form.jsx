@@ -8,7 +8,7 @@ import Checkbox from "@/components/ui/Checkbox";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { handleLogin } from "./store";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { BASE_URL } from "../../../api";
 
@@ -18,20 +18,25 @@ const schema = yup
     password: yup.string().required("Password is Required"),
   })
   .required();
+
 const LoginForm = () => {
   const dispatch = useDispatch();
-  // const { users } = useSelector((state) => state.auth);  
+  const { isAuth } = useSelector((state) => state.auth); 
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm({
     resolver: yupResolver(schema),
-    //
     mode: "all",
   });
   const navigate = useNavigate();
- 
+  useEffect(() => {
+    if (isAuth) {
+      navigate("/dashboard");
+    }
+  }, [isAuth, navigate]);
+
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(`${BASE_URL}/auth/login/admin`, {
@@ -75,39 +80,42 @@ const LoginForm = () => {
   const [checked, setChecked] = useState(false);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
-      <Textinput
-        name="userId"
-        label="userId"
-        type="userId"
-        register={register}
-        error={errors.userId}
-        className="h-[48px]"
-      />
-      <Textinput
-        name="password"
-        label="password"
-        type="password"
-        register={register}
-        error={errors.password}
-        className="h-[48px]"
-      />
-      <div className="flex justify-between">
-        <Checkbox
-          value={checked}
-          onChange={() => setChecked(!checked)}
-          label="Keep me signed in"
+    <>
+      <ToastContainer />
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
+        <Textinput
+          name="userId"
+          label="userId"
+          type="userId"
+          register={register}
+          error={errors.userId}
+          className="h-[48px]"
         />
-        <Link
-          to="/forgot-password"
-          className="text-sm text-scooton-800 dark:text-scooton-400 leading-6 font-medium"
-        >
-          Forgot Password?{" "}
-        </Link>
-      </div>
+        <Textinput
+          name="password"
+          label="password"
+          type="password"
+          register={register}
+          error={errors.password}
+          className="h-[48px]"
+        />
+        <div className="flex justify-between">
+          <Checkbox
+            value={checked}
+            onChange={() => setChecked(!checked)}
+            label="Keep me signed in"
+          />
+          <Link
+            to="/forgot-password"
+            className="text-sm text-scooton-800 dark:text-scooton-400 leading-6 font-medium"
+          >
+            Forgot Password?{" "}
+          </Link>
+        </div>
 
-      <button className={` btn text-white bg-scooton-500 dark:bg-scooton-500 block w-full text-center` }>Sign in</button>
-    </form>
+        <button className={` btn text-white bg-scooton-500 dark:bg-scooton-500 block w-full text-center` }>Sign in</button>
+      </form>
+    </>
   );
 };
 

@@ -18,7 +18,6 @@ const profileLabel = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
-    console.log(token);
     if (token) {
       axios.get(`https://scooton-api-dev.el.r.appspot.com/user/get-all`, {}, {
         headers: {
@@ -27,7 +26,6 @@ const profileLabel = () => {
       })
       .then(response => {
         setUserData(response.data);
-        console.log(response.data);
       })
       .catch(error => {
         console.error("Error fetching user data:", error);

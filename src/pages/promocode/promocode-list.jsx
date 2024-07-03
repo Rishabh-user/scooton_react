@@ -63,7 +63,6 @@ const PromocodeList = () => {
 
    useEffect(() => {
     const token = localStorage.getItem("jwtToken");
-    console.log(token);
     if (token) {
       axios
         .get(`${BASE_URL}/promo-code/get-all?page=${currentPage}&size=10`, {

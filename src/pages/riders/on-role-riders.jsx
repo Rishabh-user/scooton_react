@@ -127,7 +127,6 @@ const OnRoleRiders = () => {
   const [pageCount, setPageCount] = useState(0);
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
-    console.log(token);
     if (token) {
       axios
         .get(`${BASE_URL}/register/rider/get-all-service-area-by-on-role-status?page=${currentPage}&size=100`, {

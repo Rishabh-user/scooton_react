@@ -52,7 +52,6 @@ const ServiceAreaList = () => {
   const [serviceAreaList, setserviceAreaList] = useState([]);
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
-    console.log(token);
     if (token) {
       axios
         .get(`${BASE_URL}/service-area/get-all`, {

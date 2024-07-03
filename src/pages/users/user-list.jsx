@@ -118,7 +118,6 @@ const UserList = () => {
   const [pageCount, setPageCount] = useState(0);
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
-    console.log(token);
     if (token) {
       axios
         .get(`${BASE_URL}/user/get-all?page=${currentPage}&size=100`, {
