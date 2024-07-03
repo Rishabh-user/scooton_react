@@ -106,6 +106,9 @@ import RoleList from "./pages/role/role-list";
 import AddRole from "./pages/role/add-role";
 import PromocodeList from "./pages/promocode/promocode-list";
 import AllRiders from "./pages/riders/all-riders";
+import RegisteredRiders from "./pages/riders/registered-rider";
+import NonRegisteredRiders from "./pages/riders/non-registered-riders";
+import OnRoleRiders from "./pages/riders/on-role-riders";
 function App() {
   return (
     <main className="App  relative">
@@ -211,6 +214,9 @@ function App() {
           <Route path="add-role" element={<AddRole />} />
           <Route path="promocode-list" element={<PromocodeList />} />
           <Route path="all-riders" element={<AllRiders />} />
+          <Route path="registered-riders" element={<RegisteredRiders />} />
+          <Route path="non-registered-riders" element={<NonRegisteredRiders />} />
+          <Route path="on-role-riders" element={<OnRoleRiders />} />
           <Route path="*" element={<Navigate to="/404" />} />
         </Route>
         <Route

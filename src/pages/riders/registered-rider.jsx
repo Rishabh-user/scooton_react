@@ -120,7 +120,7 @@ const COLUMNS = [
   },
 ];
 
-const AllRiders = () => {
+const RegisteredRiders = () => {
   const [riderData, setRiderData] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -130,7 +130,7 @@ const AllRiders = () => {
     console.log(token);
     if (token) {
       axios
-        .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=100`, {
+        .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/ALL/0?page=${currentPage}&size=100`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -207,7 +207,7 @@ const AllRiders = () => {
     <>
       <Card>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">All Riders</h4>
+          <h4 className="card-title">Registered Riders</h4>
           <div>
             <Textinput
                 placeholder="Search by mobile number"
@@ -359,4 +359,4 @@ const AllRiders = () => {
   );
 };
 
-export default AllRiders;
+export default RegisteredRiders;
