@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
-import useDarkMode from "@/hooks/useDarkMode";
-import useRtl from "@/hooks/useRtl";
 import axios from "axios";
 import { BASE_URL } from "../../../../api";
 
 const RevenueBarChart = ({ height = 400 }) => {
-  const [isDark] = useDarkMode();
-  const [isRtl] = useRtl();
   const [series, setSeries] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -28,19 +24,26 @@ const RevenueBarChart = ({ height = 400 }) => {
         console.log("orders", orders);
 
         // Get the first date of the last month
+        // const today = new Date();
+        // const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        // const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+
+        // const filteredOrders = orders.filter(order => {
+        //   const orderDate = new Date(order.orderHistory.orderDate);
+        //   return orderDate >= lastMonthStart && orderDate <= lastMonthEnd;
+        // });
         const today = new Date();
-        const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-        const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+        const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
 
         const filteredOrders = orders.filter(order => {
           const orderDate = new Date(order.orderHistory.orderDate);
-          return orderDate >= lastMonthStart && orderDate <= lastMonthEnd;
+          return orderDate >= currentMonthStart && orderDate <= today;
         });
 
         const ordersByDay = filteredOrders.reduce(
           (acc, order) => {
             const day = new Date(order.orderHistory.orderDate).toLocaleDateString('en-US');
-            acc[day] = acc[day] || { ACCEPTED: 0, CANCELLED: 0, COMPLETED: 0 };
+            acc[day] = acc[day] || { ACCEPTED: 0, CANCEL: 0, COMPLETED: 0 };
             acc[day][order.orderHistory.orderStatus]++;
             return acc;
           },
@@ -51,7 +54,7 @@ const RevenueBarChart = ({ height = 400 }) => {
 
         const categories = Object.keys(ordersByDay);
         const acceptedOrders = categories.map(day => ordersByDay[day].ACCEPTED);
-        const cancelledOrders = categories.map(day => ordersByDay[day].CANCELLED);
+        const cancelledOrders = categories.map(day => ordersByDay[day].CANCEL);
         const completedOrders = categories.map(day => ordersByDay[day].COMPLETED);
 
         console.log("acceptedOrders", acceptedOrders);
@@ -99,25 +102,23 @@ const RevenueBarChart = ({ height = 400 }) => {
         offsetX: -5,
         radius: 12,
       },
-      labels: {
-        colors: isDark ? '#CBD5E1' : '#475569',
-      },
+      
       itemMargin: {
         horizontal: 18,
         vertical: 0,
       },
     },
     title: {
-      text: 'Order Status Report for Last Month',
+      text: 'Order Status Report',
       align: 'left',
-      offsetX: isRtl ? '0%' : 0,
+      offsetX:  0,
       offsetY: 13,
       floating: false,
       style: {
         fontSize: '20px',
         fontWeight: '500',
         fontFamily: 'Inter',
-        color: isDark ? '#fff' : '#0f172a',
+        
       },
     },
     dataLabels: {
@@ -129,10 +130,9 @@ const RevenueBarChart = ({ height = 400 }) => {
       colors: ['transparent'],
     },
     yaxis: {
-      opposite: isRtl ? true : false,
+      opposite: false,
       labels: {
-        style: {
-          colors: isDark ? '#CBD5E1' : '#475569',
+        style: {          
           fontFamily: 'Inter',
         },
       },
@@ -140,8 +140,7 @@ const RevenueBarChart = ({ height = 400 }) => {
     xaxis: {
       categories: categories,
       labels: {
-        style: {
-          colors: isDark ? '#CBD5E1' : '#475569',
+        style: {          
           fontFamily: 'Inter',
         },
       },
@@ -160,10 +159,10 @@ const RevenueBarChart = ({ height = 400 }) => {
         formatter: val => `${val} orders`,
       },
     },
-    colors: ['#4669FA', '#FA4669', '#69FA46'],
+    colors: ['#e7b605', '#e31e24', '#0da15e'],
     grid: {
       show: true,
-      borderColor: isDark ? '#334155' : '#E2E8F0',
+      borderColor: '#E2E8F0',
       strokeDashArray: 10,
       position: 'back',
     },

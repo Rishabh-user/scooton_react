@@ -21,11 +21,23 @@ const COLUMNS = [
   },
   {
     Header: "Amount",
-    accessor: "orderStatus",
+    accessor: "totalAmount",
   },
   {
     Header: "Status",
-    accessor: "totalAmount",
+    accessor: "orderStatus",
+    Cell: ({ value }) => {
+      const statusText = value ? "Completed" : "";
+      return (
+        <span className={`block w-full`}>
+          <span
+            className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-success-500 bg-success-500`}
+          >
+            {statusText}
+          </span>
+        </span>
+      );
+    },
   },
   {
     Header: "Address",

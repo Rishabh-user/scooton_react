@@ -10,6 +10,7 @@ import RadarChart from "../../components/partials/widget/chart/radar-chart";
 import HomeBredCurbs from "./HomeBredCurbs";
 import axios from "axios";
 import { BASE_URL } from "../../api";
+import OnRoleRiders from "../riders/on-role-riders";
 
 const Dashboard = () => {
   const[orderData, setOrderData] = useState([]);
@@ -88,53 +89,16 @@ const Dashboard = () => {
             <RadialsChart />
           </Card>
         </div>
-        <div className="lg:col-span-8 col-span-12">
-          <Card title="Recent Completed Orders" headerslot={<SelectMonth />} noborder>
+        <div className="lg:col-span-12 col-span-12">
+          <Card title="Recent Completed Orders">
             <RecentCompletedOrders />
           </Card>
         </div>
-        <div className="lg:col-span-4 col-span-12">
-          <Card title="Recent Placed Orders" headerslot={<SelectMonth />}>
-            <RecentActivity />
-          </Card>
+        <div className="lg:col-span-12 col-span-12">
+          <OnRoleRiders />
         </div>
         
-        <div className="lg:col-span-4 col-span-12">
-          <Card title="Overview" headerslot={<SelectMonth />}>
-            <RadarChart />
-            <div className="bg-slate-50 dark:bg-scooton-900 rounded p-4 mt-8 flex justify-between flex-wrap">
-              <div className="space-y-1">
-                <h4 className="text-slate-600 dark:text-slate-200 text-xs font-normal">
-                  Invested amount
-                </h4>
-                <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  $8264.35
-                </div>
-                <div className="text-slate-500 dark:text-slate-300 text-xs font-normal">
-                  +0.001.23 (0.2%)
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <h4 className="text-slate-600 dark:text-slate-200 text-xs font-normal">
-                  Invested amount
-                </h4>
-                <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  $8264.35
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <h4 className="text-slate-600 dark:text-slate-200 text-xs font-normal">
-                  Invested amount
-                </h4>
-                <div className="text-sm font-medium text-slate-900 dark:text-white">
-                  $8264.35
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
+       
       </div>
     </div>
   );
