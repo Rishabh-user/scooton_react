@@ -1,7 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-
 import Icon from "@/components/ui/Icon";
-
 import {
   useTable,
   useRowSelect,
@@ -9,70 +7,68 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
+import axios from "axios";
+import { BASE_URL } from "../../../api";
 
 const COLUMNS = [
   {
     Header: "Order Id",
-    accessor: "orderId"
-  },  
+    accessor: "orderId",
+  },
   {
     Header: "Mobile Name",
-    accessor: "userInfo",
-    
-  }, 
+    accessor: "userInfo.firstName",
+  },
   {
     Header: "Amount",
-    accessor: "totalAmount",   
+    accessor: "orderStatus",
   },
   {
     Header: "Status",
-    accessor: "orderStatus",   
+    accessor: "totalAmount",
   },
   {
     Header: "Address",
-    accessor: "addressDetails",   
+    accessor: "addressDetails.addressLine1",
   },
 ];
 
 const RecentCompletedOrders = () => {
   const[orderData, setOrderData] = useState([]);
-  const serviceAreaId = localStorage.getItem('serviceAreaId');
   useEffect(() => {
     const fetchOrderData = async () => {
       const token = localStorage.getItem("jwtToken");
       try {      
-        const responseDelivered = await axios.post(`${BASE_URL}/order-history/orders/${serviceAreaId}`,{ type: "DELIVERED" }, {
+        const responseDelivered = await axios.post(`${BASE_URL}/order-history/orders/94753`,{ type: "DELIVERED" }, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        setOrderData(responseDelivered);
+        setOrderData(responseDelivered.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
       } 
     };
     fetchOrderData();
-  }, [serviceAreaId]);
+  }, []);
   const columns = useMemo(() => COLUMNS, []);
   const tableInstance = useTable(
     {
       columns,
-      orderData,
+      data: orderData,
       initialState: {
         pageSize: 6,
       },
     },
-
-    useGlobalFilter,
     useSortBy,
     usePagination,
     useRowSelect
   );
+
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    footerGroups,
     page,
     nextPage,
     previousPage,
@@ -81,43 +77,33 @@ const RecentCompletedOrders = () => {
     pageOptions,
     state,
     gotoPage,
-    pageCount,
     setPageSize,
-    setGlobalFilter,
     prepareRow,
   } = tableInstance;
 
   const { pageIndex, pageSize } = state;
+
 
   return (
     <>
       <div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden ">
+          <div className="overflow-hidden">
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
-                {...getTableProps}
+                {...getTableProps()}
               >
-                <thead className=" bg-slate-200 dark:bg-slate-700">
+                <thead className="bg-slate-200 dark:bg-slate-700">
                   {headerGroups.map((headerGroup) => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
                       {headerGroup.headers.map((column) => (
                         <th
-                          {...column.getHeaderProps(
-                            column.getSortByToggleProps()
-                          )}
+                          {...column.getHeaderProps()}
                           scope="col"
-                          className=" table-th "
+                          className="table-th"
                         >
                           {column.render("Header")}
-                          <span>
-                            {column.isSorted
-                              ? column.isSortedDesc
-                                ? " 🔽"
-                                : " 🔼"
-                              : ""}
-                          </span>
                         </th>
                       ))}
                     </tr>
@@ -125,7 +111,7 @@ const RecentCompletedOrders = () => {
                 </thead>
                 <tbody
                   className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
-                  {...getTableBodyProps}
+                  {...getTableBodyProps()}
                 >
                   {page.map((row) => {
                     prepareRow(row);

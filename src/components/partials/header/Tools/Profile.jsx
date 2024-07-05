@@ -8,30 +8,57 @@ import { handleLogout } from "@/pages/auth/common/store";
 
 import UserAvatar from "@/assets/images/all-img/user.png";
 import axios from "axios";
+import { BASE_URL } from "../../../../api";
 
 const profileLabel = () => {
   const [userData, setUserData] = useState({
     user: "",
   });
-  // const navigate = useNavigate();
-  // const dispatch = useDispatch();
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      axios.get(`https://scooton-api-dev.el.r.appspot.com/user/get-all`, {}, {
+      axios.post(`${BASE_URL}/auth/refresh/admin`, { auth: token }, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
+          Authorization: `Bearer ${token}`,
+        },
+      })      
       .then(response => {
         setUserData(response.data);
       })
-      .catch(error => {
-        console.error("Error fetching user data:", error);
+      .catch(error => {       
+        console.error('Error fetching protected data:', error);       
       });
-    }
+    } 
   }, []);
+  const[tokenexpires, setTokenExpire] = useState([]);
+  const serviceAreaId = localStorage.getItem('serviceAreaId');
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      axios.post(`${BASE_URL}/order-history/orders/count-total/${serviceAreaId}`,{ type: "INCOMING" }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })      
+      .then(response => {
+        setTokenExpire(response.data);
+      })
+      .catch(error => {
+        if (error.response && error.response.status === 401) {
+          handleLogoutAndRedirect();
+        } else {
+          console.error('Error fetching protected data:', error);
+        }
+      });
+    } 
+  }, []);
+  
+  const handleLogoutAndRedirect = () => {
+    window.localStorage.clear();
+    navigate('/');
+  };
 
   
   return (

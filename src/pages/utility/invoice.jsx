@@ -10,10 +10,10 @@ import {
   useTable,
   useRowSelect,
   useSortBy,
-  useGlobalFilter,
+  //useGlobalFilter,
   usePagination,
 } from "react-table";
-import GlobalFilter from "../table/react-tables/GlobalFilter";
+//import GlobalFilter from "../table/react-tables/GlobalFilter";
 
 const IndeterminateCheckbox = React.forwardRef(
   ({ indeterminate, ...rest }, ref) => {
@@ -210,7 +210,7 @@ const InvoicePage = () => {
       data,
     },
 
-    useGlobalFilter,
+    //useGlobalFilter,
     useSortBy,
     usePagination,
     useRowSelect,
@@ -253,7 +253,9 @@ const InvoicePage = () => {
     prepareRow,
   } = tableInstance;
 
-  const { globalFilter, pageIndex, pageSize } = state;
+  const { 
+    //globalFilter, 
+    pageIndex, pageSize } = state;
 
   return (
     <>
@@ -261,7 +263,7 @@ const InvoicePage = () => {
         <div className="md:flex pb-6 items-center">
           <h6 className="flex-1 md:mb-0 mb-3">Invoice</h6>
           <div className="md:flex md:space-x-3 items-center flex-none rtl:space-x-reverse">
-            <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+            {/* <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} /> */}
             <Button
               icon="heroicons-outline:calendar"
               text="Select date"

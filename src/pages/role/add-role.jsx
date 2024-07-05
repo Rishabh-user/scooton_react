@@ -67,13 +67,6 @@ const AddRole = () => {
     }));
   };
 
-//   const handleRoleChange = (selectedOption) => {
-//     setFormData((prevData) => ({
-//       ...prevData,
-//       role: selectedOption.value,
-//     }));
-//   };
-
   const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();

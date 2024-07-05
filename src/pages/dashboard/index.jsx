@@ -38,6 +38,8 @@ const Dashboard = () => {
     };
     fetchOrderData();
   }, [serviceAreaId]);
+
+
   return (
     <div>
       <HomeBredCurbs title="Dashboard" />
@@ -88,12 +90,12 @@ const Dashboard = () => {
         </div>
         <div className="lg:col-span-8 col-span-12">
           <Card title="Recent Completed Orders" headerslot={<SelectMonth />} noborder>
-            {/* <RecentCompletedOrders /> */}
+            <RecentCompletedOrders />
           </Card>
         </div>
         <div className="lg:col-span-4 col-span-12">
           <Card title="Recent Placed Orders" headerslot={<SelectMonth />}>
-            {/* <RecentActivity /> */}
+            <RecentActivity />
           </Card>
         </div>
         

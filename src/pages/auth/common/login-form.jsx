@@ -46,6 +46,7 @@ const LoginForm = () => {
       if (response.status === 200) {
         localStorage.setItem("jwtToken", response.data.token);
         localStorage.setItem("serviceAreaId", response.data.serviceAreaId);
+        localStorage.setItem("userId", response.data.id);
         dispatch(handleLogin(true));
         setTimeout(() => {
           navigate("/dashboard");
