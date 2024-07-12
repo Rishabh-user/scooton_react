@@ -70,7 +70,7 @@ export const menuItems = [
     child: [
       {
         childtitle: "Add Promocode",
-        childlink: "all-promocode",
+        childlink: "add-promocode",
         childicon: "heroicons:presentation-chart-line",
       },
       {

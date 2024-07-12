@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Card from "@/components/ui/Card";
-import GroupChart1 from "@/components/partials/widget/chart/group-chart-1";
 import RevenueBarChart from "@/components/partials/widget/chart/revenue-bar-chart";
 import RadialsChart from "@/components/partials/widget/chart/radials";
 import SelectMonth from "@/components/partials/SelectMonth";
 import RecentCompletedOrders from "@/components/partials/Table/recent-completed-orders";
-import RecentActivity from "@/components/partials/widget/recent-activity";
-import RadarChart from "../../components/partials/widget/chart/radar-chart";
 import HomeBredCurbs from "./HomeBredCurbs";
 import axios from "axios";
 import { BASE_URL } from "../../api";

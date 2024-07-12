@@ -106,7 +106,7 @@ const COLUMNS = [
   
 ];
 
-const AllOrders = () => {
+const OfflineOrders = () => {
   const [orderData, setOrderData] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -115,7 +115,7 @@ const AllOrders = () => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       axios
-        .post(`${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,{orderType: "ALL ORDERS", searchType: "NONE"}, {
+        .post(`${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/true?page=${currentPage}&size=100`,{orderType: "ALL ORDERS", searchType: "NONE"}, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -344,4 +344,4 @@ const AllOrders = () => {
   );
 };
 
-export default AllOrders;
+export default OfflineOrders;

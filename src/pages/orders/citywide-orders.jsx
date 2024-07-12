@@ -5,7 +5,9 @@ import {useTable, useRowSelect, useSortBy, usePagination,} from "react-table";
 import Card from "../../components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
 import { BASE_URL } from "../../api";
-
+import Loading from "../../components/Loading";
+import Tooltip from "@/components/ui/Tooltip";
+import { useNavigate } from "react-router-dom";
 const COLUMNS = [
   {
     Header: "Sr. No.",
@@ -87,14 +89,14 @@ const COLUMNS = [
         );
     },
   },
-  {
-    Header: "Pick Up Address",
-    accessor: "orderHistory.pickupAddressDetails.addressLine1"
-  },
-  {
-    Header: "Delivery Address",
-    accessor: "orderHistory.deliveryAddressDetails.addressLine1"
-  },
+  // {
+  //   Header: "Pick Up Address",
+  //   accessor: "orderHistory.pickupAddressDetails.addressLine1"
+  // },
+  // {
+  //   Header: "Delivery Address",
+  //   accessor: "orderHistory.deliveryAddressDetails.addressLine1"
+  // },
   {
     Header: "Vehicle Type",
     accessor: "vehicleId",
@@ -103,10 +105,30 @@ const COLUMNS = [
     Header:"Platform",
     accessor:"orderHistory.platform"
   },
-  
+  {
+    Header: "Action",
+    accessor: "action",
+    Cell: (row) => {
+      const navigate = useNavigate();
+      const handleViewClick = () => {
+        const orderId = row.row.original.orderHistory.orderId;
+        navigate(`/order-detail/${orderId}`);
+      };
+      return (
+        <div className="flex space-x-3 rtl:space-x-reverse">
+          <Tooltip content="View" placement="top" arrow animation="shift-away">
+            <button className="action-btn bg-scooton" type="button" onClick={handleViewClick}>
+              <Icon icon="heroicons:eye" />
+            </button>
+          </Tooltip>          
+        </div>
+      );
+    },
+  },
 ];
 
-const AllOrders = () => {
+const CityWideOrders = () => {
+  const [loading, setLoading] = useState(true);
   const [orderData, setOrderData] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -115,7 +137,7 @@ const AllOrders = () => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       axios
-        .post(`${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,{orderType: "ALL ORDERS", searchType: "NONE"}, {
+        .post(`${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/false?page=${currentPage}&size=100`,{orderType: "ALL ORDERS", searchType: "NONE"}, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -127,6 +149,9 @@ const AllOrders = () => {
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
+        })
+        .finally(() => {
+          setLoading(false); 
         });
     }
   }, []);
@@ -190,9 +215,9 @@ const AllOrders = () => {
   
   return (
     <>
-      <Card>
+      <Card>      
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">All Riders</h4>
+          <h4 className="card-title">Citywide Orders</h4>
           <div>
             <Textinput
                 placeholder="Search by mobile number"
@@ -203,7 +228,7 @@ const AllOrders = () => {
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden ">
+            <div className="overflow-hidden ">            
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps()}
@@ -232,6 +257,11 @@ const AllOrders = () => {
                     </tr>
                   ))}
                 </thead>
+                {loading ? (
+                  <div className="flex justify-center items-center w-100">
+                    <Loading /> 
+                  </div>
+                ) : (        
                 <tbody
                   className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
                   {...getTableBodyProps()}
@@ -252,6 +282,7 @@ const AllOrders = () => {
                     );
                   })}
                 </tbody>
+                 )}
               </table>
             </div>
           </div>
@@ -344,4 +375,4 @@ const AllOrders = () => {
   );
 };
 
-export default AllOrders;
+export default CityWideOrders;

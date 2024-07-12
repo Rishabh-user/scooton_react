@@ -6,6 +6,8 @@ import Card from "../../components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
 import Switch from "@/components/ui/Switch";
 import { BASE_URL } from "../../api";
+import { useNavigate } from "react-router-dom";
+import Tooltip from "@/components/ui/Tooltip";
 
 const COLUMNS = [
   {
@@ -117,6 +119,26 @@ const COLUMNS = [
   {
     Header: "Vehicle Type",
     accessor: "riderInfo.vehicleType",
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    Cell: (row) => {
+      const navigate = useNavigate();
+      const handleViewClick = () => {
+        const riderId = row.row.original.riderInfo.id;
+        navigate(`/rider-detail/${riderId}`);
+      };
+      return (
+        <div className="flex space-x-3 rtl:space-x-reverse">
+          <Tooltip content="View" placement="top" arrow animation="shift-away">
+            <button className="action-btn bg-scooton" type="button" onClick={handleViewClick}>
+              <Icon icon="heroicons:eye" />
+            </button>
+          </Tooltip>          
+        </div>
+      );
+    },
   },
 ];
 
