@@ -6,6 +6,7 @@ import Card from "../../components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
 import Switch from "@/components/ui/Switch";
 import { BASE_URL } from "../../api";
+import Loading from "../../components/Loading";
 
 const COLUMNS = [
   {
@@ -20,15 +21,24 @@ const COLUMNS = [
     Header: "Name",
     accessor: "firstName",
     Cell: (row) => {
+      const { original } = row.row;
+      const firstName = original.firstName || "";
+      const lastName = original.lastName || "";
+      const imageUrl = original.media ? original.media.url : null;
+      const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
       return (
         <span className="flex items-center">
           <div className="flex-none">
-            <div className="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-              <img
-                src={row?.cell?.value}
-                alt=""
-                className="w-full h-full rounded-[100%] object-cover"
-              />
+          <div className="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt="Rider"
+                  className="w-full h-full rounded-[100%] object-cover"
+                />
+              ) : (
+                <span className="text-white bg-scooton-500 font-medium rounded-[50%] w-8 h-8 flex items-center justify-center">{initials}</span>
+              )}
             </div>
           </div>
           <div className="flex-1 text-start">
@@ -82,36 +92,77 @@ const COLUMNS = [
       return <span>{`${formattedDate}, ${formattedTime}`}</span>;
     },
   },
-  {
-    Header: "Status",
-    accessor: "active",
-    Cell: ({ value }) => {
-      const statusClass = value ? "text-success-500 bg-success-500" : "text-warning-500 bg-warning-500";
-      const statusText = value ? "Active" : "Inactive";
+  // {
+  //   Header: "Status",
+  //   accessor: "active",
+  //   Cell: ({ value }) => {
+  //     const statusClass = value ? "text-success-500 bg-success-500" : "text-warning-500 bg-warning-500";
+  //     const statusText = value ? "Active" : "Inactive";
   
+  //     return (
+  //       <span className={`block w-full`}>
+  //         <span
+  //           className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${statusClass}`}
+  //         >
+  //           {statusText}
+  //         </span>
+  //       </span>
+  //     );
+  //   },
+  // },
+  // {
+  //   Header: "Action",
+  //   accessor: "active",
+  //   Cell: ({ row }) => {
+  //     const isActive = row.value;
+  //     return (
+  //       <span>
+  //         <Switch
+  //           activeClass="bg-danger-500"
+  //           checked={isActive}
+  //         />
+  //       </span>
+  //     );
+  //   },
+  // }
+  {
+    Header: "Action",
+    accessor: "active",
+    Cell: ({ row }) => {
+      const [isActive, setIsActive] = useState(row.original.active);
+      const toggleActive = async () => {
+        try {
+          const token = localStorage.getItem("jwtToken");
+          await axios.patch(
+            `${BASE_URL}/user/${row.original.id}/toggle-active`,
+            { active: !isActive },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setIsActive(!isActive);
+        } catch (error) {
+          console.error("Error toggling user active state:", error);
+        }
+      };
+
       return (
-        <span className={`block w-full`}>
-          <span
-            className={`inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${statusClass}`}
-          >
-            {statusText}
-          </span>
+        <span>
+          <Switch
+            activeClass="bg-danger-500"
+            checked={isActive}
+            onChange={toggleActive}
+          />
         </span>
       );
     },
-  },
-  {
-    Header: "Action",
-    accessor: "action",
-    Cell: (row) => {
-      return <span><Switch
-      activeClass="bg-danger-500"
-    /></span>;
-    },
-  },
+  }
 ];
 
 const UserList = () => {
+  const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -131,6 +182,9 @@ const UserList = () => {
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
+        })
+        .finally(() => {
+          setLoading(false); 
         });
     }
   }, []);
@@ -208,6 +262,11 @@ const UserList = () => {
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden ">
+              {loading ? (
+                <div className="flex justify-center items-center w-100">
+                  <Loading /> 
+                </div>
+              ) : ( 
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps()}
@@ -257,6 +316,7 @@ const UserList = () => {
                   })}
                 </tbody>
               </table>
+              )}
             </div>
           </div>
         </div>

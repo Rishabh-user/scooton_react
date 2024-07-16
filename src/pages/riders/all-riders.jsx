@@ -8,6 +8,7 @@ import Switch from "@/components/ui/Switch";
 import { BASE_URL } from "../../api";
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@/components/ui/Tooltip";
+import Loading from "../../components/Loading";
 
 const COLUMNS = [
   {
@@ -143,6 +144,7 @@ const COLUMNS = [
 ];
 
 const AllRiders = () => {
+  const [loading, setLoading] = useState(true);
   const [riderData, setRiderData] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -163,6 +165,9 @@ const AllRiders = () => {
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
+        })
+        .finally(() => {
+          setLoading(false); 
         });
     }
   }, []);
@@ -240,6 +245,11 @@ const AllRiders = () => {
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden ">
+              {loading ? (
+                <div className="flex justify-center items-center w-100">
+                  <Loading /> 
+                </div>
+              ) : ( 
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps()}
@@ -289,6 +299,7 @@ const AllRiders = () => {
                   })}
                 </tbody>
               </table>
+              )}
             </div>
           </div>
         </div>

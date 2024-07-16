@@ -5,7 +5,7 @@ import {useTable, useRowSelect, useSortBy, usePagination,} from "react-table";
 import Card from "../../components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
 import { BASE_URL } from "../../api";
-
+import Loading from "../../components/Loading";
 const COLUMNS = [
   {
     Header: "Sr. No.",
@@ -107,6 +107,7 @@ const COLUMNS = [
 ];
 
 const OfflineOrders = () => {
+  const [loading, setLoading] = useState(true);
   const [orderData, setOrderData] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -127,6 +128,9 @@ const OfflineOrders = () => {
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
+        })
+        .finally(() => {
+          setLoading(false); 
         });
     }
   }, []);
@@ -204,6 +208,11 @@ const OfflineOrders = () => {
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden ">
+              {loading ? (
+                <div className="flex justify-center items-center w-100">
+                  <Loading /> 
+                </div>
+              ) : ( 
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps()}
@@ -253,6 +262,7 @@ const OfflineOrders = () => {
                   })}
                 </tbody>
               </table>
+                )}
             </div>
           </div>
         </div>

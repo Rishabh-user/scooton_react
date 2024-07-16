@@ -5,6 +5,7 @@ import { useTable, useRowSelect, useSortBy, usePagination } from "react-table";
 import Card from "../../components/ui/Card";
 import { BASE_URL } from "../../api";
 import Tooltip from "@/components/ui/Tooltip";
+import Loading from "../../components/Loading";
 const roleDisplayNames = {
     "ROLE_SUPER_ADMIN": "Super Admin",
     "ROLE_EDITOR": "Viewer",
@@ -61,7 +62,7 @@ const COLUMNS = [
 ];
 
 const RoleList = () => {
-
+  const [loading, setLoading] = useState(true);
   const [roleList, setRoleList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
@@ -81,6 +82,9 @@ const RoleList = () => {
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
+        })
+        .finally(() => {
+          setLoading(false); 
         });
     }
   }, []);
@@ -131,8 +135,13 @@ const RoleList = () => {
           <h4 className="card-title">Role List</h4>
         </div>
         <div className="overflow-x-auto -mx-6">
-          <div className="inline-block min-w-full align-middle">
+          <div className="inline-block min-w-full align-middle">            
             <div className="overflow-hidden">
+              {loading ? (
+                <div className="flex justify-center items-center w-100">
+                  <Loading /> 
+                </div>
+              ) : ( 
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps()}
@@ -172,6 +181,7 @@ const RoleList = () => {
                   })}
                 </tbody>
               </table>
+              )}
             </div>
           </div>
         </div>

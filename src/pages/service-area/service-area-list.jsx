@@ -5,6 +5,7 @@ import {useTable, useRowSelect, useSortBy, usePagination,} from "react-table";
 import Card from "../../components/ui/Card";
 import { BASE_URL } from "../../api";
 import Tooltip from "@/components/ui/Tooltip";
+import Loading from "../../components/Loading";
 
 const COLUMNS = [
   {
@@ -49,6 +50,7 @@ const COLUMNS = [
 ];
 
 const ServiceAreaList = () => {
+  const [loading, setLoading] = useState(true);
   const [serviceAreaList, setserviceAreaList] = useState([]);
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
@@ -64,6 +66,9 @@ const ServiceAreaList = () => {
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
+        })
+        .finally(() => {
+          setLoading(false); 
         });
     }
   }, []);
@@ -110,6 +115,11 @@ const ServiceAreaList = () => {
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden ">
+              {loading ? (
+                <div className="flex justify-center items-center w-100">
+                  <Loading /> 
+                </div>
+              ) : ( 
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps()}
@@ -159,6 +169,7 @@ const ServiceAreaList = () => {
                   })}
                 </tbody>
               </table>
+              )}
             </div>
           </div>
         </div>

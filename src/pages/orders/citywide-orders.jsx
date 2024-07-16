@@ -228,7 +228,12 @@ const CityWideOrders = () => {
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden ">            
+            <div className="overflow-hidden ">  
+              {loading ? (
+                  <div className="flex justify-center items-center w-100">
+                    <Loading /> 
+                  </div>
+                ) : (           
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps()}
@@ -256,12 +261,7 @@ const CityWideOrders = () => {
                       ))}
                     </tr>
                   ))}
-                </thead>
-                {loading ? (
-                  <div className="flex justify-center items-center w-100">
-                    <Loading /> 
-                  </div>
-                ) : (        
+                </thead>                       
                 <tbody
                   className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
                   {...getTableBodyProps()}
@@ -281,9 +281,9 @@ const CityWideOrders = () => {
                       </tr>
                     );
                   })}
-                </tbody>
-                 )}
+                </tbody>                
               </table>
+               )}
             </div>
           </div>
         </div>

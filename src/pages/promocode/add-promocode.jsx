@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Card from "../../components/ui/Card";
-import Select from "../../components/ui/Select";
 import Textinput from "../../components/ui/Textinput";
 import Button from "../../components/ui/Button";
 import Switch from "../../components/ui/Switch";
-import { BASE_URL } from "../../api"; 
+import { BASE_URL } from "../../api";
+import { format, parseISO } from "date-fns";
 
 const promocodeType = ["FIXED", "PERCENTAGE"];
 
@@ -21,17 +21,35 @@ const AddPromocode = () => {
 
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [id]: type === "checkbox" ? checked : value
-    });
+    if (type === "datetime-local") {
+      const formattedDate = value.replace("T", " ");
+      setFormData({
+        ...formData,
+        [id]: formattedDate
+      });
+    } else if (id === "publicShown") {
+      setFormData({
+        ...formData,
+        publicShown: checked
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [id]: value
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("jwtToken");
-      const response = await axios.post(`${BASE_URL}/promo-code/add`, formData, {
+      const formattedData = {
+        ...formData,
+        startDate: format(parseISO(formData.startDate), "dd-MM-yyyy HH:mm:ss"),
+        expireDate: format(parseISO(formData.expireDate), "dd-MM-yyyy HH:mm:ss")
+      };
+      const response = await axios.post(`${BASE_URL}/promo-code/add`, formattedData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -63,10 +81,10 @@ const AddPromocode = () => {
             value={formData.discount}
             onChange={handleChange}
           />
-           <div>
+          <div>
             <label htmlFor="promoCodeType" className="form-label">Select Promocode Type</label>
             <select
-              className="form-control form-select h-50"
+              className="form-control py-2 form-select h-50"
               id="promoCodeType"
               value={formData.promoCodeType}
               onChange={handleChange}
@@ -87,14 +105,14 @@ const AddPromocode = () => {
           <Textinput
             label="Start Date"
             id="startDate"
-            type="date"
+            type="datetime-local"
             value={formData.startDate}
             onChange={handleChange}
           />
           <Textinput
             label="Expiry Date"
             id="expireDate"
-            type="date"
+            type="datetime-local"
             value={formData.expireDate}
             onChange={handleChange}
           />
