@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Icon from "@/components/ui/Icon";
 import axios from "axios";
-import {useTable, useRowSelect, useSortBy, usePagination,} from "react-table";
+import { useTable, useRowSelect, useSortBy, usePagination, } from "react-table";
 import Card from "../../components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
 import Switch from "@/components/ui/Switch";
@@ -9,11 +9,10 @@ import { BASE_URL } from "../../api";
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@/components/ui/Tooltip";
 import Loading from "../../components/Loading";
-import TextField from "@mui/material/TextField"; 
+import TextField from "@mui/material/TextField";
 import SplitDropdown from "@/components/ui/Split-dropdown";
 import twowheeler from '../../assets/images/icon/Two_Wheeler_EV.png';
 import threewheeler from '../../assets/images/icon/Three_Wheeler.png';
-import champion from '../../assets/images/icon/Champion.png';
 import eeco from '../../assets/images/icon/eeco.png';
 import tataace from '../../assets/images/icon/Tata_Ace.png'
 import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
@@ -31,12 +30,12 @@ const COLUMNS = [
     Header: "Name",
     accessor: "riderInfo.firstName",
     Cell: (row) => {
-        const { original } = row.row;
-        const firstName = original.riderInfo.firstName || "";
-        const lastName = original.riderInfo.lastName || "";
-        const imageUrl = original.media ? original.media.url : null;
-  
-        const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
+      const { original } = row.row;
+      const firstName = original.riderInfo.firstName || "";
+      const lastName = original.riderInfo.lastName || "";
+      const imageUrl = original.media ? original.media.url : null;
+
+      const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
       return (
         <span className="flex items-center">
           <div className="flex-none">
@@ -113,7 +112,7 @@ const COLUMNS = [
     Cell: ({ value }) => {
       const statusClass = value ? "text-success-500 bg-success-500" : "text-warning-500 bg-warning-500";
       const statusText = value ? "Online" : "Offline";
-  
+
       return (
         <span className={`block w-full`}>
           <span
@@ -129,22 +128,22 @@ const COLUMNS = [
     Header: "Vehicle Type",
     accessor: "riderInfo.vehicleType",
     Cell: (row) => {
-       return (
+      return (
         <div>
           {row.row.original.riderInfo.vehicleId === 1 ? (
-             <img  className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
-          ): row.row.original.riderInfo.vehicleId === 2 ? (
-            <img  className="object-cover" width={30} alt="threewheeler" class="mr-2 rounded-0" src={threewheeler}></img>
+            <img className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
+          ) : row.row.original.riderInfo.vehicleId === 2 ? (
+            <img className="object-cover" width={30} alt="threewheeler" class="mr-2 rounded-0" src={threewheeler}></img>
           ) : row.row.original.riderInfo.vehicleId === 3 ? (
-            <img  className=" object-cover" width={30} alt="tataace" class="mr-2 rounded-0" src={tataace}></img>
+            <img className=" object-cover" width={30} alt="tataace" class="mr-2 rounded-0" src={tataace}></img>
           ) : (
-            <img  className="object-cover" width={30} alt="pickup_8ft" class="mr-2 rounded-0" src={pickup_8ft}></img>
+            <img className="object-cover" width={30} alt="pickup_8ft" class="mr-2 rounded-0" src={pickup_8ft}></img>
           )
           }
-          
+
         </div>
-       )
-      
+      )
+
     }
   },
   {
@@ -162,7 +161,7 @@ const COLUMNS = [
             <button className="action-btn bg-scooton" type="button" onClick={handleViewClick}>
               <Icon icon="heroicons:eye" />
             </button>
-          </Tooltip>          
+          </Tooltip>
         </div>
       );
     },
@@ -194,7 +193,7 @@ const AllRiders = () => {
           console.error("Error fetching user data:", error);
         })
         .finally(() => {
-          setLoading(false); 
+          setLoading(false);
         });
     }
   }, []);
@@ -220,17 +219,17 @@ const AllRiders = () => {
   }, [search]);
 
   useEffect(() => {
-    try{
+    try {
       axios.get(`${BASE_URL}/login/get-online-offline-rider/0/ALL`).then((response) => {
         setActiveRiderCount(response.data)
-        
+
       })
-    }catch{
-       console.log(error)
-      }
-  },[])
-  
-  
+    } catch {
+      console.log(error)
+    }
+  }, [])
+
+
 
   const columns = useMemo(() => COLUMNS, []);
   const tableInstance = useTable(
@@ -266,7 +265,7 @@ const AllRiders = () => {
   useEffect(() => {
     setCurrentPage(pageIndex);
   }, [pageIndex]);
-  
+
   return (
     <>
       <Card>
@@ -274,9 +273,9 @@ const AllRiders = () => {
           <div>
             <h4 className="card-title">All Riders</h4>
             <div>
-            Total Rider -{activeridercount?.allRider} 
-            Online Rider -{activeridercount?.onlineRider}
-            Offline Rider -{activeridercount?.offlineRider}
+              Total Rider -{activeridercount?.allRider}
+              Online Rider -{activeridercount?.onlineRider}
+              Offline Rider -{activeridercount?.offlineRider}
             </div>
           </div>
           <div>
@@ -286,12 +285,12 @@ const AllRiders = () => {
               labelClass="btn-outline-light"
             />
             <TextField
-                id="vehicleNumber"
-                type="text"
-                name="vehicleNumber"
-                placeholder="Search by mobile number"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+              id="vehicleNumber"
+              type="text"
+              name="vehicleNumber"
+              placeholder="Search by mobile number"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
             {/* <TextField
                 placeholder="Search by mobile number"
@@ -305,58 +304,58 @@ const AllRiders = () => {
             <div className="overflow-hidden ">
               {loading ? (
                 <div className="flex justify-center items-center w-100">
-                  <Loading /> 
+                  <Loading />
                 </div>
-              ) : ( 
-              <table
-                className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
-                {...getTableProps()}
-              >
-                <thead className=" bg-slate-200 dark:bg-slate-700">
-                  {headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                      {headerGroup.headers.map((column) => (
-                        <th
-                          {...column.getHeaderProps(
-                            // column.getSortByToggleProps()
-                          )}
-                          scope="col"
-                          className=" table-th "
-                        >
-                          {column.render("Header")}
-                          {/* <span>
+              ) : (
+                <table
+                  className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
+                  {...getTableProps()}
+                >
+                  <thead className=" bg-slate-200 dark:bg-slate-700">
+                    {headerGroups.map((headerGroup) => (
+                      <tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map((column) => (
+                          <th
+                            {...column.getHeaderProps(
+                              // column.getSortByToggleProps()
+                            )}
+                            scope="col"
+                            className=" table-th "
+                          >
+                            {column.render("Header")}
+                            {/* <span>
                             {column.isSorted
                               ? column.isSortedDesc
                                 ? " 🔽"
                                 : " 🔼"
                               : ""}
                           </span> */}
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody
-                  className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
-                  {...getTableBodyProps()}
-                >
-                  {page.map((row) => {
-                    prepareRow(row);
-                    return (
-                      <tr {...row.getRowProps()}>
-                        {row.cells.map((cell) => {
-                          return (
-                            <td {...cell.getCellProps()} className="table-td">
-                              {cell.render("Cell")}
-                            
-                            </td>
-                          );
-                        })}
+                          </th>
+                        ))}
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                    ))}
+                  </thead>
+                  <tbody
+                    className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
+                    {...getTableBodyProps()}
+                  >
+                    {page.map((row) => {
+                      prepareRow(row);
+                      return (
+                        <tr {...row.getRowProps()}>
+                          {row.cells.map((cell) => {
+                            return (
+                              <td {...cell.getCellProps()} className="table-td">
+                                {cell.render("Cell")}
+
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               )}
             </div>
           </div>
@@ -384,9 +383,8 @@ const AllRiders = () => {
           <ul className="flex items-center  space-x-3  rtl:space-x-reverse">
             <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
               <button
-                className={` ${
-                  !canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={` ${!canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 onClick={() => gotoPage(0)}
                 disabled={!canPreviousPage}
               >
@@ -395,9 +393,8 @@ const AllRiders = () => {
             </li>
             <li className="text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180">
               <button
-                className={` ${
-                  !canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={` ${!canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
               >
@@ -409,11 +406,10 @@ const AllRiders = () => {
                 <button
                   href="#"
                   aria-current="page"
-                  className={` ${
-                    pageIdx === pageIndex
+                  className={` ${pageIdx === pageIndex
                       ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium "
                       : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  "
-                  }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
+                    }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
                   onClick={() => gotoPage(pageIdx)}
                 >
                   {page + 1}
@@ -422,9 +418,8 @@ const AllRiders = () => {
             ))}
             <li className="text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180">
               <button
-                className={` ${
-                  !canNextPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={` ${!canNextPage ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 onClick={() => nextPage()}
                 disabled={!canNextPage}
               >
@@ -435,9 +430,8 @@ const AllRiders = () => {
               <button
                 onClick={() => gotoPage(pageCount - 1)}
                 disabled={!canNextPage}
-                className={` ${
-                  !canNextPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={` ${!canNextPage ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
               >
                 <Icon icon="heroicons:chevron-double-right-solid" />
               </button>

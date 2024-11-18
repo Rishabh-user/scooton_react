@@ -17,7 +17,6 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import twowheeler from '../../assets/images/icon/Two_Wheeler_EV.png';
 import threewheeler from '../../assets/images/icon/Three_Wheeler.png';
-import champion from '../../assets/images/icon/Champion.png';
 import eeco from '../../assets/images/icon/eeco.png';
 import tataace from '../../assets/images/icon/Tata_Ace.png'
 import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
@@ -79,8 +78,8 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
         <span className="block w-full">
           <span
             className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${row?.cell?.value === "COMPLETED"
-                ? "text-success-500 bg-success-500"
-                : ""
+              ? "text-success-500 bg-success-500"
+              : ""
               } 
             ${row?.cell?.value === "PLACED"
                 ? "text-warning bg-warning-700"
@@ -569,8 +568,8 @@ const AllOrders = () => {
                   href="#"
                   aria-current="page"
                   className={` ${pageIdx === pageIndex
-                      ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium "
-                      : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  "
+                    ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium "
+                    : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  "
                     }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
                   onClick={() => gotoPage(pageIdx)}
                 >
