@@ -14,7 +14,7 @@
   }
 }
 .btn-dark {
-  @apply bg-scooton-900 dark:bg-scooton-900 dark:hover:bg-opacity-70   text-white  hover:ring-2 hover:ring-opacity-80 ring-black-900   hover:ring-offset-1 dark:hover:ring-0 dark:hover:ring-offset-0;
+  @apply bg-scooton-900 dark:bg-scooton-900 dark:hover:bg-opacity-70  border border-scooton-500  text-white  hover:ring-2 hover:ring-opacity-80 ring-black-900   hover:ring-offset-1 dark:hover:ring-0 dark:hover:ring-offset-0;
 }
 .btn-primary {
   @apply bg-primary-500 dark:hover:bg-opacity-70  text-white hover:ring-2 hover:ring-opacity-80 ring-primary-500 hover:ring-offset-1 dark:hover:ring-0 dark:hover:ring-offset-0;
@@ -104,7 +104,7 @@
   @apply bg-danger-500 text-white;
 }
 .btn-outline-light {
-  @apply bg-transparent  border border-[#E0EAFF] dark:text-white hover:border-[#E0EAFF] text-slate-900 hover:bg-[#E0EAFF] hover:bg-opacity-5;
+  @apply bg-transparent  border border-scooton-500 dark:text-white hover:border-[#E0EAFF]  text-slate-900 hover:bg-[#E0EAFF] hover:bg-opacity-5;
   &.active {
     @apply bg-[#E0EAFF] text-slate-900;
   }

@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ForgotPass from "./common/forgot-pass";
 import useDarkMode from "@/hooks/useDarkMode";
+import Illustration from '../../assets/images/auth/ilst2.png'
 
 import Logo from "@/assets/images/logo/logo.png";
 const forgotPass = () => {

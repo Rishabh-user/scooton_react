@@ -9,6 +9,14 @@ import { BASE_URL } from "../../api";
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@/components/ui/Tooltip";
 import Loading from "../../components/Loading";
+import TextField from "@mui/material/TextField"; 
+import SplitDropdown from "@/components/ui/Split-dropdown";
+import twowheeler from '../../assets/images/icon/Two_Wheeler_EV.png';
+import threewheeler from '../../assets/images/icon/Three_Wheeler.png';
+import champion from '../../assets/images/icon/champion.png';
+import eeco from '../../assets/images/icon/eeco.png';
+import tataace from '../../assets/images/icon/Tata_Ace.png'
+import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
 
 const COLUMNS = [
   {
@@ -120,6 +128,24 @@ const COLUMNS = [
   {
     Header: "Vehicle Type",
     accessor: "riderInfo.vehicleType",
+    Cell: (row) => {
+       return (
+        <div>
+          {row.row.original.riderInfo.vehicleId === 1 ? (
+             <img  className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
+          ): row.row.original.riderInfo.vehicleId === 2 ? (
+            <img  className="object-cover" width={30} alt="threewheeler" class="mr-2 rounded-0" src={threewheeler}></img>
+          ) : row.row.original.riderInfo.vehicleId === 3 ? (
+            <img  className=" object-cover" width={30} alt="tataace" class="mr-2 rounded-0" src={tataace}></img>
+          ) : (
+            <img  className="object-cover" width={30} alt="pickup_8ft" class="mr-2 rounded-0" src={pickup_8ft}></img>
+          )
+          }
+          
+        </div>
+       )
+      
+    }
   },
   {
     Header: "Action",
@@ -149,6 +175,7 @@ const AllRiders = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
+  const [activeridercount, setActiveRiderCount] = useState([])
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
@@ -191,6 +218,17 @@ const AllRiders = () => {
         });
     }
   }, [search]);
+
+  useEffect(() => {
+    try{
+      axios.get(`${BASE_URL}/login/get-online-offline-rider/0/ALL`).then((response) => {
+        setActiveRiderCount(response.data)
+        
+      })
+    }catch{
+       console.log(error)
+      }
+  },[])
   
   
 
@@ -233,13 +271,33 @@ const AllRiders = () => {
     <>
       <Card>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">All Riders</h4>
           <div>
-            <Textinput
+            <h4 className="card-title">All Riders</h4>
+            <div>
+            Total Rider -{activeridercount?.allRider} 
+            Online Rider -{activeridercount?.onlineRider}
+            Offline Rider -{activeridercount?.offlineRider}
+            </div>
+          </div>
+          <div>
+            <SplitDropdown
+              classMenuItems="left-0  w-[220px] top-[110%]"
+              label="Light"
+              labelClass="btn-outline-light"
+            />
+            <TextField
+                id="vehicleNumber"
+                type="text"
+                name="vehicleNumber"
                 placeholder="Search by mobile number"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
             />
+            {/* <TextField
+                placeholder="Search by mobile number"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+            /> */}
           </div>
         </div>
         <div className="overflow-x-auto -mx-6">

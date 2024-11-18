@@ -6,8 +6,23 @@ import Card from "../../components/ui/Card";
 import { BASE_URL } from "../../api";
 import Tooltip from "@/components/ui/Tooltip";
 import Loading from "../../components/Loading";
+import Modal from "../../components/ui/Modal";
+import Button from "@/components/ui/Button";
+// import Textinput from "@/components/ui/Textinput";4
+import TextField from "@mui/material/TextField";
+//import Switch from "@/components/ui/Switch";
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+//import Switch from '@mui/material/Switch';
+import Switch from "@/components/ui/Switch";
+import { toast,ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const COLUMNS = [
+//import Switch from "../../components/ui/Switch";
+
+const promocodeType = ["FIXED", "PERCENTAGE"];
+
+const COLUMNS = (deletePromocode, openEditModal) => [
   {
     Header: "Sr. No.",
     accessor: (row, i) => i + 1,
@@ -29,62 +44,179 @@ const COLUMNS = [
     accessor: "expireDate",
   },
   {
-    Header: "Action",
-    accessor: "action",
-    Cell: (row) => {
+    Header: "Status",
+    accessor: "status",
+    Cell: ({ row }) => {
+      const [isActive, setIsActive] = useState(row.original.active);
+      const [checked, setChecked] = useState(false);
+       const toggleActive = async (id) => {
+        try {
+          const newState = !isActive;
+          await axios.post(`${BASE_URL}/promo-code/active/${id}`,{active: newState}).then((response) => {
+            toast.success("Promocode status change successfully!");
+          });
+          setIsActive(newState);
+        } catch (error) {
+          toast.error("Promocode not activated successfully!");
+          console.error("Error toggling user active state:", error);
+        }
+      };
+
       return (
-        <div className="flex space-x-3 rtl:space-x-reverse">
-          <Tooltip content="Edit" placement="top" arrow animation="shift-away">
-            <button className="action-btn" type="button">
-              <Icon icon="heroicons:pencil-square" />
-            </button>
-          </Tooltip>
-          <Tooltip
-            content="Delete"
-            placement="top"
-            arrow
-            animation="shift-away"
-            theme="danger"
-          >
-            <button className="action-btn" type="button">
-              <Icon icon="heroicons:trash" />
-            </button>
-          </Tooltip>
-        </div>
+        
+        <span>
+          
+          <Switch
+            value={isActive}
+            onChange={() => toggleActive(row.original.promocodeId)}
+          />
+        </span>
       );
     },
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    Cell: ({ row }) => (
+      <div className="flex space-x-3 rtl:space-x-reverse">
+        <Tooltip content="Edit" placement="top" arrow animation="shift-away">
+          
+          <button className="action-btn" type="button" onClick={() => openEditModal(row.original)}>
+            <Icon icon="heroicons:pencil-square" />
+          </button>
+        </Tooltip>
+        <Tooltip content="Delete" placement="top" arrow animation="shift-away" theme="danger">
+          <button
+            className="action-btn"
+            type="button"
+            onClick={() => deletePromocode(row.original.promocodeId)}
+          >
+            <Icon icon="heroicons:trash" />
+          </button>
+        </Tooltip>
+      </div>
+    ),
   },
 ];
 
 const PromocodeList = () => {
-  
   const [procodeList, setprocodeList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPromoCode, setSelectedPromoCode] = useState();
+  const { deleted, ...promoCodeData } = selectedPromoCode || {};
 
-   useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       axios
-        .get(`${BASE_URL}/promo-code/get-all?page=${currentPage}&size=10`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        .get(`${BASE_URL}/promo-code/get-all?page=${currentPage}&size=10`)
         .then((response) => {
-            setprocodeList(response.data);
-            setPageCount(response.data.totalPages);
+          setprocodeList(response.data);
+          setPageCount(response.data.totalPages);
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
-        })
-        .finally(() => {
-          setLoading(false); 
         });
     }
-  }, []);
+  }, [currentPage]);
 
-  const columns = useMemo(() => COLUMNS, []);
+  const deletePromocode = async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}/promo-code/delete/${id}`).then((response) => {
+        toast.success("Promocode deleted successfully!");
+      });
+      setprocodeList((prevList) => prevList.filter((item) => item.promocodeId !== id));
+    } catch (error) {
+      toast.error("Promocode not delted successfully!");
+      console.error("Error deleting promocode:", error);
+    }
+  };
+
+  
+  const openEditModal =  async (promoCode) => {
+    console.log("promoCode",promoCode)
+    setSelectedPromoCode(promoCode);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedPromoCode(null);
+  };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log('e',e)
+    setSelectedPromoCode((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleInputChangepublicShown = (e) => {
+    const { value,checked } = e.target;
+    console.log("e",e)
+    setSelectedPromoCode(prevDetails => ({
+        ...prevDetails,
+        publicShown: checked
+    }));
+  };
+  const formatDateToDatetimeLocal = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  const formatDate = (date) => {
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formattedDate = new Date(date).toLocaleDateString('en-GB', options).replaceAll('/', '-'); 
+    const formattedTime = new Date(date).toLocaleTimeString('en-GB', { hour12: false });
+    return `${formattedDate} ${formattedTime}`;
+  };
+  
+  
+
+  const editPromodecode = async (id) => {
+    try {
+      const formattedStartDate = formatDate(selectedPromoCode?.startDate);
+      const formattedExpireDate = formatDate(selectedPromoCode?.expireDate);
+  
+      let publicShownvalue = false
+      if(promoCodeData?.publicShown === 'on')
+        publicShownvalue = true
+      else
+        publicShownvalue = false
+  
+      await axios.post(`${BASE_URL}/promo-code/update/${id}`, 
+        {
+          active: promoCodeData?.active,
+          amount: promoCodeData?.amount,
+          expireDate: formattedExpireDate,
+          promoCode: promoCodeData?.promoCode,
+          promoCodeType:promoCodeData?.promoCodeType,
+          promocodeId: promoCodeData?.promocodeId,
+          startDate: formattedStartDate,
+          publicShown: publicShownvalue
+       }).then((response) => {
+        toast.success("Promocode Updated successfully!");
+       });
+      setprocodeList(prevPromoCodes => 
+        procodeList.map(promoCode =>
+          promoCode.promocodeId === id ? { ...promoCode, ...promoCodeData } : promoCode
+        )
+      );
+    } catch (error) {
+      toast.error("Promocode not updated successfully!");
+      console.error("Error updating promocode:", error);
+    }
+  };
+  
+
+  //const columns = useMemo(() => COLUMNS(deletePromocode), []);
+  const columns = useMemo(() => COLUMNS(deletePromocode, openEditModal), []);
+
   const data = useMemo(() => procodeList, [procodeList]);
 
   const tableInstance = useTable(
@@ -103,21 +235,7 @@ const PromocodeList = () => {
     useRowSelect
   );
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    nextPage,
-    previousPage,
-    canNextPage,
-    canPreviousPage,
-    pageOptions,
-    state,
-    gotoPage,
-    setPageSize,
-    prepareRow,
-  } = tableInstance;
+  const { getTableProps, getTableBodyProps, headerGroups, page, nextPage, previousPage, canNextPage, canPreviousPage, pageOptions, state, gotoPage, setPageSize, prepareRow } = tableInstance;
 
   const { pageIndex, pageSize } = state;
 
@@ -127,6 +245,7 @@ const PromocodeList = () => {
 
   return (
     <>
+      <ToastContainer />
       <Card>
         <div className="md:flex justify-between items-center mb-6">
           <h4 className="card-title">Promocode List</h4>
@@ -134,11 +253,6 @@ const PromocodeList = () => {
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden">
-              {loading ? (
-                <div className="flex justify-center items-center w-100">
-                  <Loading /> 
-                </div>
-              ) : ( 
               <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps()}
@@ -168,7 +282,9 @@ const PromocodeList = () => {
                       <tr {...row.getRowProps()}>
                         {row.cells.map((cell) => {
                           return (
+                            
                             <td {...cell.getCellProps()} className="table-td">
+                              
                               {cell.render("Cell")}
                             </td>
                           );
@@ -178,7 +294,6 @@ const PromocodeList = () => {
                   })}
                 </tbody>
               </table>
-              )}
             </div>
           </div>
         </div>
@@ -264,6 +379,94 @@ const PromocodeList = () => {
           </ul>
         </div>
       </Card>
+           
+      {isModalOpen && (       
+      
+      <Modal
+        activeModal={isModalOpen}
+        uncontrol
+        className="max-w-5xl"
+        footerContent={
+          <Button
+            text="Update"
+            className="btn-dark"
+            onClick={() => {
+              editPromodecode(selectedPromoCode?.promocodeId);
+              setIsModalOpen(false);
+            }}
+          />
+        }
+        onClose={() => setIsModalOpen(false)}
+      >
+          <form className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5">
+            <TextField
+              label="Promo Code"
+              id="promoCode"
+              type="text"
+              className=""
+              name="promoCode"
+              value={promoCodeData?.promoCode || ""}
+              onChange={handleInputChange}
+            />
+            <TextField
+              label="Discount"
+              id="amount"
+              type="text"
+              name="amount"
+              value={promoCodeData?.amount || ""}
+              onChange={handleInputChange}
+            />
+            <div>
+              <label htmlFor="promoCodeType" className="form-label">
+                Select Promocode Type
+              </label>
+              <select
+                className="form-control py-2 form-select h-50"
+                id="promoCodeType"
+                name="promoCodeType"
+                value={promoCodeData?.promoCodeType || ""}
+                onChange={handleInputChange}
+              >
+                {promocodeType.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+             
+            {/* <FormControlLabel control={<Switch  checked={promoCodeData?.publicShown || false}
+             onChange={handleInputChange} name="publicShown"/>} label="publicShown" /> */}
+              <div className="form-check form-switch">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id={promoCodeData.publicShown}
+                  checked={promoCodeData?.publicShown}
+                  onChange={handleInputChangepublicShown}
+                />
+              </div>
+            <TextField
+              label="Start Date"
+              id="startDate"
+              type="datetime-local"
+              name="startDate"
+              value={promoCodeData?.startDate ? formatDateToDatetimeLocal(promoCodeData.startDate) : ""}
+              onChange={handleInputChange}
+            />
+            <TextField
+              label="Expiry Date"
+              id="expireDate"
+              type="datetime-local"
+              name="expireDate"
+              value={promoCodeData?.expireDate ? formatDateToDatetimeLocal(promoCodeData.expireDate) : ""}
+              onChange={handleInputChange}
+            />
+          </form>
+        </Modal>
+      
+      )}
     </>
   );
 };

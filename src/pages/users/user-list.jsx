@@ -9,6 +9,7 @@ import { BASE_URL } from "../../api";
 import Loading from "../../components/Loading";
 
 const COLUMNS = [
+  
   {
     Header: "Sr. No.",
     accessor: (row, i) => i + 1,
@@ -26,6 +27,7 @@ const COLUMNS = [
       const lastName = original.lastName || "";
       const imageUrl = original.media ? original.media.url : null;
       const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
+      
       return (
         <span className="flex items-center">
           <div className="flex-none">
@@ -130,30 +132,31 @@ const COLUMNS = [
     accessor: "active",
     Cell: ({ row }) => {
       const [isActive, setIsActive] = useState(row.original.active);
-      const toggleActive = async () => {
+      const [checked, setChecked] = useState(false);
+       const toggleActive = async (id) => {
         try {
-          const token = localStorage.getItem("jwtToken");
-          await axios.patch(
-            `${BASE_URL}/user/${row.original.id}/toggle-active`,
-            { active: !isActive },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setIsActive(!isActive);
+          const newState = !isActive;
+          await axios.post(`${BASE_URL}/user/active/${id}`,{active: newState});
+          setIsActive(newState);
+         
+          
         } catch (error) {
           console.error("Error toggling user active state:", error);
         }
       };
 
       return (
+        
         <span>
-          <Switch
+          {/* <Switch
             activeClass="bg-danger-500"
             checked={isActive}
             onChange={toggleActive}
+          /> */}
+          
+          <Switch
+            value={isActive}
+            onChange={() => toggleActive(row.original.id)}
           />
         </span>
       );
@@ -190,24 +193,36 @@ const UserList = () => {
   }, []);
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
-    if (token && search) {
-      axios
-        .post(`${BASE_URL}/user/search-by-mobile-number`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            mobileNumber: search,
-          },
-        })
-        .then((response) => {
+    const fetchData = async () => {
+      try {
+        if (!token) return;
+  
+        if (search) {
+          // Search by mobile number if `search` is not empty
+          const response = await axios.post(
+            `${BASE_URL}/user/search-by-mobile-number`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${token}` },
+              params: { mobileNumber: search, page: currentPage, size: 100 },
+            }
+          );
           setUserData(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-        });
-    }
-  }, [search]);
+        } else {
+          // Fetch all users if `search` is empty
+          const response = await axios.get(`${BASE_URL}/user/get-all`, {
+            headers: { Authorization: `Bearer ${token}` },
+            params: { page: currentPage, size: 100 },
+          });
+          setUserData(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+  
+    fetchData();
+  }, [search, currentPage])
   
   
 
@@ -299,10 +314,12 @@ const UserList = () => {
                   className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
                   {...getTableBodyProps()}
                 >
+                  
                   {page.map((row) => {
                     prepareRow(row);
                     return (
                       <tr {...row.getRowProps()}>
+                        
                         {row.cells.map((cell) => {
                           return (
                             <td {...cell.getCellProps()} className="table-td">

@@ -6,12 +6,18 @@ import Card from "../../components/ui/Card";
 import { BASE_URL } from "../../api";
 import Tooltip from "@/components/ui/Tooltip";
 import Loading from "../../components/Loading";
+import Modal from "../../components/ui/Modal";
+import Button from "@/components/ui/Button";
+import TextField from "@mui/material/TextField";
+import Select from "@/components/ui/Select";
+import { toast, ToastContainer } from "react-toastify";
+
 const roleDisplayNames = {
     "ROLE_SUPER_ADMIN": "Super Admin",
     "ROLE_EDITOR": "Viewer",
     "ROLE_CITY_ADMIN": "Admin",
   };
-const COLUMNS = [
+const COLUMNS =(openEditRole,deleteUser) => [
   {
     Header: "Sr. No.",
     accessor: (row, i) => i + 1,
@@ -40,7 +46,7 @@ const COLUMNS = [
       return (
         <div className="flex space-x-3 rtl:space-x-reverse">
           <Tooltip content="Edit" placement="top" arrow animation="shift-away">
-            <button className="action-btn" type="button">
+            <button className="action-btn" type="button" onClick={() => openEditRole(row.row.original)}>
               <Icon icon="heroicons:pencil-square" />
             </button>
           </Tooltip>
@@ -51,7 +57,7 @@ const COLUMNS = [
             animation="shift-away"
             theme="danger"
           >
-            <button className="action-btn" type="button">
+            <button className="action-btn" type="button" onClick={() => deleteUser(row.row.original)}>
               <Icon icon="heroicons:trash" />
             </button>
           </Tooltip>
@@ -66,8 +72,13 @@ const RoleList = () => {
   const [roleList, setRoleList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUserDetails, setSelectedUserDetails] = useState();
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [selectedUDeleteserDetails, setSelectedDeleteUserDetails] = useState();
+  const [roleOptions, setRoleOptions] = useState([]);
 
-   useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       axios
@@ -89,7 +100,114 @@ const RoleList = () => {
     }
   }, []);
 
-  const columns = useMemo(() => COLUMNS, []);
+  useEffect(() => {
+    
+      axios
+        .get(`${BASE_URL}/register/get-all-roles`)
+        .then((response) => {
+          const roles = response.data.map((role) => {
+            let label;
+            switch (role) {
+              case "ROLE_SUPER_ADMIN":
+                label = "Super Admin";
+                break;
+              case "ROLE_CITY_ADMIN":
+                label = "Admin";
+                break;
+              case "ROLE_EDITOR":
+                label = "Viewer";
+                break;
+              default:
+                label = role;
+            }
+            return { value: role, label };
+          });
+          setRoleOptions(roles);
+        })
+        .catch((error) => {
+          console.error("Error fetching roles:", error);
+        });
+  }, []);
+
+  // const columns = useMemo(() => COLUMNS, []);
+
+  const openEditRole =  async (userdetails) => {
+    console.log("userdetails",userdetails)
+    setSelectedUserDetails(userdetails);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedUserDetails(null);
+  };
+
+  const deleteUser =  async (userdetails) => {
+    console.log("delete",userdetails)
+    setSelectedDeleteUserDetails(userdetails);
+    setIsDeleteModal(true);
+  };
+
+  const closeUserModel = () => {
+    setIsDeleteModal(false);
+    setSelectedDeleteUserDetails(null);
+  };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log("ejh",e)
+    setSelectedUserDetails((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleInputChangerole = (e) => {
+    const { value } = e.target;
+    console.log("e",e)
+    setSelectedUserDetails(prevDetails => ({
+        ...prevDetails,
+        role: value
+    }));
+  };
+
+
+  const deleteRole = async (id) => {
+    try{
+      await axios.delete(`${BASE_URL}/register/admin/delete/${id}`).then((response) => {
+        toast.success("Role deleted successfully!");
+      });
+      setRoleList((prevList) => prevList.filter((item) => item.id !== id));
+    } catch(error){
+      console.error("Error deleting promocode:", error);
+    }
+  }
+
+  const editRoleDetails = async (id) => {
+    try {
+      await axios.post(`${BASE_URL}/register/admin/update/${id}`,{
+        firstName: selectedUserDetails.first_name,
+        lastName: selectedUserDetails.last_name,
+        mobileNumber: selectedUserDetails.mobile_number,
+        password: selectedUserDetails.password,
+        role: selectedUserDetails.role,
+        email: selectedUserDetails.email,
+        service_id: null
+      }).then((response) => {
+        toast.success("Role updated successfully!");
+      });
+
+      setRoleList(prevPromoCodes => 
+        roleList.map(role =>
+          role.id === id ? { ...role, ...selectedUserDetails } : role
+        )
+      );
+    }catch(error) {
+      if (error.response && error.response.status === 401) {
+        navigate("/");
+        toast.error("Unauthorized. Please log in again.");
+      } else {
+        toast.error("Error adding role. Please try again.");
+      }
+    };
+  }
+  const columns = useMemo(() => COLUMNS(openEditRole,deleteUser), []);
+  
   const data = useMemo(() => roleList, [roleList]);
 
   const tableInstance = useTable(
@@ -130,6 +248,7 @@ const RoleList = () => {
 
   return (
     <>
+    <ToastContainer />
       <Card>
         <div className="md:flex justify-between items-center mb-6">
           <h4 className="card-title">Role List</h4>
@@ -267,6 +386,105 @@ const RoleList = () => {
           </ul>
         </div>
       </Card>
+
+      {isModalOpen && (       
+      
+      <Modal
+        activeModal={isModalOpen}
+        uncontrol
+        className="max-w-5xl"
+        footerContent={
+          <Button
+            text="Update"
+            className="btn-dark"
+            onClick={() => {
+              editRoleDetails(selectedUserDetails?.id);
+              setIsModalOpen(false);
+            }}
+          />
+        }
+        onClose={() => setIsModalOpen(false)}
+      >
+          <form className="space-y-4 mt-4">
+            <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5">
+            
+              <TextField
+                label="First Name"
+                id="firstName"
+                type="text"
+                name="first_name"
+                className=""
+                value={selectedUserDetails?.first_name || ""}
+                onChange={handleInputChange}
+              />
+              <TextField
+                label="Last Name"
+                id="lastname"
+                type="text"
+                name="last_name"
+                value={selectedUserDetails?.last_name || ""}
+                onChange={handleInputChange}
+              />
+              <TextField
+                label="Mobile Number"
+                id="mobileNumber"
+                type="number"
+                name="mobile_number"
+                value={selectedUserDetails?.mobile_number || ""}
+                onChange={handleInputChange}
+              />
+              <TextField
+                label="Email"
+                id="email"
+                type="email"
+                name="email"
+                value={selectedUserDetails?.email || ""}
+                onChange={handleInputChange}
+              />
+              <TextField
+                label="Password"
+                id="password"
+                type="text"
+                name="password"
+                value={selectedUserDetails?.password || ""}
+                onChange={handleInputChange}
+              />
+              <Select
+                label="Select Role"
+                id="role"
+                options={roleOptions}
+                value={selectedUserDetails?.role || ""}
+                onChange={handleInputChangerole}
+              />
+            </div>
+          </form>
+        </Modal>
+      
+      )}
+
+     {isDeleteModal && (  
+      <Modal
+        activeModal={isDeleteModal}
+        uncontrol
+        className="max-w-md"
+        title=""
+        
+        onClose={() => setIsDeleteModal(false)}
+      >
+          <div className="">
+              <h5 className="text-center">Are you sure to delete</h5>
+              <div className="d-flex gap-2 justify-content-center mt-4">
+                <Button className="btn btn-dark" type="button" onClick={() => setIsDeleteModal(false)}>
+                  No
+                </Button>
+                <Button className="btn btn-outline-light" type="button" onClick={() => {deleteRole(selectedUDeleteserDetails?.id);setIsDeleteModal(false)}}>
+                  Yes
+                </Button>
+              </div>
+          </div>
+        </Modal>
+      
+      )}
     </>
   );
 };

@@ -14,12 +14,12 @@ import { BASE_URL } from "../../../api";
 
 const schema = yup
   .object({
-    userId: yup.string().required("userId is Required"),
-    password: yup.string().required("Password is Required"),
+    userId: yup.string().trim().required("UserId is Required"),
+    password: yup.string().trim().required("Password is Required"),
   })
   .required();
 
-const LoginForm = () => {
+  const LoginForm = () => {
   const dispatch = useDispatch();
   const { isAuth } = useSelector((state) => state.auth); 
   const {
@@ -28,7 +28,11 @@ const LoginForm = () => {
     handleSubmit,
   } = useForm({
     resolver: yupResolver(schema),
-    mode: "all",
+    mode: "onSubmit",
+    defaultValues: {
+      userId: "",
+      password: "",
+    },
   });
   const navigate = useNavigate();
   useEffect(() => {
@@ -38,6 +42,7 @@ const LoginForm = () => {
   }, [isAuth, navigate]);
 
   const onSubmit = async (data) => {
+    console.log("userid",data.userId)
     try {
       const response = await axios.post(`${BASE_URL}/auth/login/admin`, {
         user: data.userId,
@@ -84,10 +89,12 @@ const LoginForm = () => {
     <>
       <ToastContainer />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
-        <Textinput
+   
+        {/* <Textinput
           name="userId"
           label="userId"
           type="userId"
+          value="userId"
           register={register}
           error={errors.userId}
           className="h-[48px]"
@@ -98,7 +105,21 @@ const LoginForm = () => {
           type="password"
           register={register}
           error={errors.password}
-          className="h-[48px]"
+          className="h-[48px] "
+        /> */}
+
+        <input
+          {...register("userId")}
+          placeholder="User ID"
+          className="h-[48px] form-control"
+        />
+        <p className="text-red-500">{errors.userId?.message}</p>
+        
+        <input
+          {...register("password")}
+          type="password"
+          placeholder="Password"
+          className="h-[48px] form-control"
         />
         <div className="flex justify-between">
           <Checkbox

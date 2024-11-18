@@ -109,40 +109,40 @@ export const menuItems = [
       },
     ]
   },
-  {
-    title: "Service Area",
-    icon: "heroicons-outline:home",
-    link: "service-area",
-    child: [
-      {
-        childtitle: "Add Service area ",
-        childlink: "add-service-area",
-        childicon: "heroicons:presentation-chart-line",
-      },
-      {
-        childtitle: "Service Area List",
-        childlink: "service-area-list",
-        childicon: "heroicons:presentation-chart-line",
-      },
-    ]
-  },
-  {
-    title: "Home Page",
-    icon: "heroicons-outline:home",
-    link: "home-page",
-    child: [
-      {
-        childtitle: "Add Home page",
-        childlink: "add-homepage",
-        childicon: "heroicons:presentation-chart-line",
-      },
-      {
-        childtitle: "Home page List",
-        childlink: "homepage-list",
-        childicon: "heroicons:presentation-chart-line",
-      },
-    ]
-  },
+  // {
+  //   title: "Service Area",
+  //   icon: "heroicons-outline:home",
+  //   link: "service-area",
+  //   child: [
+  //     {
+  //       childtitle: "Add Service area ",
+  //       childlink: "add-service-area",
+  //       childicon: "heroicons:presentation-chart-line",
+  //     },
+  //     {
+  //       childtitle: "Service Area List",
+  //       childlink: "service-area-list",
+  //       childicon: "heroicons:presentation-chart-line",
+  //     },
+  //   ]
+  // },
+  // {
+  //   title: "Home Page",
+  //   icon: "heroicons-outline:home",
+  //   link: "home-page",
+  //   child: [
+  //     {
+  //       childtitle: "Add Home page",
+  //       childlink: "add-homepage",
+  //       childicon: "heroicons:presentation-chart-line",
+  //     },
+  //     {
+  //       childtitle: "Home page List",
+  //       childlink: "homepage-list",
+  //       childicon: "heroicons:presentation-chart-line",
+  //     },
+  //   ]
+  // },
   {
     title: "Configuration",
     icon: "heroicons-outline:home",

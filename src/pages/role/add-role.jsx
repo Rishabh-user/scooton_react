@@ -86,6 +86,15 @@ const AddRole = () => {
         })
         .then((response) => {
           toast.success("Role added successfully!");
+          setFormData({
+            firstName: "",
+            lastName: "",
+            mobileNumber: "",
+            password: "",
+            role: "",
+            email: "",
+            service_id: null,
+          })
           console.log("Role added successfully:", response.data);
         })
         .catch((error) => {
@@ -139,15 +148,30 @@ const AddRole = () => {
             <Textinput
               label="Password"
               id="password"
-              type="password"
+              type="text"
               value={formData.password}
               onChange={handleChange}
             />
-            <Select
+             {/* <Select
+              label="Select Role"
+              options={roleOptions}
+              onChange={handleChange}
+              value={formData.password}
+              id="role"
+            /> */}
+            
+            {/* <Select
               label="Select Role"
               options={roleOptions}
               onChange={handleChange}
               value={roleOptions.find((option) => option.value === formData.role)}
+              id="role"
+            /> */}
+             <Select
+              label="Select Role"
+              options={roleOptions}
+              onChange={handleChange}
+              value={formData.role}
               id="role"
             />
           </div>
