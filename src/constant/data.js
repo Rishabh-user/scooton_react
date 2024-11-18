@@ -149,7 +149,7 @@ export const menuItems = [
     link: "configuration",
     child: [
       {
-        childtitle: "Setting",
+        childtitle: "Settings",
         childlink: "setting",
         childicon: "heroicons:presentation-chart-line",
       }

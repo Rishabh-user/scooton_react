@@ -121,6 +121,7 @@ const schema = yup
           placeholder="Password"
           className="h-[48px] form-control"
         />
+        <p className="text-red-500">{errors.password?.message}</p>
         <div className="flex justify-between">
           <Checkbox
             value={checked}

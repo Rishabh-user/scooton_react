@@ -17,7 +17,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import twowheeler from '../../assets/images/icon/Two_Wheeler_EV.png';
 import threewheeler from '../../assets/images/icon/Three_Wheeler.png';
-import champion from '../../assets/images/icon/champion.png';
+import champion from '../../assets/images/icon/Champion.png';
 import eeco from '../../assets/images/icon/eeco.png';
 import tataace from '../../assets/images/icon/Tata_Ace.png'
 import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
