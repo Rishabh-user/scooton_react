@@ -16,6 +16,7 @@ import { toast,ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Select from "@/components/ui/Select";
 import Modal from "../../components/ui/Modal";
+import { useNavigate } from "react-router-dom";
  
 const RejectionType = ["Information Rejected", "Document Issue"];
 const DocumentStatus =["Approve","Reject"]
@@ -37,6 +38,12 @@ const RiderDetail = () => {
     const [driverRole, setDriverRole]= useState(false);
     const [approved, setApproved] = useState(true);
     const [rechageAmount, setRechageAmount] = useState({ amount: "" });
+    const [documentModel, setIsDocumentModel] = useState(false)
+    const [viewDocumentModelDetail, setDocumentModelDetail] = useState({
+        id:'',
+        fileName:''
+    })
+    const navigate = useNavigate();
 
    
 
@@ -237,9 +244,13 @@ const RiderDetail = () => {
     }
 
     const rechargeWallet = () => {
-    setRechargeModel(true);
-        
+      setRechargeModel(true);
     }
+
+    const handleViewClick = async (id) => {
+        navigate(`/order-detail/${id}`);
+    };
+
     const rechargeRiderWallet = async (amt,id) =>{
      try {
         await axios.post(`${BASE_URL}/wallet/rider-wallet-recharge`,{
@@ -253,6 +264,11 @@ const RiderDetail = () => {
      }catch{
         toast.error("Not Recharge Successfully")
      }
+    }
+
+    const viewDocument = async (id,fileName) => {
+        setIsDocumentModel(true)
+        setDocumentModelDetail(id,fileName)
     }
 
     const [currentPage, setCurrentPage] = useState(1); 
@@ -540,7 +556,7 @@ const RiderDetail = () => {
                                                     <Textinput defaultValue={order.documentType}  />                                                
                                                 </td>                                            
                                                 <td className="px-6 py-4">
-                                                    <Button text="button" className="btn-dark">View Document</Button>
+                                                    <Button text="button" className="btn-dark" onClick={() => viewDocument(order.url, order.fileName)}>View Document</Button>
                                                 </td>
                                                 {/* <td className="px-6 py-4">{order.status}</td> */}
                                                 <td className="px-6 py-4">   
@@ -646,24 +662,6 @@ const RiderDetail = () => {
                                         </th>
                                     </tr>  
                                 </thead> 
-                                {/* <tbody>
-                                    {riderOrderDetail.length === 0 ? (
-                                        <tr>
-                                            <td colSpan="6" className="text-center p-4">No orders found.</td>
-                                        </tr>
-                                    ) : (
-                                        riderOrderDetail.map((order, index) => (
-                                            <tr key={index}>
-                                                <td className="px-6 py-4">{index + 1}</td>
-                                                <td className="px-6 py-4">{order.order_Id}</td>
-                                                <td className="px-6 py-4">{order.orderStatus}</td>
-                                                <td className="px-6 py-4">{order.orderType}</td>
-                                                <td className="px-6 py-4">{order.orderDate}</td>
-                                                <td className="px-6 py-4">{order.orderAmount}</td>
-                                            </tr>
-                                        ))
-                                    )}
-                                </tbody>                       */}
                                 <tbody>
                                     {paginatedOrders?.length === 0 ? (
                                         <tr>
@@ -671,7 +669,7 @@ const RiderDetail = () => {
                                         </tr>
                                     ) : (
                                         paginatedOrders.map((order, index) => (
-                                        <tr key={index}>
+                                        <tr key={index} onClick={() => handleViewClick(order.order_Id)}>
                                             <td className="px-6 py-4">{startIndex + index + 1}</td>
                                             <td className="px-6 py-4">{order.order_Id}</td>
                                             <td className="px-6 py-4">{order.orderStatus}</td>
@@ -907,7 +905,23 @@ const RiderDetail = () => {
             </div>
           </Modal>
       
-      )}
+      )} 
+      
+      {documentModel && (  
+           <Modal
+        activeModal={documentModel}
+        uncontrol
+        className="max-w-md"
+        title=""
+        
+        onClose={() => setIsDocumentModel(false)}
+      >
+            <div className="">
+              {viewDocumentModelDetail}
+            </div>
+          </Modal>
+      
+      )} 
     </>
   );
 };

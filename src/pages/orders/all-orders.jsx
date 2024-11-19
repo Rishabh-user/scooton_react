@@ -26,6 +26,7 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../../components/ui/Modal";
 import Button from "@/components/ui/Button";
 import { toast } from "react-toastify";
+import { useLocation, useParams } from "react-router-dom";
 
 const COLUMNS = (openIsNotificationModel,openIsDeleteOrder,ordersType) => [
   {
@@ -220,6 +221,8 @@ const AllOrders = () => {
   const [notification, setNotification] = useState("ALL");
   const [mobile, setMobile]= useState();
   const [notificationid,setNotifictionId]= useState()
+  const id = useParams();
+  
 
   const openIsNotificationModel = async (id) =>{
     console.log("id",id);
@@ -284,30 +287,52 @@ const AllOrders = () => {
       fetchOrders(ordersType)
     }
   };
-  useEffect(() => {
-    // const token = localStorage.getItem("jwtToken");
-    // if (token) {
-    //   axios
-    //     .post(`${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,{orderType: "ALL ORDERS", searchType: "NONE"}, {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     })
-    //     .then((response) => {
-    //       setOrderData(response.data);
-    //       console.log(response.data);
-    //       setPageCount(response.data.totalPages);
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error fetching user data:", error);
-    //     })
-    //     .finally(() => {
-    //       setLoading(false); 
-    //     });
-    // }
-    fetchOrders("PLACED");
-  }, []);
+  // useEffect(() => {
+  //   console.log("id",id)
+  //   console.log("orderpara",id.ordertype)
+  //   SetOrderType(id.ordertype)
+  //   try{
+  //     axios.post(`${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,
+  //       { "number": id.id, "orderType":id.ordertype, searchType: id.search },
+  //     ).then((response) => {
+  //       setOrderData(response.data); 
+  //       setPageCount(response.data.totalPages);
+  //     })
+  //   }catch{
+  //     console.error("Error fetching order data:", error);
+  //   }
+  //   fetchOrders("PLACED");
+  // }, []);
 
+  useEffect(() => {
+    if (id?.ordertype) { 
+      console.log("Redirected with params:", id);
+  
+      SetOrderType(id.ordertype);
+      
+      axios
+        .post(
+          `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,
+          { "number": id.id, "orderType": id.ordertype, searchType: id.search }
+        )
+        .then((response) => {
+          console.log("Response data:", response.data);
+          if (response.data) {
+            setOrderData(response.data); 
+            setPageCount(response.data.totalPages || 0);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching order data with params:", error);
+        });
+      
+    } else {
+      console.log("Fetching default orders...");
+      fetchOrders("PLACED");
+    }
+  }, [id?.ordertype, currentPage]);
+  
+  
 
   useEffect(() => {
     if (search.trim() || filterby !== "NONE") {

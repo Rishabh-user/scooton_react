@@ -33,8 +33,10 @@ const Settings = () => {
                 Authorization: `Bearer ${token}`,
               },
             });
-            
-            setLogoutAllList(response.data);
+            console.log("response.data",response.data)
+            const validLogoutList = response.data.filter(item => !item.isExpired);
+
+            setLogoutAllList(validLogoutList);
           }
         } catch (error) {
           console.error('Error fetching order detail:', error);

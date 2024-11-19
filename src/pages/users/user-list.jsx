@@ -7,6 +7,8 @@ import Textinput from "@/components/ui/Textinput";
 import Switch from "@/components/ui/Switch";
 import { BASE_URL } from "../../api";
 import Loading from "../../components/Loading";
+import { useNavigate } from "react-router-dom";
+import Tooltip from "@/components/ui/Tooltip";
 
 const COLUMNS = [
   
@@ -161,7 +163,27 @@ const COLUMNS = [
         </span>
       );
     },
-  }
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    Cell: (row) => {
+      const navigate = useNavigate();
+      const handleViewClick = async () => {
+        const mobileno= row.row.original.mobileNumber
+        navigate(`/all-orders/${mobileno}/ALL ORDERS/MOBILE`);
+      };
+      return (
+        <div className="flex space-x-3 rtl:space-x-reverse">
+          <Tooltip content="View" placement="top" arrow animation="shift-away">
+            <button className="action-btn bg-scooton" type="button" onClick={() => handleViewClick()}>
+              <Icon icon="heroicons:eye" />
+            </button>
+          </Tooltip>          
+        </div>
+      );
+    },
+  },
 ];
 
 const UserList = () => {
