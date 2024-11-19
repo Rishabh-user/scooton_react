@@ -911,13 +911,18 @@ const RiderDetail = () => {
            <Modal
         activeModal={documentModel}
         uncontrol
-        className="max-w-md"
+        className="max-w-xl"
         title=""
         
         onClose={() => setIsDocumentModel(false)}
       >
             <div className="">
-              {viewDocumentModelDetail}
+            <iframe
+                src={viewDocumentModelDetail}
+                width="100%"
+                height="500px"
+                title="Document Viewer"
+                ></iframe>
             </div>
           </Modal>
       
