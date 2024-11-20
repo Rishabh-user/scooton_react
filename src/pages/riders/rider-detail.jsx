@@ -908,14 +908,14 @@ const RiderDetail = () => {
       )} 
       
       {documentModel && (  
-           <Modal
+        <Modal
         activeModal={documentModel}
         uncontrol
         className="max-w-xl"
         title=""
         
         onClose={() => setIsDocumentModel(false)}
-      >
+        >
             <div className="">
             <iframe
                 src={viewDocumentModelDetail}
@@ -925,7 +925,6 @@ const RiderDetail = () => {
                 ></iframe>
             </div>
           </Modal>
-      
       )} 
     </>
   );

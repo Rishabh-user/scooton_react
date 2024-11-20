@@ -207,7 +207,7 @@ const AllOrders = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  const [ordersType, SetOrderType] = useState("PLACED")
+  const [ordersType, SetOrderType] = useState("ALL ORDERS")
   const [filterby, setFilterBy] = React.useState('NONE');
   const [notificationModel, setNotificationModel] = useState(false);
   const [deleteordermodel, setDeleteOrderModel] = useState(false);
@@ -279,9 +279,9 @@ const AllOrders = () => {
 
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
-    if (search === '') {
-      fetchOrders(ordersType)
-    }
+    // if (search === '') {
+    //   fetchOrders(ordersType)
+    // }
   };
   // useEffect(() => {
   //   console.log("id",id)
@@ -302,39 +302,46 @@ const AllOrders = () => {
 
   useEffect(() => {
     if (id?.ordertype) { 
-      console.log("Redirected with params:", id);
+      console.log("Redirected with params:", id.ordertype);
   
       SetOrderType(id.ordertype);
+      console.log("status1",id.ordertype, ordersType)
       
       axios
         .post(
           `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,
-          { "number": id.id, "orderType": id.ordertype, searchType: id.search }
+          { "number": id.id, "orderType": id.ordertype, "searchType": id.search }
         )
         .then((response) => {
-          console.log("Response data:", response.data);
+          console.log("Response datac:", response.data);
           if (response.data) {
             setOrderData(response.data); 
+            SetOrderType(id.ordertype);
             setPageCount(response.data.totalPages || 0);
+            
           }
         })
         .catch((error) => {
           console.error("Error fetching order data with params:", error);
+        }).finally(() => {
+          setLoading(false);
         });
+        ;
       
     } else {
       console.log("Fetching default orders...");
-      fetchOrders("PLACED");
+      fetchOrders("ALL ORDERS");
     }
   }, [id?.ordertype, currentPage]);
   
   
 
   useEffect(() => {
-    if (search.trim() || filterby !== "NONE") {
+    if(filterby && search){
       FilterOrder();
     }
-  }, [filterby, search]);
+      
+  }, [filterby, search,currentPage]);
 
   const fetchOrders = (orderType) => {
     setLoading(true);
@@ -342,12 +349,13 @@ const AllOrders = () => {
     axios
       .post(
         `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,
-        { "orderType": orderType, searchType: "NONE" },
+        { "orderType": orderType, "searchType": "NONE" },
 
       )
       .then((response) => {
         setOrderData(response.data);
         setPageCount(response.data.totalPages);
+        console.log("totalpage",response.data)
       })
       .catch((error) => {
         console.error("Error fetching order data:", error);
@@ -361,7 +369,7 @@ const AllOrders = () => {
     axios
       .post(
         `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,
-        { "number": search, "orderType": ordersType, searchType: filterby },
+        { "number": search, "orderType": ordersType, "searchType": filterby },
 
       )
       .then((response) => {
@@ -376,31 +384,13 @@ const AllOrders = () => {
       });
   };
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("jwtToken");
-  //   if (token && search) {
-  //     axios
-  //       .post(`${BASE_URL}/user/search-by-mobile-number`, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         params: {
-  //           mobileNumber: search,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         setUserData(response.data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching user data:", error);
-  //       });
-  //   }
-  // }, [search]);
 
 
 
   // const columns = useMemo(() => COLUMNS(openIsNotificationModel), []);
   const columns = useMemo(() => COLUMNS(openIsNotificationModel, openIsDeleteOrder, ordersType), [ordersType]);
+
+ 
 
   const tableInstance = useTable(
     {
@@ -473,7 +463,7 @@ const AllOrders = () => {
               aria-labelledby="demo-row-radio-buttons-group-label"
               name="row-radio-buttons-group"
               onChange={(e) => fetchOrders(e.target.value)}
-              defaultValue="PLACED"
+              defaultValue="ALL ORDERS"
             >
               <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
               <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
@@ -597,7 +587,7 @@ const AllOrders = () => {
                     }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
                   onClick={() => gotoPage(pageIdx)}
                 >
-                  {page + 1}
+                 {page + 1}
                 </button>
               </li>
             ))}

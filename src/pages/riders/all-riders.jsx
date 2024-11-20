@@ -15,6 +15,11 @@ import twowheeler from '../../assets/images/icon/Two_Wheeler_EV.png';
 import threewheeler from '../../assets/images/icon/Three_Wheeler.png';
 import tataace from '../../assets/images/icon/Tata_Ace.png'
 import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 const COLUMNS = [
   {
@@ -174,6 +179,11 @@ const AllRiders = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [activeridercount, setActiveRiderCount] = useState([])
+  const [riderstatus, setRiderStatus]= useState('All')
+  const [documentstatus, setDocumentStatus]= useState('All')
+  const [vehicleid, setVehicleId]= useState('0');
+  const [filterby, setFilterBy] = React.useState("NONE");
+
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
@@ -196,26 +206,26 @@ const AllRiders = () => {
         });
     }
   }, []);
-  useEffect(() => {
-    const token = localStorage.getItem("jwtToken");
-    if (token && search) {
-      axios
-        .post(`${BASE_URL}/user/search-by-mobile-number`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            mobileNumber: search,
-          },
-        })
-        .then((response) => {
-          setUserData(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-        });
-    }
-  }, [search]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("jwtToken");
+  //   if (token && search) {
+  //     axios
+  //       .post(`${BASE_URL}/user/search-by-mobile-number`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         params: {
+  //           mobileNumber: search,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         setUserData(response.data);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching user data:", error);
+  //       });
+  //   }
+  // }, [search]);
 
   useEffect(() => {
     try {
@@ -228,6 +238,84 @@ const AllRiders = () => {
     }
   }, [])
 
+  const riderStatusFilter = (event) => {
+    console.log("Rider status:", event.target.value);
+    setRiderStatus(event.target.value);
+  };
+  
+  const documentStatusFilter = (event) => {
+    console.log("Document status:", event.target.value);
+    setDocumentStatus(event.target.value);
+  };
+  
+  const vehicleIdFilter = (event) => {
+    console.log("Vehicle ID:", event.target.value);
+    setVehicleId(event.target.value);
+  };
+  
+  const filterRiders = () => {
+    try {
+      axios
+        .get(
+          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/${documentstatus}/${currentPage}/${riderstatus}/${vehicleid}?page=${currentPage}&size=100`
+        )
+        .then((response) => {
+          setRiderData(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching rider data:", error);
+        }).finally(() => {
+          setLoading(false);
+        });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+  
+  useEffect(() => {
+    filterRiders();
+  }, [riderstatus, documentstatus, vehicleid, currentPage]);
+
+
+  const handleChange = (event) => {
+    const value = event.target.value;
+    console.log("Filter By:", value);
+    setFilterBy(value);
+
+    // Reset search if "NONE" is selected
+    if (value === "NONE") {
+      setSearch("");
+    }
+  };
+
+  // Handle input change for search field
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+  };
+
+  const FilterOrder = () => {
+    const endpoint =
+      filterby === "NONE"
+        ? `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=100`
+        : `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=100`;
+    
+    axios
+      .get(endpoint)
+      .then((response) => {
+        setRiderData(response.data); 
+      })
+      .catch((error) => {
+        console.error("Error fetching rider data:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+      FilterOrder();
+    
+  }, [filterby, search, currentPage]);
 
 
   const columns = useMemo(() => COLUMNS, []);
@@ -277,25 +365,85 @@ const AllRiders = () => {
               Offline Rider -{activeridercount?.offlineRider}
             </div>
           </div>
+          <div className="d-flex">
+            <div>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Rider Status</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Rider_Status"
+                  value={riderstatus}
+                  onChange={riderStatusFilter}
+                >
+                  <MenuItem value="ALL">ALL</MenuItem>
+                  <MenuItem value="ONLINE">ONLINE</MenuItem>
+                  <MenuItem value="OFFLINE">OFFLINE</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+            <div>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Document Status</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Document"
+                  value={documentstatus}
+                  onChange={documentStatusFilter}
+                >
+                  <MenuItem value="ALL">All</MenuItem>
+                  <MenuItem value="NEW_USER">New User</MenuItem>
+                  <MenuItem value="REGISTERED">Registered</MenuItem>
+                  <MenuItem value="DOCUMENT_PENDING">Document Pending</MenuItem>
+                  <MenuItem value="DOCUMENT_REJECTED">Document Rejected</MenuItem>
+                  <MenuItem value="REVIEW_PENDING">Review Pending</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+            <div>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Vehicle Type</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Vehicle_Status"
+                  value={vehicleid}
+                  onChange={vehicleIdFilter}
+                >
+                  <MenuItem value="0">ALL</MenuItem>
+                  <MenuItem value="2">Two Wheeler EV</MenuItem>
+                  <MenuItem value="4">Three Wheeler</MenuItem>
+                  <MenuItem value="7">Pickup 8ft</MenuItem>
+                  <MenuItem value="3">TATA Ace</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+          </div>
           <div>
-            <SplitDropdown
-              classMenuItems="left-0  w-[220px] top-[110%]"
-              label="Light"
-              labelClass="btn-outline-light"
-            />
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Filter By</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={filterby}
+                label="Filter By"
+                onChange={handleChange}
+              >
+                <MenuItem value="NONE">NONE</MenuItem>
+                <MenuItem value="RIDERID">Rider ID</MenuItem>
+                <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                <MenuItem value="RIDERNAME">Rider Name</MenuItem>
+              </Select>
+            </FormControl>
             <TextField
-              id="vehicleNumber"
+              id="search"
               type="text"
-              name="vehicleNumber"
-              placeholder="Search by mobile number"
+              name="search"
+              placeholder="Filter By"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={handleSearchChange}
             />
-            {/* <TextField
-                placeholder="Search by mobile number"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-            /> */}
           </div>
         </div>
         <div className="overflow-x-auto -mx-6">
