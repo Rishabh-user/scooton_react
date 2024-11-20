@@ -11,6 +11,7 @@ import Button from "@/components/ui/Button";
 import TextField from "@mui/material/TextField";
 import Select from "@/components/ui/Select";
 import { toast, ToastContainer } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const roleDisplayNames = {
     "ROLE_SUPER_ADMIN": "Super Admin",
@@ -252,6 +253,7 @@ const RoleList = () => {
       <Card>
         <div className="md:flex justify-between items-center mb-6">
           <h4 className="card-title">Role List</h4>
+          <Link to="/add-role" className="btn btn-dark">Add Role</Link>
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">            

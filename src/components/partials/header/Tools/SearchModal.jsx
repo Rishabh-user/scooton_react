@@ -73,7 +73,7 @@ const SearchModal = () => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-scooton-900/60 backdrop-filter backdrop-blur-sm backdrop-brightness-10" />
+            <div className="fixed inset-0 backdrop-filter backdrop-blur-sm backdrop-brightness-10" />
           </Transition.Child>
 
           <Transition.Child

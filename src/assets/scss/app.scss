@@ -119,6 +119,7 @@
 :root{
   --primary: #0d55ea;
 }
+.btn:hover{background-color: #e31e24;outline: 0; border-color: #e31e24;box-shadow: none; opacity: .8;}
 .btn-primary{ background-color: var(--primary);}
 .react-tabs__tab-list{border-bottom: none;
   text-align: center;
@@ -172,3 +173,7 @@
   justify-content: space-between;
   align-items: center;
 }
+table thead th{background-color: #f1f1f1;}
+table thead th:first-child {width: 130px;}
+.table-td{padding-top: 1rem;padding-bottom: 1rem;}
+.backdrop-filter {backdrop-filter: blur(4px);background-color: #00000073;}
