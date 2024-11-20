@@ -23,7 +23,7 @@ import Tooltip from "@/components/ui/Tooltip";
 import { useNavigate } from "react-router-dom";
 import Modal from "../../components/ui/Modal";
 import Button from "@/components/ui/Button";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useLocation, useParams } from "react-router-dom";
 
 const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
@@ -447,6 +447,7 @@ const AllOrders = () => {
 
   return (
     <>
+      <ToastContainer/>
       <Card>
         <div className="md:flex justify-between items-center mb-6">
           <h4 className="card-title">All Orders</h4>
