@@ -16,7 +16,7 @@ const Logo = () => {
         {width >= breakpoints.xl ? (
           <img src={MainLogo} alt="" />
         ) : (
-          <img src={MainLogo} alt="" />
+          <img src={MainLogo} alt="scooton" width={120} />
         )}
       </Link>
     </div>

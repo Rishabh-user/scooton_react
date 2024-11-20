@@ -12,7 +12,7 @@ const Modal = ({
   footerContent,
   centered,
   scrollContent,
-  themeClass = "bg-scooton-900 dark:bg-slate-800 dark:border-b dark:border-slate-700",
+  themeClass = "dark:bg-slate-800 dark:border-b dark:border-slate-700",
   title = "Basic Modal",
   uncontrol,
   label = "Basic Modal",
@@ -47,7 +47,7 @@ const Modal = ({
               leaveTo={noFade ? "" : "opacity-0"}
             >
               {!disableBackdrop && (
-                <div className="fixed inset-0 bg-scooton-900/50 backdrop-filter backdrop-blur-sm" />
+                <div className="fixed inset-0  backdrop-filter backdrop-blur-sm" />
               )}
             </Transition.Child>
 
@@ -71,7 +71,7 @@ const Modal = ({
                  bg-white dark:bg-slate-800 text-left align-middle shadow-xl transition-alll ${className}`}
                   >
                     <div
-                      className={`relative overflow-hidden py-4 px-5 text-white flex justify-between  ${themeClass}`}
+                      className={`relative overflow-hidden py-4 px-4 pb-0 flex justify-between  ${themeClass}`}
                     >
                       <h2 className="capitalize leading-6 tracking-wider font-medium text-base text-white">
                         {title}
