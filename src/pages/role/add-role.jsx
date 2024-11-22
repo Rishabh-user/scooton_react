@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { BASE_URL } from "../../api";
 import { useNavigate } from "react-router-dom";
+import AddRoleImg from "../../assets/images/Add-Role.png"
 
 const AddRole = () => {
   const serviceAreaId = localStorage.getItem("serviceAreaId");
@@ -114,69 +115,78 @@ const AddRole = () => {
   return (
     <>
       <ToastContainer />
-      <Card title="Add New Role">
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+      <Card title="Add New Role" className="mb-0">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5">
-            <Textinput
-              label="First Name"
-              id="firstName"
-              type="text"
-              value={formData.firstName}
-              onChange={handleChange}
-            />
-            <Textinput
-              label="Last Name"
-              id="lastName"
-              type="text"
-              value={formData.lastName}
-              onChange={handleChange}
-            />
-            <Textinput
-              label="Mobile Number"
-              id="mobileNumber"
-              type="number"
-              value={formData.mobileNumber}
-              onChange={handleChange}
-            />
-            <Textinput
-              label="Email"
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-            <Textinput
-              label="Password"
-              id="password"
-              type="text"
-              value={formData.password}
-              onChange={handleChange}
-            />
-             {/* <Select
-              label="Select Role"
-              options={roleOptions}
-              onChange={handleChange}
-              value={formData.password}
-              id="role"
-            /> */}
-            
-            {/* <Select
-              label="Select Role"
-              options={roleOptions}
-              onChange={handleChange}
-              value={roleOptions.find((option) => option.value === formData.role)}
-              id="role"
-            /> */}
-             <Select
-              label="Select Role"
-              options={roleOptions}
-              onChange={handleChange}
-              value={formData.role}
-              id="role"
-            />
-          </div>
-          <div className="space-y-4 text-end">
-            <Button text="Submit" className="btn-dark" type="submit" />
+            <div className="m-auto">
+              <div className="row">
+                <div className="col-md-6 mb-4">
+                  <label className="form-label mb-1">First Name</label>
+                  <input
+                    id="firstName"
+                    type="text"
+                    className="form-control"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="col-md-6 mb-4">
+                  <label className="form-label mb-1">Last Name</label>
+                  <input
+                    id="lastName"
+                    type="text"
+                    className="form-control"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="col-md-6 mb-4">
+                  <label className="form-label mb-1">Mobile Number</label>
+                  <input
+                    id="mobileNumber"
+                    type="number"
+                    className="form-control"
+                    value={formData.mobileNumber}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="col-md-6 mb-3">
+                  <label className="form-label mb-1">Email</label>
+                  <input
+                    id="email"
+                    type="email"
+                    className="form-control"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="col-md-6 mb-4">
+                  <label className="form-label mb-1">Password</label>
+                  <input
+                    id="password"
+                    type="text"
+                    className="form-control"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="col-md-6 mb-4">
+                  <label className="form-label mb-1">Select Role</label>
+                  <Select
+                    options={roleOptions}
+                    onChange={handleChange}
+                    value={formData.role}
+                    id="role"
+                  />
+                </div>
+              </div> 
+              <div className="space-y-4 text-end mt-2">
+                <Button text="Submit" className="btn-dark" type="submit" />
+              </div>
+            </div> 
+            <div className="m-auto">
+              <img src={AddRoleImg} alt="Add Role" className="img-fluid" width={450} />
+            </div>           
           </div>
         </form>
       </Card>

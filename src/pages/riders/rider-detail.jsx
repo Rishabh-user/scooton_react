@@ -326,18 +326,18 @@ const RiderDetail = () => {
     <>
         <ToastContainer/>
         <Card>
-            <div className="card-header md:flex justify-between items-center mb-5 px-0">
+            <div className="card-header md:flex justify-between items-center mb-5 px-0 pt-0">
                 <div className="flex items-center">
                     <Link to="/">
                         <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                     </Link>
-                    <h4 className="card-title ms-2">Rider Details  <span className="px-4 py-2 rounded-[6px] bg-danger-500 text-white">Rider Id: {riderId}</span></h4>
+                    <h4 className="card-title ms-2">Rider Details  <span className="px-2 py-1 text-sm rounded-[6px] bg-danger-500 text-white">Rider Id: {riderId}</span></h4>
                 </div>
                 <div className="flex gap-2">
                     {/* <button type="button" className="btn btn-dark"><img src={} /></button> */}
-                    <button type="button" className="btn btn-dark"><Icon icon="heroicons:bell-alert" className="text-[20px]"></Icon></button>
-                    <button type="button" className="btn btn-dark"><Icon icon="heroicons:trash" className="text-[20px]"></Icon></button>
-                    <button type="button" className="btn btn-dark"><Icon icon="heroicons:map-pin" className="text-[20px]"></Icon></button>
+                    <button type="button" className="btn btn-dark p-2"><Icon icon="heroicons:bell-alert" className="text-[20px]"></Icon></button>
+                    <button type="button" className="btn btn-dark p-2"><Icon icon="heroicons:trash" className="text-[20px]"></Icon></button>
+                    <button type="button" className="btn btn-dark p-2"><Icon icon="heroicons:map-pin" className="text-[20px]"></Icon></button>
                 </div>
             </div>
             <div className="">
@@ -351,7 +351,7 @@ const RiderDetail = () => {
                         </TabList>
                     </div>
                     <TabPanel>
-                        <div className="change-rider-status mb-5">
+                        <div className="change-rider-status mb-3">
                             <div>
                                 <div className="form-check form-switch d-flex ps-0 gap-10">
                                     <label>Rider Profile Active</label>
@@ -377,14 +377,14 @@ const RiderDetail = () => {
                                 </div>
                             </div>
                             <div>
-                            <div>Created Date :{driverDetails?.createdDate}</div> 
+                            <div>Created Date : {driverDetails?.createdDate}</div> 
                             <div>Document Submit : {driverDetails?.documentSubmit}</div>
                             <div>Rider OnBoard : {driverDetails?.riderOnboard} </div>
                             </div>
                         </div>
                         <div className="mb-5">
-                            <h6 className="mt-4 mb-5">Vehicle Details</h6>
-                            <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5 common-box-shadow">
+                            <h6 className="mt-4 mb-3">Vehicle Details</h6>
+                            <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
                                 <TextField
                                     label="Vehicle Number"
                                     id="vehicleNumber"
@@ -420,8 +420,8 @@ const RiderDetail = () => {
                             </div>
                         </div>
                         <div className="mb-5">
-                            <h6 className="mt-4 mb-5">Driver Details</h6>
-                            <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5 common-box-shadow">
+                            <h6 className="mt-4 mb-3">Driver Details</h6>
+                            <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
                                 <TextField
                                     label="Driver Name"
                                     id="driverName"
@@ -473,8 +473,8 @@ const RiderDetail = () => {
                             </div>
                         </div>
                         <div className="mb-5">
-                            <h6 className="mt-4 mb-5">Device Details</h6>
-                            <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5 common-box-shadow">
+                            <h6 className="mt-4 mb-3">Device Details</h6>
+                            <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
                                 <TextField
                                     label="Model"
                                     id="deviceModel"
@@ -519,47 +519,47 @@ const RiderDetail = () => {
                         </div>
                         <div className="mb-5">
                             <h6 className="mt-4">Document Details</h6>
-                            <div className="mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
+                            <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
                             <table className="w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                                 <thead>
                                     <tr>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Sr. No</span>
+                                            <span className="block px-6 py-3 font-semibold">Sr. No</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Document Id</span>
+                                            <span className="block px-6 py-3 font-semibold">Document Id</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Document Name</span>
+                                            <span className="block px-6 py-3 font-semibold">Document Name</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Document</span>
+                                            <span className="block px-6 py-3 font-semibold">Document</span>
                                         </th>                                    
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Status</span>
+                                            <span className="block px-6 py-3 font-semibold">Status</span>
                                         </th>
                                     </tr>  
                                 </thead> 
                                 <tbody>
                                     { documentDetail?.length === 0 ? (
                                         <tr>
-                                            <td colSpan="6" className="text-center p-4">No orders found.</td>
+                                            <td colSpan="5" className="text-center p-4">No orders found.</td>
                                         </tr>
                                     ) : (
                                         documentDetail?.map((order, index) => (
                                             <tr key={index}>
-                                                <td className="px-6 py-4">{index + 1}</td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-3">{index + 1}</td>
+                                                <td className="px-6 py-3">
                                                     <Textinput defaultValue={order.mediaId}  />
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-3">
                                                     <Textinput defaultValue={order.documentType}  />                                                
                                                 </td>                                            
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-3">
                                                     <Button text="button" className="btn-dark" onClick={() => viewDocument(order.url, order.fileName)}>View Document</Button>
                                                 </td>
                                                 {/* <td className="px-6 py-4">{order.status}</td> */}
-                                                <td className="px-6 py-4">   
+                                                <td className="px-6 py-3">   
                                                     <Select
                                                         id="role"
                                                         value={order.status || ""}
@@ -575,8 +575,8 @@ const RiderDetail = () => {
                         </div>
                         </div>
                         <div className="mb-5">
-                            <h6 className="mt-4 mb-5">Reject Details</h6>
-                            <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5 common-box-shadow">
+                            <h6 className="mt-4 mb-3">Reject Details</h6>
+                            <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
                                 {/* <Textinput
                                     label="Rejected Type"
                                     id="rejected_type"
@@ -595,21 +595,23 @@ const RiderDetail = () => {
                                     type="text"
                                     value={documentRejectDetails?.rejectedReason || ""}
                                 />  */}
-                                <label>Rejected Reason</label>
-                                <textarea
-                                    className="documentreason"
-                                    id="rejectedReason"
-                                    name="rejectedReason"
-                                    rows={3}
-                                    type="text"
-                                    value={documentRejectDetails?.rejectedReason || ""}
-                                    onChange={handleDocumentRejectionReason}
-                                />                           
+                                <div>
+                                    <label className="form-label">Rejected Reason</label>
+                                    <textarea
+                                        className="documentreason form-control"
+                                        id="rejectedReason"
+                                        name="rejectedReason"
+                                        rows={3}
+                                        type="text"
+                                        value={documentRejectDetails?.rejectedReason || ""}
+                                        onChange={handleDocumentRejectionReason}
+                                    />  
+                                </div>                         
                             </div>
                         </div>
                         <div className="mb-5">
-                            <h6 className="mt-4 mb-5">Account Details</h6>
-                            <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5 common-box-shadow">
+                            <h6 className="mt-4 mb-3">Account Details</h6>
+                            <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
                                 <TextField
                                     label="UPI"
                                     id="upi"
@@ -620,7 +622,7 @@ const RiderDetail = () => {
                             </div>
                         </div>
                         <div className="mb-5">
-                            <h6 className="mt-4 mb-5">Language</h6>
+                            <h6 className="mt-4 mb-3">Language</h6>
                             <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5 common-box-shadow">
                                 <TextField
                                     label="Language"
@@ -637,28 +639,28 @@ const RiderDetail = () => {
                         </div>
                     </TabPanel>
                     <TabPanel>
-                        <h6 className="mt-4">Order Details</h6>
-                        <div className="mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
+                        <h6 className="mt-5">Order Details</h6>
+                        <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
                             <table className="w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                                 <thead>
                                     <tr>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Sr. No</span>
+                                            <span className="block px-6 py-3 font-semibold">Sr. No</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Order Id</span>
+                                            <span className="block px-6 py-3 font-semibold">Order Id</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Order Status</span>
+                                            <span className="block px-6 py-3 font-semibold">Order Status</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Order Type</span>
+                                            <span className="block px-6 py-3 font-semibold">Order Type</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Order Date</span>
+                                            <span className="block px-6 py-3 font-semibold">Order Date</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Order Amount</span>
+                                            <span className="block px-6 py-3 font-semibold">Order Amount</span>
                                         </th>
                                     </tr>  
                                 </thead> 
@@ -670,12 +672,12 @@ const RiderDetail = () => {
                                     ) : (
                                         paginatedOrders.map((order, index) => (
                                         <tr key={index} onClick={() => handleViewClick(order.order_Id)}>
-                                            <td className="px-6 py-4">{startIndex + index + 1}</td>
-                                            <td className="px-6 py-4">{order.order_Id}</td>
-                                            <td className="px-6 py-4">{order.orderStatus}</td>
-                                            <td className="px-6 py-4">{order.orderType}</td>
-                                            <td className="px-6 py-4">{order.orderDate}</td>
-                                            <td className="px-6 py-4">{order.orderAmount}</td>
+                                            <td className="px-6 py-3">{startIndex + index + 1}</td>
+                                            <td className="px-6 py-3">{order.order_Id}</td>
+                                            <td className="px-6 py-3">{order.orderStatus}</td>
+                                            <td className="px-6 py-3">{order.orderType}</td>
+                                            <td className="px-6 py-3">{order.orderDate}</td>
+                                            <td className="px-6 py-3">{order.orderAmount}</td>
                                         </tr>
                                         ))
                                     )}
@@ -712,57 +714,56 @@ const RiderDetail = () => {
                     </TabPanel>
                     <TabPanel>
                         <div className="wallets">
-                           <h6 className="mt-4">Wallet Details</h6>
-                           <div onClick={ () => rechargeWallet()} >wallet</div>
-                        </div>
+                           <h6 className="mt-5">Wallet Details <span className="text-sm text-scooton-500">(Balance : 0.0)</span></h6>
+                           <button type="button" onClick={ () => rechargeWallet()} className="btn btn-dark p-2"><Icon icon="heroicons:wallet" className="text-[20px]"></Icon></button>
+                        </div>                        
                         
-                        
-                        <div className="mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
+                        <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
                             <table className="w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                                 <thead>
                                     <tr>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Sr. No</span>
+                                            <span className="block px-6 py-3 font-semibold">Sr. No</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Order Id</span>
+                                            <span className="block px-6 py-3 font-semibold">Order Id</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Order Date</span>
+                                            <span className="block px-6 py-3 font-semibold">Order Date</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Wallet Txn</span>
+                                            <span className="block px-6 py-3 font-semibold">Wallet Txn</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Payment Mode</span>
+                                            <span className="block px-6 py-3 font-semibold">Payment Mode</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Payment Type</span>
+                                            <span className="block px-6 py-3 font-semibold">Payment Type</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Rider Fees</span>
+                                            <span className="block px-6 py-3 font-semibold">Rider Fees</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Order Amount</span>
+                                            <span className="block px-6 py-3 font-semibold">Order Amount</span>
                                         </th>
                                     </tr>  
                                 </thead>
                                 <tbody>
                                     {walletpaginatedOrders?.length === 0 ? (
                                         <tr>
-                                            <td colSpan="6" className="text-center p-4">No orders found.</td>
+                                            <td colSpan="8" className="text-center p-4">No orders found.</td>
                                         </tr>
                                     ) : (
                                         walletpaginatedOrders.map((order, index) => (
                                             <tr key={index}>
-                                                <td className="px-6 py-4">{index + 1}</td>
-                                                <td className="px-6 py-4">{order.tripId}</td>
-                                                <td className="px-6 py-4">{order.tripDate}</td>
-                                                <td className="px-6 py-4">{order.txnWallet}</td>
-                                                <td className="px-6 py-4">{order.paymentMode}</td>
-                                                <td className="px-6 py-4">{order.paymentType}</td>
-                                                <td className="px-6 py-4">{order.riderFee}</td>
-                                                <td className="px-6 py-4">{order.tripFare}</td>
+                                                <td className="px-6 py-3">{index + 1}</td>
+                                                <td className="px-6 py-3">{order.tripId}</td>
+                                                <td className="px-6 py-3">{order.tripDate}</td>
+                                                <td className="px-6 py-3">{order.txnWallet}</td>
+                                                <td className="px-6 py-3">{order.paymentMode}</td>
+                                                <td className="px-6 py-3">{order.paymentType}</td>
+                                                <td className="px-6 py-3">{order.riderFee}</td>
+                                                <td className="px-6 py-3">{order.tripFare}</td>
                                             </tr>
                                         ))
                                     )}
@@ -801,22 +802,22 @@ const RiderDetail = () => {
                         </div>
                     </TabPanel>
                     <TabPanel>
-                        <h6 className="mt-4">Earning</h6>
-                        <div className="mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
+                        <h6 className="mt-5">Earning</h6>
+                        <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
                             <table className="w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                                 <thead>
                                     <tr>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Sr. No</span>
+                                            <span className="block px-6 py-3 font-semibold">Sr. No</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Trip Id</span>
+                                            <span className="block px-6 py-3 font-semibold">Trip Id</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Trip Date</span>
+                                            <span className="block px-6 py-3 font-semibold">Trip Date</span>
                                         </th>
                                         <th className="bg-slate-50 dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
-                                            <span className="block px-6 py-5 font-semibold">Trip Amount</span>
+                                            <span className="block px-6 py-3 font-semibold">Trip Amount</span>
                                         </th>
                                     </tr>  
                                 </thead> 
@@ -828,10 +829,10 @@ const RiderDetail = () => {
                                     ) : (
                                         earringpaginatedOrders.map((order, index) => (
                                             <tr key={index}>
-                                                <td className="px-6 py-4">{index + 1}</td>
-                                                <td className="px-6 py-4">{order.tripId}</td>
-                                                <td className="px-6 py-4">{order.tripDate}</td>
-                                                <td className="px-6 py-4">{order.tripAmount}</td>
+                                                <td className="px-6 py-3">{index + 1}</td>
+                                                <td className="px-6 py-3">{order.tripId}</td>
+                                                <td className="px-6 py-3">{order.tripDate}</td>
+                                                <td className="px-6 py-3">{order.tripAmount}</td>
                                                 
                                             </tr>
                                         ))
@@ -874,22 +875,23 @@ const RiderDetail = () => {
         </Card>
 
         {isRechargeModal && (  
-           <Modal
-        activeModal={isRechargeModal}
-        uncontrol
-        className="max-w-md"
-        title=""
-        
-        onClose={() => setRechargeModel(false)}
-      >
+        <Modal
+            activeModal={isRechargeModal}
+            uncontrol
+            className="max-w-md"
+            title=""
+            centered
+            onClose={() => setRechargeModel(false)}
+        >
             <div className="">
               <h5 className="text-center mb-4">Recharge Rider Wallet</h5>
-              <div>
+              <div className="w-full">
                 <TextField
                     label="Amount"
                     id="amount"
                     type="number"
                     name="amount"
+                    className="w-full"
                     value={rechageAmount.amount || ""}
                     onChange={handleRechargeRiderWallet}
                 />

@@ -115,19 +115,31 @@
 }
 @layer utilities {
 }
+@media (min-width:768px){
+  .btn {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+}
 
 :root{
   --primary: #0d55ea;
+}
+.bg-warning-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 193 7 / 19%);
 }
 .btn:hover{background-color: #e31e24;outline: 0; border-color: #e31e24;box-shadow: none; opacity: .8;}
 .btn-primary{ background-color: var(--primary);}
 .react-tabs__tab-list{border-bottom: none;
   text-align: center;
-  margin: 3rem 0;
+  margin: 2rem 0;
   background-color: #fff;
   box-shadow: 0 0 10px #ccc;
   padding: .5rem;
-  border-radius: 3rem;
+  border-radius: .5rem;
   display: flex;gap:10px;
 }
 .react-tabs__tab {
@@ -138,7 +150,7 @@
   list-style: none;
   padding: 8px 24px;
   cursor: pointer;
-  border-radius: 3rem;
+  border-radius: .5rem;
   flex: 1;
 }
 
@@ -175,5 +187,49 @@
 }
 table thead th{background-color: #f1f1f1;}
 table thead th:first-child {width: 130px;}
-.table-td{padding-top: 1rem;padding-bottom: 1rem;}
+.table-td, .table-th{padding-top: 1rem;padding-bottom: 1rem;}
 .backdrop-filter {backdrop-filter: blur(4px);background-color: #00000073;}
+.onOff-riders>div {
+  display: flex;
+  align-items: center;
+  margin-bottom: .25rem;font-size: 14px;
+}
+.onOff-riders>div>span {
+  width: 10px;
+  height: 10px;
+  background-color: #ffa560;
+  border-radius: 50%;
+  margin-right: .5rem;line-height: normal;
+}
+.onOff-riders>div.online>span{background-color: green;}
+.onOff-riders>div.offline>span{background-color: red;}
+.rider-status{flex: 1;}
+.rider-filter{display: flex;gap:10px;flex:2;}
+.rider-filter>div{flex:1;}
+.flex-1{flex:1;}
+.MuiInputBase-formControl{height: 45px;}
+.filter-orderlist {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+.filter-orderlist .css-13lvt8g-MuiButtonBase-root-MuiRadio-root.Mui-checked + .MuiTypography-root {
+  background-color: #e31e24;
+  padding: .5rem 1rem;
+  border-radius: .5rem;color: #fff;
+}
+.filter-orderlist .css-13lvt8g-MuiButtonBase-root-MuiRadio-root {
+  display: none;
+}
+.filter-orderlist .css-19opgx6-MuiFormControlLabel-root+.css-19opgx6-MuiFormControlLabel-root {
+  padding-left: 3rem;
+  margin-right: 0;
+}
+.filter-orderlist .css-19opgx6-MuiFormControlLabel-root{margin-left: 0;}
+.filter-orderlist .MuiFormControl-root.css-1iw3t7y-MuiFormControl-root {
+  box-shadow: 0px 0px 18px #ccc; padding: .5rem 1rem;border-radius: .5rem;
+}
+.change-rider-status>div>div>label {flex: 1;}
+.change-rider-status>div>div {font-size: .875rem;  margin-bottom: .5em;}
+.change-rider-status>div>div>div>label>div{width:38px;height: 16px;}
+.change-rider-status>div>div>div>label>div>span{width:12px;height: 12px;--tw-translate-x:1.3rem}

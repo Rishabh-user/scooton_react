@@ -20,6 +20,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Riders from '../../assets/images/icon/icon-redoff-trip.png'
 
 const COLUMNS = [
   {
@@ -357,93 +358,103 @@ const AllRiders = () => {
     <>
       <Card>
         <div className="md:flex justify-between items-center mb-6">
-          <div>
+          <div className="rider-status">
             <h4 className="card-title">All Riders</h4>
-            <div>
-              Total Rider -{activeridercount?.allRider}
-              Online Rider -{activeridercount?.onlineRider}
-              Offline Rider -{activeridercount?.offlineRider}
+            <div className="onOff-riders">
+              <div className="all-rider"><span></span> {activeridercount?.allRider} (Total Riders)</div>
+              <div className="online"><span></span> {activeridercount?.onlineRider} (Online)</div>
+              <div className="offline"><span></span> {activeridercount?.offlineRider} (Offline)</div>
             </div>
           </div>
-          <div className="d-flex">
-            <div>
+          <div className="rider-filter">
+            <div className="d-flex gap-2">
+              <div className="flex-1">
+                <FormControl fullWidth>
+                  <label className="text-sm mb-1">Rider Status</label>
+                  <Select
+                    id="demo-simple-select"
+                    //label="Rider_Status"
+                    value={riderstatus}
+                    onChange={riderStatusFilter}
+                    displayEmpty
+                    inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                    <MenuItem value="">Rider Status</MenuItem>
+                    <MenuItem value="ALL">ALL</MenuItem>
+                    <MenuItem value="ONLINE">ONLINE</MenuItem>
+                    <MenuItem value="OFFLINE">OFFLINE</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+              <div className="flex-1">
+                <FormControl fullWidth>
+                  <label className="text-sm mb-1">Document Status</label>
+                  <Select
+                    id="demo-simple-select"
+                    //label="Document"
+                    value={documentstatus}
+                    onChange={documentStatusFilter}
+                    displayEmpty
+                    inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                    <MenuItem value="ALL">All</MenuItem>
+                    <MenuItem value="NEW_USER">New User</MenuItem>
+                    <MenuItem value="REGISTERED">Registered</MenuItem>
+                    <MenuItem value="DOCUMENT_PENDING">Document Pending</MenuItem>
+                    <MenuItem value="DOCUMENT_REJECTED">Document Rejected</MenuItem>
+                    <MenuItem value="REVIEW_PENDING">Review Pending</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+              <div className="flex-1">
+                <FormControl fullWidth>
+                  <label className="text-sm mb-1">Vehicle Type</label>
+                  <Select
+                    id="demo-simple-select"
+                    //label="Vehicle_Status"
+                    value={vehicleid}
+                    onChange={vehicleIdFilter}
+                    displayEmpty
+                    inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                    <MenuItem value="0">ALL</MenuItem>
+                    <MenuItem value="2">Two Wheeler EV</MenuItem>
+                    <MenuItem value="4">Three Wheeler</MenuItem>
+                    <MenuItem value="7">Pickup 8ft</MenuItem>
+                    <MenuItem value="3">TATA Ace</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+            </div>
+            <div className="d-flex gap-2">
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Rider Status</InputLabel>
+                <label className="text-sm mb-1">Filter By</label>
                 <Select
-                  labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  label="Rider_Status"
-                  value={riderstatus}
-                  onChange={riderStatusFilter}
+                  value={filterby}
+                  //label="Filter By"
+                  onChange={handleChange}
+                  displayEmpty
+                  inputProps={{ 'aria-label': 'Without label' }}
                 >
-                  <MenuItem value="ALL">ALL</MenuItem>
-                  <MenuItem value="ONLINE">ONLINE</MenuItem>
-                  <MenuItem value="OFFLINE">OFFLINE</MenuItem>
+                  <MenuItem value="NONE">NONE</MenuItem>
+                  <MenuItem value="RIDERID">Rider ID</MenuItem>
+                  <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                  <MenuItem value="RIDERNAME">Rider Name</MenuItem>
                 </Select>
               </FormControl>
-            </div>
-            <div>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Document Status</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Document"
-                  value={documentstatus}
-                  onChange={documentStatusFilter}
-                >
-                  <MenuItem value="ALL">All</MenuItem>
-                  <MenuItem value="NEW_USER">New User</MenuItem>
-                  <MenuItem value="REGISTERED">Registered</MenuItem>
-                  <MenuItem value="DOCUMENT_PENDING">Document Pending</MenuItem>
-                  <MenuItem value="DOCUMENT_REJECTED">Document Rejected</MenuItem>
-                  <MenuItem value="REVIEW_PENDING">Review Pending</MenuItem>
-                </Select>
+                <label className="text-sm mb-1">Filter by</label>
+                <TextField
+                  id="search"
+                  type="text"
+                  name="search"
+                  placeholder="Filter By"
+                  value={search}
+                  onChange={handleSearchChange}
+                />
               </FormControl>
             </div>
-            <div>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Vehicle Type</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Vehicle_Status"
-                  value={vehicleid}
-                  onChange={vehicleIdFilter}
-                >
-                  <MenuItem value="0">ALL</MenuItem>
-                  <MenuItem value="2">Two Wheeler EV</MenuItem>
-                  <MenuItem value="4">Three Wheeler</MenuItem>
-                  <MenuItem value="7">Pickup 8ft</MenuItem>
-                  <MenuItem value="3">TATA Ace</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-          </div>
-          <div>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Filter By</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={filterby}
-                label="Filter By"
-                onChange={handleChange}
-              >
-                <MenuItem value="NONE">NONE</MenuItem>
-                <MenuItem value="RIDERID">Rider ID</MenuItem>
-                <MenuItem value="MOBILE">Mobile Number</MenuItem>
-                <MenuItem value="RIDERNAME">Rider Name</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              id="search"
-              type="text"
-              name="search"
-              placeholder="Filter By"
-              value={search}
-              onChange={handleSearchChange}
-            />
           </div>
         </div>
         <div className="overflow-x-auto -mx-6">

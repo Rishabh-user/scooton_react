@@ -9,6 +9,7 @@ import { format, parseISO } from "date-fns";
 import Swicth from "../../components/ui/Switch";
 import { toast,ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AddPromoImg from "../../assets/images/Promo-code-img.png"
 
 
 const promocodeType = ["FIXED", "PERCENTAGE"];
@@ -93,78 +94,89 @@ const AddPromocode = () => {
   return (
     <>
       <ToastContainer />
-      <Card>
-        <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Add Promocode</h4>
-        </div>
-        <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
-          <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5">
-            <Textinput
-              label="Promo Code"
-              id="promoCode"
-              type="text"
-              value={formData.promoCode}
-              onChange={handleChange}
-            />
-            <Textinput
-              label="Discount"
-              id="discount"
-              type="text"
-              value={formData.discount}
-              onChange={handleChange}
-            />
-            <div>
-              <label htmlFor="promoCodeType" className="form-label">Select Promocode Type</label>
-              <select
-                className="form-control py-2 form-select h-50"
-                id="promoCodeType"
-                value={formData.promoCodeType}
-                onChange={handleChange}
-              >
-                {promocodeType.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            {/* <Swicth
-              label="Public Shown"
-              id="publicShown"
-              
-              checked={formData.publicShown}
-              onChange={handleInputChangepublicShown}
-            /> */}
-            <div className="form-check form-switch">
-                 <label>Publci Shown</label>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    id={formData.publicShown}
-                    checked={formData.publicShown}
-                    onChange={handleInputChangepublicShown}
-                  />
+      <Card title="Add Promocode" className="mb-0">       
+        <form className="" onSubmit={handleSubmit}>
+          <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1">
+              <div className="m-auto">
+                <div className="row">
+                  <div className="col-md-6 mb-4">
+                    <label className="form-label mb-1">Promo Code</label>
+                    <input
+                      id="promoCode"
+                      type="text"
+                      className="form-control"
+                      value={formData.promoCode}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="col-md-6 mb-4">
+                    <label className="form-label mb-1">Discount</label>
+                    <input
+                      id="discount"
+                      type="text"
+                      className="form-control"
+                      value={formData.discount}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="col-md-12 mb-4">
+                    <label htmlFor="promoCodeType" className="form-label mb-1">Select Promocode Type</label>
+                    <select
+                      className="form-control py-2 form-select h-50"
+                      id="promoCodeType"
+                      value={formData.promoCodeType}
+                      onChange={handleChange}
+                    >
+                      {promocodeType.map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
+                    </select>
+                  </div>                
+                  <div className="col-md-6 mb-4">
+                    <label className="form-label mb-1">Start Date</label>
+                    <input
+                      id="startDate"
+                      type="datetime-local"
+                      className="form-control"
+                      value={formData.startDate}
+                      onChange={handleChange}
+                    />                  
+                  </div>
+                  <div className="col-md-6 mb-4">
+                      <label className="form-label mb-1">Expiry Date</label>
+                      <input
+                        id="expireDate"
+                        type="datetime-local"
+                        className="form-control"
+                        value={formData.expireDate}
+                        onChange={handleChange}
+                      />
+                  </div>
+                  <div>
+                    <div className="form-check form-switch ps-0">
+                        <label className="form-label mb-1">Public Shown</label>
+                        <input
+                          className="form-check-input ms-0"
+                          type="checkbox"
+                          role="switch"
+                          id={formData.publicShown}
+                          checked={formData.publicShown}
+                          onChange={handleInputChangepublicShown}
+                        />
+                    </div>
+                  </div>
+                  <div className="space-y-4 text-end">
+                    <Button text="Submit" className="btn-dark" type="submit" />
+                  </div>
                 </div>
-            <Textinput
-              label="Start Date"
-              id="startDate"
-              type="datetime-local"
-              value={formData.startDate}
-              onChange={handleChange}
-            />
-            <Textinput
-              label="Expiry Date"
-              id="expireDate"
-              type="datetime-local"
-              value={formData.expireDate}
-              onChange={handleChange}
-            />
+              </div>
+            <div className="m-auto">
+              <img src={AddPromoImg} alt="Promocode" width={450} />
+            </div>
           </div>
-          <div className="space-y-4 text-end">
-            <Button text="Submit" className="btn-dark" type="submit" />
-          </div>
+          
         </form>
       </Card>
     </>

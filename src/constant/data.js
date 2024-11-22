@@ -65,7 +65,7 @@ export const menuItems = [
   },
   {
     title: "Promocode",
-    icon: "heroicons-outline:home",
+    icon: "heroicons-outline:ticket",
     link: "promocode",
     child: [
       {
@@ -82,7 +82,7 @@ export const menuItems = [
   },
   {
     title: "Users",
-    icon: "heroicons-outline:home",
+    icon: "heroicons-outline:user-group",
     link: "users",
     child: [
       {
@@ -94,7 +94,7 @@ export const menuItems = [
   },
   {
     title: "Role/Permission",
-    icon: "heroicons-outline:home",
+    icon: "heroicons-outline:shield-check",
     link: "role/permission",
     child: [
       {
@@ -145,7 +145,7 @@ export const menuItems = [
   // },
   {
     title: "Configuration",
-    icon: "heroicons-outline:home",
+    icon: "heroicons-outline:cog-8-tooth",
     link: "configuration",
     child: [
       {

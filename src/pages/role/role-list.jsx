@@ -394,7 +394,7 @@ const RoleList = () => {
       <Modal
         activeModal={isModalOpen}
         uncontrol
-        className="max-w-5xl"
+        className="max-w-5xl"        
         footerContent={
           <Button
             text="Update"
@@ -405,59 +405,75 @@ const RoleList = () => {
             }}
           />
         }
+        centered
         onClose={() => setIsModalOpen(false)}
       >
           <form className="space-y-4 mt-4">
-            <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5">
-            
-              <TextField
-                label="First Name"
-                id="firstName"
-                type="text"
-                name="first_name"
-                className=""
-                value={selectedUserDetails?.first_name || ""}
-                onChange={handleInputChange}
-              />
-              <TextField
-                label="Last Name"
-                id="lastname"
-                type="text"
-                name="last_name"
-                value={selectedUserDetails?.last_name || ""}
-                onChange={handleInputChange}
-              />
-              <TextField
-                label="Mobile Number"
-                id="mobileNumber"
-                type="number"
-                name="mobile_number"
-                value={selectedUserDetails?.mobile_number || ""}
-                onChange={handleInputChange}
-              />
-              <TextField
-                label="Email"
-                id="email"
-                type="email"
-                name="email"
-                value={selectedUserDetails?.email || ""}
-                onChange={handleInputChange}
-              />
-              <TextField
-                label="Password"
-                id="password"
-                type="text"
-                name="password"
-                value={selectedUserDetails?.password || ""}
-                onChange={handleInputChange}
-              />
-              <Select
-                label="Select Role"
-                id="role"
-                options={roleOptions}
-                value={selectedUserDetails?.role || ""}
-                onChange={handleInputChangerole}
-              />
+            <div className="row">
+              <div className="col-md-6 mb-4">
+                <label className="form-label">First Name</label>
+                <input
+                  id="firstName"
+                  type="text"
+                  name="first_name"
+                  className="form-control"
+                  value={selectedUserDetails?.first_name || ""}
+                  onChange={handleInputChange}
+                />
+              </div>                  
+              <div className="col-md-6 mb-4">
+                <label className="form-label">Last Name</label>
+                <input
+                  id="lastname"
+                  type="text"
+                  name="last_name"
+                  className="form-control"
+                  value={selectedUserDetails?.last_name || ""}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="col-md-6 mb-4">
+                <label className="form-label">Mobile Number</label>
+                <input
+                  id="mobileNumber"
+                  type="number"
+                  name="mobile_number"
+                  className="form-control"
+                  value={selectedUserDetails?.mobile_number || ""}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="col-md-6 mb-4">
+                <label className="form-label">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  className="form-control"
+                  value={selectedUserDetails?.email || ""}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="col-md-6 mb-4">
+                <label className="form-label">Password</label>
+                <input
+                  id="password"
+                  type="text"
+                  name="password"
+                  className="form-control"
+                  value={selectedUserDetails?.password || ""}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="col-md-6 mb-4">
+                <label className="form-label">Select Role</label>
+                <Select
+                  id="role"
+                  options={roleOptions}
+                  value={selectedUserDetails?.role || ""}
+                  onChange={handleInputChangerole}
+                />
+              </div>
             </div>
           </form>
         </Modal>
@@ -470,7 +486,7 @@ const RoleList = () => {
         uncontrol
         className="max-w-md"
         title=""
-        
+        centered
         onClose={() => setIsDeleteModal(false)}
       >
           <div className="">

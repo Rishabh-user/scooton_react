@@ -53,7 +53,7 @@ const OrderDetail = () => {
 
   return (
     <Card>
-        <div className="md:flex justify-between items-center mb-5">
+        <div className="md:flex justify-between items-center mb-5 border-bottom">
             <div className="flex items-center">
                 <Link to="/">
                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
@@ -63,133 +63,133 @@ const OrderDetail = () => {
             <img src={vehiceDetails.imageUrl} alt={vehiceDetails.vehicleType} width={50} />
         </div>
         <div className="mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
-            <h6 className="text-scooton-500 p-5">Order Info</h6>
+            <h6 className="text-scooton-500 p-4 border-bottom">Order Info</h6>
             <table className="w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                 <tbody>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td  className="text-slate-900 dark:text-slate-300 text-sm  font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                    <td  className="text-slate-900 dark:text-slate-300 text-sm  font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-3">
                         Order Id
                     </td>
-                    <td  className="text-slate-900 dark:text-slate-300 text-sm  font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                    <td  className="text-slate-900 dark:text-slate-300 text-sm  font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-3">
                         {orderDetails.order_Id}
                     </td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td  className="text-slate-900 dark:text-slate-300 text-sm  font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                    <td  className="text-slate-900 dark:text-slate-300 text-sm  font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-3">
                     Order Date
                     </td>
-                    <td  className="text-slate-900 dark:text-slate-300 text-sm  font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-4">
+                    <td  className="text-slate-900 dark:text-slate-300 text-sm  font-normal ltr:text-left ltr:last:text-right rtl:text-right rtl:last:text-left px-6 py-3">
                         {orderDetails.orderDateTime}
                     </td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className=" px-6 py-4"> Order Status </td>
-                    <td className=" px-6 py-4 text-end">{orderDetails.orderStatus}</td>
+                    <td className=" px-6 py-3"> Order Status </td>
+                    <td className=" px-6 py-3 text-end">{orderDetails.orderStatus}</td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className=" px-6 py-4"> Order Type </td>
-                    <td className=" px-6 py-4 text-end">{orderDetails.orderType}</td>
+                    <td className=" px-6 py-3"> Order Type </td>
+                    <td className=" px-6 py-3 text-end">{orderDetails.orderType}</td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className=" px-6 py-4"> Pickup Address </td>
-                    <td className=" px-6 py-4 text-end">{customerDetails.pickupAddress}</td>
+                    <td className=" px-6 py-3"> Pickup Address </td>
+                    <td className=" px-6 py-3 text-end">{customerDetails.pickupAddress}</td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className=" px-6 py-4"> Pickup Contact </td>
-                    <td className=" px-6 py-4 text-end">{customerDetails.pickupContact}</td>
+                    <td className=" px-6 py-3"> Pickup Contact </td>
+                    <td className=" px-6 py-3 text-end">{customerDetails.pickupContact}</td>
                 </tr>                    
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className=" px-6 py-4"> Delivery Address </td>
-                    <td className=" px-6 py-4 text-end">{customerDetails.deliveryAddress},{customerDetails.deliveryAddress1},{customerDetails.deliveryPinCode}</td>
+                    <td className=" px-6 py-3"> Delivery Address </td>
+                    <td className=" px-6 py-3 text-end">{customerDetails.deliveryAddress},{customerDetails.deliveryAddress1},{customerDetails.deliveryPinCode}</td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className=" px-6 py-4"> Delivery Contact </td>
-                    <td className=" px-6 py-4 text-end">{customerDetails.deliveryContact}</td>
+                    <td className=" px-6 py-3"> Delivery Contact </td>
+                    <td className=" px-6 py-3 text-end">{customerDetails.deliveryContact}</td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className=" px-6 py-4"> Distance (KM) </td>
-                    <td className=" px-6 py-4 text-end">{orderDetails.distance}</td>
+                    <td className=" px-6 py-3"> Distance (KM) </td>
+                    <td className=" px-6 py-3 text-end">{orderDetails.distance}</td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className=" px-6 py-4"> Instruction </td>
-                    <td className=" px-6 py-4 text-end">{orderDetails.instructionText}</td>
+                    <td className=" px-6 py-3"> Instruction </td>
+                    <td className=" px-6 py-3 text-end">{orderDetails.instructionText}</td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className=" px-6 py-4"> Type Of Package </td>
-                    <td className=" px-6 py-4 text-end">{packageDetails.packageType}</td>
+                    <td className=" px-6 py-3"> Type Of Package </td>
+                    <td className=" px-6 py-3 text-end">{packageDetails.packageType}</td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className=" px-6 py-4"> Package Weight</td>
-                    <td className=" px-6 py-4 text-end">{packageDetails.packageWeight}</td>
+                    <td className=" px-6 py-3"> Package Weight</td>
+                    <td className=" px-6 py-3 text-end">{packageDetails.packageWeight}</td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className=" px-6 py-4"> Package Value</td>
-                    <td className=" px-6 py-4 text-end">{packageDetails.packageValue}</td>
+                    <td className=" px-6 py-3"> Package Value</td>
+                    <td className=" px-6 py-3 text-end">{packageDetails.packageValue}</td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className=" px-6 py-4"> Package Type</td>
-                    <td className=" px-6 py-4 text-end">{packageDetails.isFragile}</td>
+                    <td className=" px-6 py-3"> Package Type</td>
+                    <td className=" px-6 py-3 text-end">{packageDetails.isFragile}</td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <div className="mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
-            <h6 className="text-scooton-500 p-5">Rider Info</h6>
+            <h6 className="text-scooton-500 p-4 border-bottom">Rider Info</h6>
             <table className="w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                 <tbody>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className="px-6 py-4"> Rider Name </td>
-                    <td className="text-end px-6 py-4">
+                    <td className="px-6 py-3"> Rider Name </td>
+                    <td className="text-end px-6 py-3">
                         {/* {riderDetails.riderName} */}
                     </td>
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className="px-6 py-4">Rider Number</td>
+                    <td className="px-6 py-3">Rider Number</td>
                     {/* <td className="text-end px-6 py-4"> {riderDetails.riderContact}</td> */}
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className="px-6 py-4">Rider Vehicle Number</td>
+                    <td className="px-6 py-3">Rider Vehicle Number</td>
                     {/* <td className="text-end px-6 py-4"> {riderDetails.riderVehicleNumber}</td> */}
                 </tr>
                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                    <td className="px-6 py-4">Vehicle Type</td>
-                    <td className="text-end px-6 py-4"> {vehiceDetails.vehicleType}</td>
+                    <td className="px-6 py-3">Vehicle Type</td>
+                    <td className="text-end px-6 py-3"> {vehiceDetails.vehicleType}</td>
                 </tr>
                 </tbody>
             </table>
         </div>      
         
         <div className="mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
-            <h6 className="text-scooton-500 p-5">Payment Detail</h6>
+            <h6 className="text-scooton-500 p-4 border-bottom">Payment Detail</h6>
             <table className="w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                 <tbody>
                     <tr className="border-b border-slate-100 dark:border-slate-700">
-                        <td className="px-6 py-4">Payment Mode</td>
-                        <td className="text-end px-6 py-4">{orderDetails.paymentMode}</td>
+                        <td className="px-6 py-3">Payment Mode</td>
+                        <td className="text-end px-6 py-3">{orderDetails.paymentMode}</td>
                     </tr>
                     <tr className="border-b border-slate-100 dark:border-slate-700">
-                        <td className="px-6 py-4">Payment Status</td>
-                        <td className="text-end px-6 py-4">{orderDetails.paymentStatus}</td>
+                        <td className="px-6 py-3">Payment Status</td>
+                        <td className="text-end px-6 py-3">{orderDetails.paymentStatus}</td>
                     </tr>
                     <tr className="border-b border-slate-100 dark:border-slate-700">
-                        <td className="px-6 py-4">MRP</td>
-                        <td className="text-end px-6 py-4">{orderDetails.orderAmount.mrp}</td>
+                        <td className="px-6 py-3">MRP</td>
+                        <td className="text-end px-6 py-3">{orderDetails.orderAmount.mrp}</td>
                     </tr>
                     <tr className="border-b border-slate-100 dark:border-slate-700">
-                        <td className="px-6 py-4">Discount</td>
-                        <td className="text-end px-6 py-4">{orderDetails.orderAmount.discount}</td>
+                        <td className="px-6 py-3">Discount</td>
+                        <td className="text-end px-6 py-3">{orderDetails.orderAmount.discount}</td>
                     </tr>
                     <tr className="border-b border-slate-100 dark:border-slate-700">
-                        <td className="px-6 py-4">Taxes</td>
-                        <td className="text-end px-6 py-4">{orderDetails.orderAmount.taxes}</td>
+                        <td className="px-6 py-3">Taxes</td>
+                        <td className="text-end px-6 py-3">{orderDetails.orderAmount.taxes}</td>
                     </tr>
                     <tr className="border-b border-slate-100 dark:border-slate-700">
-                        <td className="px-6 py-4">Applied Promocode</td>
-                        <td className="text-end px-6 py-4">{orderDetails.orderAmount.promoCode}</td>
+                        <td className="px-6 py-3">Applied Promocode</td>
+                        <td className="text-end px-6 py-3">{orderDetails.orderAmount.promoCode}</td>
                     </tr>
                     <tr className="border-b border-slate-100 dark:border-slate-700">
-                        <td className="px-6 py-4">Total Amount Payable</td>
-                        <td className="text-end px-6 py-4">{orderDetails.orderAmount.finalPrice}</td>
+                        <td className="px-6 py-3">Total Amount Payable</td>
+                        <td className="text-end px-6 py-3">{orderDetails.orderAmount.finalPrice}</td>
                     </tr>
                 </tbody>
             </table>

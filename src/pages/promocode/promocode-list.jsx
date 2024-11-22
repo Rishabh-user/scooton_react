@@ -17,6 +17,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from "@/components/ui/Switch";
 import { toast,ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Link } from "react-router-dom";
 
 //import Switch from "../../components/ui/Switch";
 
@@ -249,6 +250,7 @@ const PromocodeList = () => {
       <Card>
         <div className="md:flex justify-between items-center mb-6">
           <h4 className="card-title">Promocode List</h4>
+          <Link to="/add-promocode" className="btn btn-dark">Add Promocode</Link>
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
@@ -396,73 +398,84 @@ const PromocodeList = () => {
             }}
           />
         }
+        centered
         onClose={() => setIsModalOpen(false)}
       >
-          <form className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-5">
-            <TextField
-              label="Promo Code"
-              id="promoCode"
-              type="text"
-              className=""
-              name="promoCode"
-              value={promoCodeData?.promoCode || ""}
-              onChange={handleInputChange}
-            />
-            <TextField
-              label="Discount"
-              id="amount"
-              type="text"
-              name="amount"
-              value={promoCodeData?.amount || ""}
-              onChange={handleInputChange}
-            />
-            <div>
-              <label htmlFor="promoCodeType" className="form-label">
-                Select Promocode Type
-              </label>
-              <select
-                className="form-control py-2 form-select h-50"
-                id="promoCodeType"
-                name="promoCodeType"
-                value={promoCodeData?.promoCodeType || ""}
-                onChange={handleInputChange}
-              >
-                {promocodeType.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-            </div>
-             
-            {/* <FormControlLabel control={<Switch  checked={promoCodeData?.publicShown || false}
-             onChange={handleInputChange} name="publicShown"/>} label="publicShown" /> */}
-              <div className="form-check form-switch">
+          <form>
+            <div className="row">
+              <div className="col-md-6 mb-4">
+                <label className="form-label mb-1">Promo Code</label>
                 <input
-                  className="form-check-input"
-                  type="checkbox"
-                  role="switch"
-                  id={promoCodeData.publicShown}
-                  checked={promoCodeData?.publicShown}
-                  onChange={handleInputChangepublicShown}
+                  id="promoCode"
+                  type="text"
+                  className="form-control"
+                  name="promoCode"
+                  value={promoCodeData?.promoCode || ""}
+                  onChange={handleInputChange}
                 />
               </div>
-            <TextField
-              label="Start Date"
-              id="startDate"
-              type="datetime-local"
-              name="startDate"
-              value={promoCodeData?.startDate ? formatDateToDatetimeLocal(promoCodeData.startDate) : ""}
-              onChange={handleInputChange}
-            />
-            <TextField
-              label="Expiry Date"
-              id="expireDate"
-              type="datetime-local"
-              name="expireDate"
-              value={promoCodeData?.expireDate ? formatDateToDatetimeLocal(promoCodeData.expireDate) : ""}
-              onChange={handleInputChange}
-            />
+              <div className="col-md-6 mb-4">
+                <label className="form-label mb-1">Discount</label>
+                <input
+                  id="amount"
+                  type="text"
+                  name="amount"
+                  className="form-control"
+                  value={promoCodeData?.amount || ""}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="col-md-12 mb-4">
+                <label htmlFor="promoCodeType" className="form-label">
+                  Select Promocode Type
+                </label>
+                <select
+                  className="form-control py-2 form-select h-50"
+                  id="promoCodeType"
+                  name="promoCodeType"
+                  value={promoCodeData?.promoCodeType || ""}
+                  onChange={handleInputChange}
+                >
+                  {promocodeType.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-md-6 mb-4">
+                <label className="form-label mb-1">Start Date</label>
+                <input
+                  id="startDate"
+                  type="datetime-local"
+                  name="startDate"
+                  className="form-control"
+                  value={promoCodeData?.startDate ? formatDateToDatetimeLocal(promoCodeData.startDate) : ""}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="col-md-6 mb-4">
+                <label className="form-label mb-1">Expiry Date</label>
+                <input
+                  id="expireDate"
+                  type="datetime-local"
+                  name="expireDate"
+                  className="form-control"
+                  value={promoCodeData?.expireDate ? formatDateToDatetimeLocal(promoCodeData.expireDate) : ""}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="form-check form-switch">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                role="switch"
+                id={promoCodeData.publicShown}
+                checked={promoCodeData?.publicShown}
+                onChange={handleInputChangepublicShown}
+              />
+            </div>
           </form>
         </Modal>
       
