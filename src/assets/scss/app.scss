@@ -213,17 +213,18 @@ table thead th:first-child {width: 130px;}
   justify-content: center;
   margin: 2rem 0;
 }
+.filter-orderlist .css-13lvt8g-MuiButtonBase-root-MuiRadio-root + .MuiTypography-root{
+  padding: .5rem 1rem;border-radius: .5rem;
+}
 .filter-orderlist .css-13lvt8g-MuiButtonBase-root-MuiRadio-root.Mui-checked + .MuiTypography-root {
   background-color: #e31e24;
-  padding: .5rem 1rem;
-  border-radius: .5rem;color: #fff;
+  color: #fff;
 }
 .filter-orderlist .css-13lvt8g-MuiButtonBase-root-MuiRadio-root {
   display: none;
 }
-.filter-orderlist .css-19opgx6-MuiFormControlLabel-root+.css-19opgx6-MuiFormControlLabel-root {
-  padding-left: 3rem;
-  margin-right: 0;
+.filter-orderlist .css-19opgx6-MuiFormControlLabel-root+.css-19opgx6-MuiFormControlLabel-root { 
+  margin-right: .5rem; margin-left: .5rem;
 }
 .filter-orderlist .css-19opgx6-MuiFormControlLabel-root{margin-left: 0;}
 .filter-orderlist .MuiFormControl-root.css-1iw3t7y-MuiFormControl-root {

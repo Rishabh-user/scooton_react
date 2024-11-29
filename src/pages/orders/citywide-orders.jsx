@@ -419,9 +419,9 @@ const CityWideOrders = () => {
         <div className="md:flex justify-between items-center mb-6">
           <h4 className="card-title">Citywide Orders</h4>
           <div>
-            <div>
+            <div className="flex gap-2">
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Filter By</InputLabel>
+                <label className="text-sm">Filter By</label>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -434,18 +434,21 @@ const CityWideOrders = () => {
                   <MenuItem value="MOBILE">Mobile Number</MenuItem>
                 </Select>
               </FormControl>
-              <TextField
-                id="search"
-                type="text"
-                name="search"
-                placeholder="Filter By"
-                value={search}
-                onChange={handleSearchChange}
-              />
+              <FormControl>
+                <label className="text-sm">Filter By</label>
+                <TextField
+                  id="search"
+                  type="text"
+                  name="search"
+                  placeholder="Filter By"
+                  value={search}
+                  onChange={handleSearchChange}
+                />
+              </FormControl>
             </div>
           </div>
         </div>
-        <div>
+        <div className="filter-orderlist">
           <FormControl>
             <RadioGroup
               row
