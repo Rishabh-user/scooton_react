@@ -478,7 +478,7 @@ const AllRiders = () => {
                               // column.getSortByToggleProps()
                             )}
                             scope="col"
-                            className=" table-th "
+                            className=" table-th"
                           >
                             {column.render("Header")}
                             {/* <span>
