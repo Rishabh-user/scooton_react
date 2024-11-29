@@ -26,6 +26,7 @@ import Button from "@/components/ui/Button";
 import { toast, ToastContainer } from "react-toastify";
 import { useLocation, useParams } from "react-router-dom";
 
+
 const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
   {
     Header: "Sr. No.",
@@ -231,7 +232,7 @@ const AllOrders = () => {
   const [notification, setNotification] = useState("ALL");
   const [mobile, setMobile]= useState();
   const [notificationid,setNotifictionId]= useState();
-  const [pagesizedata, setpagesizedata]=useState(100);
+  const [pagesizedata, setpagesizedata]=useState(50);
   const [totalCount, setTotalCount] = useState(0);
   const id = useParams();
   
@@ -653,7 +654,15 @@ const AllOrders = () => {
         >
           <div className="">
             <h5 className="text-center mb-4">Send Notification</h5>
-            <div>
+            <div className="mb-3">
+              <label className="form-label">Select Role</label>
+              <select class="form-select" onChange={handlenotification}>
+                <option selected>Notification</option>
+                <option value="ALL">All</option>
+                <option value="INDIVIDUAL">Individual</option>
+              </select>
+            </div>
+            {/* <div>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Filter By</InputLabel>
                 <Select
@@ -667,7 +676,7 @@ const AllOrders = () => {
                   <MenuItem value="INDIVIDAUL">Individual</MenuItem>
                 </Select>
               </FormControl>
-            </div>
+            </div> */}
             <div>
               <TextField
                 label="Mobile Number"

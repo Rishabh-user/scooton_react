@@ -228,30 +228,12 @@ const CityWideOrders = () => {
   const [mobile, setMobile]= useState();
   const [notificationid,setNotifictionId]= useState();
   const [notificationModel, setNotificationModel] = useState(false);
+  const [pagesizedata, setpagesizedata]=useState(100);
+  const [totalCount, setTotalCount] = useState(0);
   
   useEffect(() => {
-    // const token = localStorage.getItem("jwtToken");
-    // if (token) {
-    //   axios
-    //     .post(`${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/false?page=${currentPage}&size=100`,{orderType: "ALL ORDERS", searchType: "NONE"}, {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     })
-    //     .then((response) => {
-    //       setOrderData(response.data);
-    //       console.log(response.data);
-    //       setPageCount(response.data.totalPages);
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error fetching user data:", error);
-    //     })
-    //     .finally(() => {
-    //       setLoading(false); 
-    //     });
-    // }
     fetchOrders("ALL ORDERS");
-  }, []);
+  }, [currentPage,pagesizedata]);
 
 
   const openIsNotificationModel = async (id) => {
@@ -314,14 +296,15 @@ const CityWideOrders = () => {
     SetOrderType(orderType)
     axios
       .post(
-        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/false?page=${currentPage}&size=100`,
+        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/false?page=${currentPage}&size=${pagesizedata}`,
         { "orderType": orderType, "searchType": "NONE" },
 
       )
       .then((response) => {
         setOrderData(response.data);
-        setPageCount(response.data.totalPages);
-        console.log("totalpage",response.data)
+        setTotalCount(Number(response.headers["x-total-count"])); 
+        setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pagesizedata)); 
+        console.log("response",response)
       })
       .catch((error) => {
         console.error("Error fetching order data:", error);
@@ -384,7 +367,10 @@ const CityWideOrders = () => {
       data: orderData,
       initialState: {
         pageSize: 10,
+        pageIndex: currentPage,
       },
+      manualPagination: true,
+      pageCount,
     },
     useSortBy,
     usePagination,
@@ -411,6 +397,12 @@ const CityWideOrders = () => {
   useEffect(() => {
     setCurrentPage(pageIndex);
   }, [pageIndex]);
+
+  const handlePageSizeChange = (newSize) => {
+    setpagesizedata(newSize); 
+    setCurrentPage(0); 
+    
+  };
   
   return (
     <>
@@ -531,8 +523,8 @@ const CityWideOrders = () => {
           <div className=" flex items-center space-x-3 rtl:space-x-reverse">
             <select
               className="form-control py-2 w-max"
-              value={pageSize}
-              onChange={(e) => setPageSize(Number(e.target.value))}
+              value={pagesizedata}
+              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
               {[10, 25, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
@@ -548,66 +540,56 @@ const CityWideOrders = () => {
             </span>
           </div>
           <ul className="flex items-center  space-x-3  rtl:space-x-reverse">
-            <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
+            {totalCount > pagesizedata && (
+              <>
+                <li>
+                    <button
+                      onClick={() => gotoPage(0)}
+                      disabled={currentPage === 0}
+                      className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                    >
+                    <Icon icon="heroicons:chevron-double-left-solid" />
+                  </button>
+              </li>
+              <li>
               <button
-                className={` ${
-                  !canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={() => gotoPage(0)}
-                disabled={!canPreviousPage}
-              >
-                <Icon icon="heroicons:chevron-double-left-solid" />
-              </button>
-            </li>
-            <li className="text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180">
-              <button
-                className={` ${
-                  !canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
+                onClick={() => {setCurrentPage(currentPage - 1)}}
+                disabled={currentPage === 0}
+                className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
               >
                 Prev
               </button>
-            </li>
-            {pageOptions.map((page, pageIdx) => (
-              <li key={pageIdx}>
+              </li>
+              {Array.from({ length: pageCount }).map((_, idx) => (
+              <li key={idx}>
                 <button
-                  href="#"
-                  aria-current="page"
-                  className={` ${
-                    pageIdx === pageIndex
-                      ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium "
-                      : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  "
-                  }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
-                  onClick={() => gotoPage(pageIdx)}
+                  className={idx === currentPage ? "bg-scooton-900 text-white" : ""}
+                  onClick={() => setCurrentPage(idx)}
                 >
-                  {page + 1}
+                  {idx + 1}
                 </button>
               </li>
-            ))}
-            <li className="text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180">
+              ))}
+              <li>
               <button
-                className={` ${
-                  !canNextPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={() => nextPage()}
-                disabled={!canNextPage}
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage >= pageCount - 1}
+                className={currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
               >
                 Next
               </button>
-            </li>
-            <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
+              </li>
+              <li>
               <button
                 onClick={() => gotoPage(pageCount - 1)}
-                disabled={!canNextPage}
-                className={` ${
-                  !canNextPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                disabled={currentPage >= pageCount - 1}
+                className={currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
               >
                 <Icon icon="heroicons:chevron-double-right-solid" />
               </button>
-            </li>
+              </li>
+              </>
+            )}
           </ul>
         </div>
       </Card>
@@ -622,17 +604,15 @@ const CityWideOrders = () => {
         >
           <div className="">
             <h5 className="text-center mb-4">Send Notification</h5>
-            <div>
-              <label>Type</label>
-                <Select
-                  label="Select notification"
-                  id="notification"
-                  options={notificationtype}
-                  value={notification || ''}
-                  onChange={handlenotification}
-                />
-             
+            <div className="mb-3">
+              <label className="form-label">Select Role</label>
+              <select class="form-select" onChange={handlenotification}>
+                <option selected>Notification</option>
+                <option value="ALL">All</option>
+                <option value="INDIVIDUAL">Individual</option>
+              </select>
             </div>
+             
             <div>
               <TextField
                 label="Mobile Number"

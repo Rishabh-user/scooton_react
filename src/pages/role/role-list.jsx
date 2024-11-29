@@ -28,6 +28,10 @@ const COLUMNS = (openEditRole, deleteUser) => [
     accessor: "first_name",
   },
   {
+    Header: "Last Name",
+    accessor: "last_name",
+  },
+  {
     Header: "Phone Number",
     accessor: "mobile_number",
   },
