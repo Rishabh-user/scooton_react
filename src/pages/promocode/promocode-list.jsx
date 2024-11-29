@@ -349,15 +349,20 @@ const PromocodeList = () => {
                 Prev
               </button>
               </li>
-              {Array.from({ length: pageCount }).map((_, idx) => (
-              <li key={idx}>
-                <button
-                  className={idx === currentPage ? "bg-scooton-900 text-white" : ""}
-                  onClick={() => setCurrentPage(idx)}
-                >
-                  {idx + 1}
-                </button>
-              </li>
+              {pageOptions.slice(0, 10).map((page, pageIdx) => (
+                <li key={pageIdx}>
+                  <button
+                    href="#"
+                    aria-current="page"
+                    className={` ${pageIdx === pageIndex
+                      ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium "
+                      : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  "
+                      }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
+                    onClick={() => gotoPage(pageIdx)}
+                  >
+                    {page + 1}
+                  </button>
+                </li>
               ))}
               <li>
               <button

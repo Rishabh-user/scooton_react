@@ -376,10 +376,10 @@ const UserList = () => {
           <div className=" flex items-center space-x-3 rtl:space-x-reverse">
             <select
               className="form-control py-2 w-max"
-              value={pagesizedata}
-              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
             >
-              {[100, 200, 500].map((pageSize) => (
+              {[10, 25, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
@@ -393,56 +393,61 @@ const UserList = () => {
             </span>
           </div>
           <ul className="flex items-center  space-x-3  rtl:space-x-reverse">
-            {totalCount > pagesizedata && (
-              <>
-                <li>
-                    <button
-                      onClick={() => gotoPage(0)}
-                      disabled={currentPage === 0}
-                      className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
-                    >
-                    <Icon icon="heroicons:chevron-double-left-solid" />
-                  </button>
-              </li>
-              <li>
+            <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
               <button
-                onClick={() => {setCurrentPage(currentPage - 1)}}
-                disabled={currentPage === 0}
-                className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                className={` ${!canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                onClick={() => gotoPage(0)}
+                disabled={!canPreviousPage}
+              >
+                <Icon icon="heroicons:chevron-double-left-solid" />
+              </button>
+            </li>
+            <li className="text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180">
+              <button
+                className={` ${!canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                onClick={() => previousPage()}
+                disabled={!canPreviousPage}
               >
                 Prev
               </button>
-              </li>
-              {Array.from({ length: pageCount }).map((_, idx) => (
-              <li key={idx}>
+            </li>
+            {pageOptions.slice(0, 10).map((page, pageIdx) => (
+              <li key={pageIdx}>
                 <button
-                  className={idx === currentPage ? "bg-scooton-900 text-white" : ""}
-                  onClick={() => setCurrentPage(idx)}
+                  href="#"
+                  aria-current="page"
+                  className={` ${pageIdx === pageIndex
+                    ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium "
+                    : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  "
+                    }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
+                  onClick={() => gotoPage(pageIdx)}
                 >
-                  {idx + 1}
+                  {page + 1}
                 </button>
               </li>
-              ))}
-              <li>
+            ))}
+            <li className="text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180">
               <button
-                onClick={() => setCurrentPage(currentPage + 1)}
-                disabled={currentPage >= pageCount - 1}
-                className={currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
+                className={` ${!canNextPage ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                onClick={() => nextPage()}
+                disabled={!canNextPage}
               >
                 Next
               </button>
-              </li>
-              <li>
+            </li>
+            <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
               <button
                 onClick={() => gotoPage(pageCount - 1)}
-                disabled={currentPage >= pageCount - 1}
-                className={currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
+                disabled={!canNextPage}
+                className={` ${!canNextPage ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
               >
                 <Icon icon="heroicons:chevron-double-right-solid" />
               </button>
-              </li>
-              </>
-            )}
+            </li>
           </ul>
         </div>
       </Card>

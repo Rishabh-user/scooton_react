@@ -235,3 +235,10 @@ table thead th:first-child {width: 130px;}
 .change-rider-status>div>div {font-size: .875rem;  margin-bottom: .5em;}
 .change-rider-status>div>div>div>label>div{width:38px;height: 16px;}
 .change-rider-status>div>div>div>label>div>span{width:12px;height: 12px;--tw-translate-x:1.3rem}
+.mobile-view{display: none;}
+
+
+@media (max-width:991px){
+  .desktop-view-filter{display: none;}
+  .mobile-view{display: flex;}
+}

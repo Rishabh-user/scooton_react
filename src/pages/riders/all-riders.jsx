@@ -367,20 +367,27 @@ const AllRiders = () => {
       <Card>
         <div className="md:flex justify-between items-center mb-6">
           <div className="rider-status">
-            <h4 className="card-title">
-              <div className="d-flex align-items-center gap-3">
-                <span>All Riders </span>
-                <div className="onOff-riders">
-                  <div className="all-rider"><span></span> {activeridercount?.allRider} (Total Riders)</div>
-                  <div className="online"><span></span> {activeridercount?.onlineRider} (Online)</div>
-                  <div className="offline"><span></span> {activeridercount?.offlineRider} (Offline)</div>
+            <div className="online-riders">
+              <h4 className="card-title">
+                <div className="d-flex align-items-center gap-3">
+                  <span>All Riders </span>
+                  <div className="onOff-riders">
+                    <div className="all-rider"><span></span> {activeridercount?.allRider} (Total Riders)</div>
+                    <div className="online"><span></span> {activeridercount?.onlineRider} (Online)</div>
+                    <div className="offline"><span></span> {activeridercount?.offlineRider} (Offline)</div>
+                  </div>
                 </div>
-              </div>
-            </h4>
+              </h4>
+              <span className="mobile-view">
+                <Button className="btn btn-dark" onClick={handleShow}>
+                  <Icon icon="heroicons:adjustments-horizontal" className="text-[20px]"></Icon>
+                </Button>
+              </span>
+            </div>
           </div>
           <div className="rider-filter">            
             <div className="d-flex justify-content-end">              
-              <Button className="btn btn-dark" onClick={handleShow}>
+              <Button className="btn btn-dark desktop-view-filter" onClick={handleShow}>
                 <Icon icon="heroicons:adjustments-horizontal" className="text-[20px]"></Icon>
               </Button>
               <Modal show={show} onHide={handleClose} centered>
