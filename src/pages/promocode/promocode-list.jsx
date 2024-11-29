@@ -107,21 +107,25 @@ const PromocodeList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPromoCode, setSelectedPromoCode] = useState();
   const { deleted, ...promoCodeData } = selectedPromoCode || {};
+  const [pagesizedata, setpagesizedata]=useState(10);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       axios
-        .get(`${BASE_URL}/promo-code/get-all?page=${currentPage}&size=10`)
+        .get(`${BASE_URL}/promo-code/get-all?page=${currentPage}&size=${pagesizedata}`)
         .then((response) => {
           setprocodeList(response.data);
-          setPageCount(response.data.totalPages);
+          setTotalCount(Number(response.headers["x-total-count"])); 
+          setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pagesizedata)); 
+          console.log("response",response)
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
         });
     }
-  }, [currentPage]);
+  }, [currentPage,pagesizedata]);
 
   const deletePromocode = async (id) => {
     try {
@@ -240,6 +244,12 @@ const PromocodeList = () => {
 
   const { pageIndex, pageSize } = state;
 
+  const handlePageSizeChange = (newSize) => {
+    setpagesizedata(newSize); 
+    setCurrentPage(0); 
+    
+  };
+
   useEffect(() => {
     setCurrentPage(pageIndex);
   }, [pageIndex]);
@@ -303,8 +313,8 @@ const PromocodeList = () => {
           <div className="flex items-center space-x-3 rtl:space-x-reverse">
             <select
               className="form-control py-2 w-max"
-              value={pageSize}
-              onChange={(e) => setPageSize(Number(e.target.value))}
+              value={pagesizedata}
+              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
               {[10, 25, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
@@ -319,65 +329,57 @@ const PromocodeList = () => {
               </span>
             </span>
           </div>
-          <ul className="flex items-center space-x-3 rtl:space-x-reverse">
-            <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
+          <ul className="flex items-center  space-x-3  rtl:space-x-reverse">
+            {totalCount > pagesizedata && (
+              <>
+                <li>
+                    <button
+                      onClick={() => gotoPage(0)}
+                      disabled={currentPage === 0}
+                      className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                    >
+                    <Icon icon="heroicons:chevron-double-left-solid" />
+                  </button>
+              </li>
+              <li>
               <button
-                className={`${
-                  !canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={() => gotoPage(0)}
-                disabled={!canPreviousPage}
-              >
-                <Icon icon="heroicons:chevron-double-left-solid" />
-              </button>
-            </li>
-            <li className="text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180">
-              <button
-                className={`${
-                  !canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
+                onClick={() => {setCurrentPage(currentPage - 1)}}
+                disabled={currentPage === 0}
+                className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
               >
                 Prev
               </button>
-            </li>
-            {pageOptions.map((pageIdx) => (
-              <li key={pageIdx}>
+              </li>
+              {Array.from({ length: pageCount }).map((_, idx) => (
+              <li key={idx}>
                 <button
-                  className={`${
-                    pageIdx === pageIndex
-                      ? "bg-scooton-900 dark:bg-slate-600 dark:text-slate-200 text-white font-medium"
-                      : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900 font-normal"
-                  } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
-                  onClick={() => gotoPage(pageIdx)}
+                  className={idx === currentPage ? "bg-scooton-900 text-white" : ""}
+                  onClick={() => setCurrentPage(idx)}
                 >
-                  {pageIdx + 1}
+                  {idx + 1}
                 </button>
               </li>
-            ))}
-            <li className="text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180">
+              ))}
+              <li>
               <button
-                className={`${
-                  !canNextPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={() => nextPage()}
-                disabled={!canNextPage}
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage >= pageCount - 1}
+                className={currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
               >
                 Next
               </button>
-            </li>
-            <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
+              </li>
+              <li>
               <button
                 onClick={() => gotoPage(pageCount - 1)}
-                disabled={!canNextPage}
-                className={`${
-                  !canNextPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                disabled={currentPage >= pageCount - 1}
+                className={currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
               >
                 <Icon icon="heroicons:chevron-double-right-solid" />
               </button>
-            </li>
+              </li>
+              </>
+            )}
           </ul>
         </div>
       </Card>

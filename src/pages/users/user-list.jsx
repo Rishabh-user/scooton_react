@@ -192,18 +192,22 @@ const UserList = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
+  const [pagesizedata, setpagesizedata]=useState(100);
+  const [totalCount, setTotalCount] = useState(0);
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       axios
-        .get(`${BASE_URL}/user/get-all?page=${currentPage}&size=100`, {
+        .get(`${BASE_URL}/user/get-all?page=${currentPage}&size=${pagesizedata}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
           setUserData(response.data);
-          setPageCount(response.data.totalPages);
+          setTotalCount(Number(response.headers["x-total-count"])); 
+          setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pagesizedata)); 
+          console.log("response",response)
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
@@ -212,39 +216,39 @@ const UserList = () => {
           setLoading(false); 
         });
     }
-  }, []);
-  useEffect(() => {
-    const token = localStorage.getItem("jwtToken");
-    const fetchData = async () => {
-      try {
-        if (!token) return;
+  }, [currentPage,pagesizedata]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("jwtToken");
+  //   const fetchData = async () => {
+  //     try {
+  //       if (!token) return;
   
-        if (search) {
-          // Search by mobile number if `search` is not empty
-          const response = await axios.post(
-            `${BASE_URL}/user/search-by-mobile-number`,
-            {},
-            {
-              headers: { Authorization: `Bearer ${token}` },
-              params: { mobileNumber: search, page: currentPage, size: 100 },
-            }
-          );
-          setUserData(response.data);
-        } else {
-          // Fetch all users if `search` is empty
-          const response = await axios.get(`${BASE_URL}/user/get-all`, {
-            headers: { Authorization: `Bearer ${token}` },
-            params: { page: currentPage, size: 100 },
-          });
-          setUserData(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+  //       if (search) {
+  //         // Search by mobile number if `search` is not empty
+  //         const response = await axios.post(
+  //           `${BASE_URL}/user/search-by-mobile-number`,
+  //           {},
+  //           {
+  //             headers: { Authorization: `Bearer ${token}` },
+  //             params: { mobileNumber: search, page: currentPage, size: 100 },
+  //           }
+  //         );
+  //         setUserData(response.data);
+  //       } else {
+  //         // Fetch all users if `search` is empty
+  //         const response = await axios.get(`${BASE_URL}/user/get-all`, {
+  //           headers: { Authorization: `Bearer ${token}` },
+  //           params: { page: currentPage, size: 100 },
+  //         });
+  //         setUserData(response.data);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //     }
+  //   };
   
-    fetchData();
-  }, [search, currentPage])
+  //   fetchData();
+  // }, [search, currentPage])
   
   
 
@@ -254,8 +258,11 @@ const UserList = () => {
       columns,
       data: userData,
       initialState: {
+        pageIndex: currentPage,
         pageSize: 10,
       },
+      manualPagination: true,
+      pageCount,
     },
     useSortBy,
     usePagination,
@@ -279,6 +286,12 @@ const UserList = () => {
   } = tableInstance;
 
   const { pageIndex, pageSize } = state;
+  const handlePageSizeChange = (newSize) => {
+    setpagesizedata(newSize); 
+    setCurrentPage(0); 
+    
+  };
+
   useEffect(() => {
     setCurrentPage(pageIndex);
   }, [pageIndex]);
@@ -363,10 +376,10 @@ const UserList = () => {
           <div className=" flex items-center space-x-3 rtl:space-x-reverse">
             <select
               className="form-control py-2 w-max"
-              value={pageSize}
-              onChange={(e) => setPageSize(Number(e.target.value))}
+              value={pagesizedata}
+              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[10, 25, 50].map((pageSize) => (
+              {[100, 200, 500].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
@@ -380,66 +393,56 @@ const UserList = () => {
             </span>
           </div>
           <ul className="flex items-center  space-x-3  rtl:space-x-reverse">
-            <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
+            {totalCount > pagesizedata && (
+              <>
+                <li>
+                    <button
+                      onClick={() => gotoPage(0)}
+                      disabled={currentPage === 0}
+                      className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                    >
+                    <Icon icon="heroicons:chevron-double-left-solid" />
+                  </button>
+              </li>
+              <li>
               <button
-                className={` ${
-                  !canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={() => gotoPage(0)}
-                disabled={!canPreviousPage}
-              >
-                <Icon icon="heroicons:chevron-double-left-solid" />
-              </button>
-            </li>
-            <li className="text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180">
-              <button
-                className={` ${
-                  !canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
+                onClick={() => {setCurrentPage(currentPage - 1)}}
+                disabled={currentPage === 0}
+                className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
               >
                 Prev
               </button>
-            </li>
-            {pageOptions.map((page, pageIdx) => (
-              <li key={pageIdx}>
+              </li>
+              {Array.from({ length: pageCount }).map((_, idx) => (
+              <li key={idx}>
                 <button
-                  href="#"
-                  aria-current="page"
-                  className={` ${
-                    pageIdx === pageIndex
-                      ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium "
-                      : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  "
-                  }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
-                  onClick={() => gotoPage(pageIdx)}
+                  className={idx === currentPage ? "bg-scooton-900 text-white" : ""}
+                  onClick={() => setCurrentPage(idx)}
                 >
-                  {page + 1}
+                  {idx + 1}
                 </button>
               </li>
-            ))}
-            <li className="text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180">
+              ))}
+              <li>
               <button
-                className={` ${
-                  !canNextPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={() => nextPage()}
-                disabled={!canNextPage}
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage >= pageCount - 1}
+                className={currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
               >
                 Next
               </button>
-            </li>
-            <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
+              </li>
+              <li>
               <button
                 onClick={() => gotoPage(pageCount - 1)}
-                disabled={!canNextPage}
-                className={` ${
-                  !canNextPage ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                disabled={currentPage >= pageCount - 1}
+                className={currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
               >
                 <Icon icon="heroicons:chevron-double-right-solid" />
               </button>
-            </li>
+              </li>
+              </>
+            )}
           </ul>
         </div>
       </Card>
