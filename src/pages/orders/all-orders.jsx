@@ -26,6 +26,7 @@ import Button from "@/components/ui/Button";
 import { toast, ToastContainer } from "react-toastify";
 import { useLocation, useParams } from "react-router-dom";
 
+
 const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
   {
     Header: "Sr. No.",
@@ -231,8 +232,9 @@ const AllOrders = () => {
   const [notification, setNotification] = useState("ALL");
   const [mobile, setMobile]= useState();
   const [notificationid,setNotifictionId]= useState();
-  const [pagesizedata, setpagesizedata]=useState(100);
+  const [pagesizedata, setpagesizedata]=useState(50);
   const [totalCount, setTotalCount] = useState(0);
+  const maxPagesToShow = 5;
   const id = useParams();
   
 
@@ -574,7 +576,7 @@ const AllOrders = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[200, 350, 500].map((pageSize) => (
+              {[100, 300, 500].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
@@ -587,55 +589,105 @@ const AllOrders = () => {
               </span>
             </span>
           </div>
-          <ul className="flex items-center  space-x-3  rtl:space-x-reverse">
+          <ul className="flex items-center space-x-3 rtl:space-x-reverse">
             {totalCount > pagesizedata && (
               <>
+                {/* First Page Button */}
                 <li>
-                    <button
-                      onClick={() => gotoPage(0)}
-                      disabled={currentPage === 0}
-                      className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
-                    >
+                  <button
+                    onClick={() => gotoPage(0)}
+                    disabled={currentPage === 0}
+                    className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                  >
                     <Icon icon="heroicons:chevron-double-left-solid" />
                   </button>
-              </li>
-              <li>
-              <button
-                onClick={() => {setCurrentPage(currentPage - 1)}}
-                disabled={currentPage === 0}
-                className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
-              >
-                Prev
-              </button>
-              </li>
-              {Array.from({ length: pageCount }).map((_, idx) => (
-              <li key={idx}>
-                <button
-                  className={idx === currentPage ? "bg-scooton-900 text-white" : ""}
-                  onClick={() => setCurrentPage(idx)}
-                >
-                  {idx + 1}
-                </button>
-              </li>
-              ))}
-              <li>
-              <button
-                onClick={() => setCurrentPage(currentPage + 1)}
-                disabled={currentPage >= pageCount - 1}
-                className={currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
-              >
-                Next
-              </button>
-              </li>
-              <li>
-              <button
-                onClick={() => gotoPage(pageCount - 1)}
-                disabled={currentPage >= pageCount - 1}
-                className={currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
-              >
-                <Icon icon="heroicons:chevron-double-right-solid" />
-              </button>
-              </li>
+                </li>
+
+                {/* Previous Page Button */}
+                <li>
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 0}
+                    className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                  >
+                    Prev
+                  </button>
+                </li>
+
+                {/* Page Numbers */}
+                {(() => {
+                  const totalPages = pageCount; // Total number of pages
+                  const currentGroup = Math.floor(currentPage / maxPagesToShow); // Current group of pages
+                  const startPage = currentGroup * maxPagesToShow; // Starting page of the current group
+                  const endPage = Math.min(startPage + maxPagesToShow, totalPages); // Ending page of the current group
+
+                  return (
+                    <>
+                      {/* Previous dots */}
+                      {startPage > 0 && (
+                        <li>
+                          <button onClick={() => setCurrentPage(startPage - 1)}>
+                            ...
+                          </button>
+                        </li>
+                      )}
+
+                      {/* Render page numbers */}
+                      {Array.from({ length: endPage - startPage }).map((_, idx) => {
+                        const pageNumber = startPage + idx;
+                        return (
+                          <li key={pageNumber}>
+                            <button
+                              className={
+                                pageNumber === currentPage
+                                  ? "bg-scooton-900 text-white"
+                                  : ""
+                              }
+                              onClick={() => setCurrentPage(pageNumber)}
+                            >
+                              {pageNumber + 1}
+                            </button>
+                          </li>
+                        );
+                      })}
+
+                      {/* Next dots */}
+                      {endPage < totalPages && (
+                        <li>
+                          <button onClick={() => setCurrentPage(endPage)}>
+                            ...
+                          </button>
+                        </li>
+                      )}
+                    </>
+                  );
+                })()}
+
+                {/* Next Page Button */}
+                <li>
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage >= pageCount - 1}
+                    className={
+                      currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""
+                    }
+                  >
+                    Next
+                  </button>
+                </li>
+
+                {/* Last Page Button */}
+                <li>
+                  <button
+                    onClick={() => gotoPage(pageCount - 1)}
+                    disabled={currentPage >= pageCount - 1}
+                    className={
+                      currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""
+                    }
+                  >
+                    <Icon icon="heroicons:chevron-double-right-solid" />
+                  </button>
+                </li>
               </>
             )}
           </ul>
@@ -653,7 +705,15 @@ const AllOrders = () => {
         >
           <div className="">
             <h5 className="text-center mb-4">Send Notification</h5>
-            <div>
+            <div className="mb-3">
+              <label className="form-label">Select Role</label>
+              <select class="form-select" onChange={handlenotification}>
+                <option selected>Notification</option>
+                <option value="ALL">All</option>
+                <option value="INDIVIDUAL">Individual</option>
+              </select>
+            </div>
+            {/* <div>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Filter By</InputLabel>
                 <Select
@@ -667,7 +727,7 @@ const AllOrders = () => {
                   <MenuItem value="INDIVIDAUL">Individual</MenuItem>
                 </Select>
               </FormControl>
-            </div>
+            </div> */}
             <div>
               <TextField
                 label="Mobile Number"

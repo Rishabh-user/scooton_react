@@ -28,6 +28,10 @@ const COLUMNS = (openEditRole, deleteUser) => [
     accessor: "first_name",
   },
   {
+    Header: "Last Name",
+    accessor: "last_name",
+  },
+  {
     Header: "Phone Number",
     accessor: "mobile_number",
   },
@@ -333,7 +337,7 @@ const RoleList = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[10, 25, 50].map((size) => (
+              {['',15, 25, 50].map((size) => (
                 <option key={size} value={size}>
                   Show {size}
                 </option>
