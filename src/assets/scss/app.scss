@@ -131,7 +131,7 @@
   --tw-bg-opacity: 1;
   background-color: rgb(255 193 7 / 19%);
 }
-.btn:hover{background-color: #e31e24;outline: 0; border-color: #e31e24;box-shadow: none; opacity: .8;}
+.btn:hover{background-color: #000;outline: 0; border-color: #000;box-shadow: none;}
 .btn-primary{ background-color: var(--primary);}
 .react-tabs__tab-list{border-bottom: none;
   text-align: center;
@@ -192,8 +192,9 @@ table thead th:first-child {width: 130px;}
 .onOff-riders>div {
   display: flex;
   align-items: center;
-  margin-bottom: .25rem;font-size: 14px;
+  font-size: 14px;
 }
+.onOff-riders { display: flex; align-items: center;gap: 14px;}
 .onOff-riders>div>span {
   width: 10px;
   height: 10px;
@@ -204,7 +205,7 @@ table thead th:first-child {width: 130px;}
 .onOff-riders>div.online>span{background-color: green;}
 .onOff-riders>div.offline>span{background-color: red;}
 .rider-status{flex: 1;}
-.rider-filter{display: flex;gap:10px;flex:2;}
+.rider-filter{display: flex;gap:10px;}
 .rider-filter>div{flex:1;}
 .flex-1{flex:1;}
 .MuiInputBase-formControl{height: 45px;}

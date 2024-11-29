@@ -2,6 +2,8 @@ import React from "react";
 import useDarkMode from "@/hooks/useDarkMode";
 import Logo from "@/assets/images/logo/logo.png";
 import { useSelector } from "react-redux";
+import LoaderImg from '../assets/images/loader-img.png'
+
 const Loading = () => {
   const [isDark] = useDarkMode();
   const { isAuth } = useSelector((state) => state.auth);
@@ -12,7 +14,7 @@ const Loading = () => {
           <img src={Logo} alt="Logo" />
         </div>
       )}
-      <svg
+      {/* <svg
         className={`animate-spin ltr:-ml-1 ltr:mr-3 rtl:-mr-1 rtl:ml-3 ${
           isAuth ? "h-6 w-6" : "h-12 w-12"
         } `}
@@ -33,9 +35,10 @@ const Loading = () => {
           fill="currentColor"
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
         ></path>
-      </svg>
+      </svg> */}
+      <img src={LoaderImg} alt="Loader" width={100} />
       {isAuth && (
-        <span className=" inline-block mt-1 font-medium  text-sm">
+        <span className=" inline-block mt-3 font-medium  text-sm">
           {" "}
           Loading ...
         </span>
