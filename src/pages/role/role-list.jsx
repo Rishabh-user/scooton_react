@@ -337,7 +337,7 @@ const RoleList = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[10, 25, 50].map((size) => (
+              {['',15, 25, 50].map((size) => (
                 <option key={size} value={size}>
                   Show {size}
                 </option>

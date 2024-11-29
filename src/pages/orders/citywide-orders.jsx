@@ -228,7 +228,7 @@ const CityWideOrders = () => {
   const [mobile, setMobile]= useState();
   const [notificationid,setNotifictionId]= useState();
   const [notificationModel, setNotificationModel] = useState(false);
-  const [pagesizedata, setpagesizedata]=useState(100);
+  const [pagesizedata, setpagesizedata]=useState(50);
   const [totalCount, setTotalCount] = useState(0);
   
   useEffect(() => {
@@ -526,7 +526,7 @@ const CityWideOrders = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[10, 25, 50].map((pageSize) => (
+              {[100, 300, 500].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
