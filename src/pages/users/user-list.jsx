@@ -394,7 +394,7 @@ const UserList = () => {
               </span>
             </span>
           </div>
-          <ul className="flex items-center space-x-3 rtl:space-x-reverse">
+          <ul className="pagination flex items-center space-x-3 rtl:space-x-reverse">
             {totalCount > pagesizedata && (
               <>
                 {/* First Page Button */}
@@ -453,7 +453,6 @@ const UserList = () => {
                           </button>
                         </li>
                       ))}
-
                       {/* Next dots */}
                       {endPage < totalPages && (
                         <li>

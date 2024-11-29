@@ -367,9 +367,9 @@ const AllRiders = () => {
       <Card>
         <div className="md:flex justify-between items-center mb-6">
           <div className="rider-status">
-            <div className="online-riders">
+            <div className="all-riders">
               <h4 className="card-title">
-                <div className="d-flex align-items-center gap-3">
+                <div className="all-rider-mobile">
                   <span>All Riders </span>
                   <div className="onOff-riders">
                     <div className="all-rider"><span></span> {activeridercount?.allRider} (Total Riders)</div>
@@ -589,7 +589,7 @@ const AllRiders = () => {
               </span>
             </span>
           </div>
-          <ul className="flex items-center  space-x-3  rtl:space-x-reverse">
+          <ul className="pagination flex items-center  space-x-3  rtl:space-x-reverse">
             <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
               <button
                 className={` ${!canPreviousPage ? "opacity-50 cursor-not-allowed" : ""

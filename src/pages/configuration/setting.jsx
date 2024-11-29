@@ -14,6 +14,7 @@ import Modal from "../../components/ui/Modal";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { TabPanel, Tabs, Tab, TabList } from "react-tabs";
+import Flatpickr from "react-flatpickr";
 
 const Settings = () => {
     const navigate = useNavigate();
@@ -237,20 +238,39 @@ const Settings = () => {
                         </div>
                     </div>
                     <div className="grid xl:grid-cols-3 md:grid-cols-3 grid-cols-1 gap-3 items-end">
-                        <TextField
+                        {/* <TextField
                             id="from_date"
                             type="date" 
                             name="from_date"
                             value={from_date}
                             onChange={handleInputChange}          
-                        />                        
-                        <TextField
+                        />     */}
+                        <Flatpickr
+                            type="date"
+                            id="from_date"
+                            className="form-control py-3"
+                            value={from_date}
+                            onChange={handleInputChange} 
+                            style={{backgroundColor: 'transparent'}}
+                        />
+                                         
+                        {/* <TextField
                             id="to_date"
                             type="date"
                             name="to_date"
                             value={to_date}
                             maxDate={new Date}
                             onChange={handleInputChange}                
+                        /> */}
+                        <Flatpickr
+                            id="to_date"
+                            type="date"
+                            className="form-control py-3"
+                            name="to_date"
+                            value={to_date}
+                            maxDate={new Date}
+                            onChange={handleInputChange} 
+                            style={{backgroundColor: 'transparent'}}
                         />
                         <div className="w-100 h-100"><Button type="button" className="btn h-100 items-center btn-dark py-2" disabled={isDateWithinOneMonth()} onClick={() => exportCsv(from_date,to_date)}>Export</Button></div>
                     </div>
