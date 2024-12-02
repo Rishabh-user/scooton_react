@@ -187,6 +187,9 @@ const AllRiders = () => {
   const [documentstatus, setDocumentStatus]= useState('All')
   const [vehicleid, setVehicleId]= useState('0');
   const [filterby, setFilterBy] = React.useState("NONE");
+  const [pagesizedata, setpagesizedata]=useState(50);
+  const [totalCount, setTotalCount] = useState(0);
+  const maxPagesToShow = 5;
 
   const [show, setShow] = useState(false);
 
@@ -197,15 +200,15 @@ const AllRiders = () => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       axios
-        .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=100`, {
+        .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
           setRiderData(response.data);
-          console.log(response.data);
-          setPageCount(response.data.totalPages);
+          setTotalCount(Number(response.headers["x-total-count"])); 
+          setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
@@ -214,7 +217,7 @@ const AllRiders = () => {
           setLoading(false);
         });
     }
-  }, []);
+  }, [currentPage,pagesizedata]);
   // useEffect(() => {
   //   const token = localStorage.getItem("jwtToken");
   //   if (token && search) {
@@ -305,8 +308,8 @@ const AllRiders = () => {
   const FilterOrder = () => {
     const endpoint =
       filterby === "NONE"
-        ? `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=100`
-        : `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=100`;
+        ? `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=${pagesizedata}`
+        : `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=${pagesizedata}`;
     
     axios
       .get(endpoint)
@@ -333,8 +336,11 @@ const AllRiders = () => {
       columns,
       data: riderData,
       initialState: {
+        pageIndex: currentPage,
         pageSize: 10,
       },
+      manualPagination: true, 
+      pageCount, 
     },
     useSortBy,
     usePagination,
@@ -361,6 +367,11 @@ const AllRiders = () => {
   useEffect(() => {
     setCurrentPage(pageIndex);
   }, [pageIndex]);
+
+  const handlePageSizeChange = (newSize) => {
+    setpagesizedata(newSize); 
+    setCurrentPage(0);  
+  };
 
   return (
     <>
@@ -573,10 +584,10 @@ const AllRiders = () => {
           <div className=" flex items-center space-x-3 rtl:space-x-reverse">
             <select
               className="form-control py-2 w-max"
-              value={pageSize}
-              onChange={(e) => setPageSize(Number(e.target.value))}
+              value={pagesizedata}
+              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[10, 25, 50].map((pageSize) => (
+              {['',100, 200, 500].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
@@ -589,62 +600,107 @@ const AllRiders = () => {
               </span>
             </span>
           </div>
-          <ul className="pagination flex items-center  space-x-3  rtl:space-x-reverse">
-            <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
-              <button
-                className={` ${!canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                onClick={() => gotoPage(0)}
-                disabled={!canPreviousPage}
-              >
-                <Icon icon="heroicons:chevron-double-left-solid" />
-              </button>
-            </li>
-            <li className="text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180">
-              <button
-                className={` ${!canPreviousPage ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
-              >
-                Prev
-              </button>
-            </li>
-            {pageOptions.map((page, pageIdx) => (
-              <li key={pageIdx}>
-                <button
-                  href="#"
-                  aria-current="page"
-                  className={` ${pageIdx === pageIndex
-                    ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium "
-                    : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  "
-                    }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
-                  onClick={() => gotoPage(pageIdx)}
-                >
-                  {page + 1}
-                </button>
-              </li>
-            ))}
-            <li className="text-sm leading-4 text-slate-900 dark:text-white rtl:rotate-180">
-              <button
-                className={` ${!canNextPage ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                onClick={() => nextPage()}
-                disabled={!canNextPage}
-              >
-                Next
-              </button>
-            </li>
-            <li className="text-xl leading-4 text-slate-900 dark:text-white rtl:rotate-180">
-              <button
-                onClick={() => gotoPage(pageCount - 1)}
-                disabled={!canNextPage}
-                className={` ${!canNextPage ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-              >
-                <Icon icon="heroicons:chevron-double-right-solid" />
-              </button>
-            </li>
+          <ul className="flex items-center space-x-3 rtl:space-x-reverse">
+            {totalCount > pagesizedata && (
+              <>
+                {/* First Page Button */}
+                <li>
+                  <button
+                    onClick={() => gotoPage(0)}
+                    disabled={currentPage === 0}
+                    className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                  >
+                    <Icon icon="heroicons:chevron-double-left-solid" />
+                  </button>
+                </li>
+
+                {/* Previous Page Button */}
+                <li>
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 0}
+                    className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                  >
+                    Prev
+                  </button>
+                </li>
+
+                {/* Page Numbers */}
+                {(() => {
+                  const totalPages = pageCount; // Total number of pages
+                  const currentGroup = Math.floor(currentPage / maxPagesToShow); // Current group of pages
+                  const startPage = currentGroup * maxPagesToShow; // Starting page of the current group
+                  const endPage = Math.min(startPage + maxPagesToShow, totalPages); // Ending page of the current group
+
+                  return (
+                    <>
+                      {/* Previous dots */}
+                      {startPage > 0 && (
+                        <li>
+                          <button onClick={() => setCurrentPage(startPage - 1)}>
+                            ...
+                          </button>
+                        </li>
+                      )}
+
+                      {/* Render page numbers */}
+                      {Array.from({ length: endPage - startPage }).map((_, idx) => {
+                        const pageNumber = startPage + idx;
+                        return (
+                          <li key={pageNumber}>
+                            <button
+                              className={
+                                pageNumber === currentPage
+                                  ? "bg-scooton-900 text-white"
+                                  : ""
+                              }
+                              onClick={() => setCurrentPage(pageNumber)}
+                            >
+                              {pageNumber + 1}
+                            </button>
+                          </li>
+                        );
+                      })}
+
+                      {/* Next dots */}
+                      {endPage < totalPages && (
+                        <li>
+                          <button onClick={() => setCurrentPage(endPage)}>
+                            ...
+                          </button>
+                        </li>
+                      )}
+                    </>
+                  );
+                })()}
+
+                {/* Next Page Button */}
+                <li>
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage >= pageCount - 1}
+                    className={
+                      currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""
+                    }
+                  >
+                    Next
+                  </button>
+                </li>
+
+                {/* Last Page Button */}
+                <li>
+                  <button
+                    onClick={() => gotoPage(pageCount - 1)}
+                    disabled={currentPage >= pageCount - 1}
+                    className={
+                      currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""
+                    }
+                  >
+                    <Icon icon="heroicons:chevron-double-right-solid" />
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </Card>
