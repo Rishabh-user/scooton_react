@@ -394,7 +394,7 @@ const UserList = () => {
               </span>
             </span>
           </div>
-          <ul className="pagination flex items-center space-x-3 rtl:space-x-reverse">
+          <ul className="flex items-center space-x-3 rtl:space-x-reverse">
             {totalCount > pagesizedata && (
               <>
                 {/* First Page Button */}
@@ -438,21 +438,24 @@ const UserList = () => {
                       )}
 
                       {/* Render page numbers */}
-                      {pageOptions.slice(0, 10).map((page, pageIdx) => (
-                        <li key={pageIdx}>
-                          <button
-                            href="#"
-                            aria-current="page"
-                            className={` ${pageIdx === pageIndex
-                              ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium "
-                              : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal  "
-                              }    text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150`}
-                            onClick={() => gotoPage(pageIdx)}
-                          >
-                            {page + 1}
-                          </button>
-                        </li>
-                      ))}
+                      {Array.from({ length: endPage - startPage }).map((_, idx) => {
+                        const pageNumber = startPage + idx;
+                        return (
+                          <li key={pageNumber}>
+                            <button
+                              className={
+                                pageNumber === currentPage
+                                  ? "bg-scooton-900 text-white"
+                                  : ""
+                              }
+                              onClick={() => setCurrentPage(pageNumber)}
+                            >
+                              {pageNumber + 1}
+                            </button>
+                          </li>
+                        );
+                      })}
+
                       {/* Next dots */}
                       {endPage < totalPages && (
                         <li>

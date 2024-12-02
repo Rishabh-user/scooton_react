@@ -12,8 +12,17 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from "@mui/material/TextField";
+import twowheeler from '../../assets/images/icon/Two_Wheeler_EV.png';
+import threewheeler from '../../assets/images/icon/Three_Wheeler.png';
+import tataace from '../../assets/images/icon/Tata_Ace.png'
+import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
+import Modal from "../../components/ui/Modal";
+import Button from "@/components/ui/Button";
 import Loading from "../../components/Loading";
-const COLUMNS = [
+import Tooltip from "@/components/ui/Tooltip";
+import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+const COLUMNS = (openIsDeleteOrder,ordersType) => [
   {
     Header: "Sr. No.",
     accessor: (row, i) => i + 1,
@@ -34,11 +43,6 @@ const COLUMNS = [
         return staticValue;
     },
   },
-  {
-    Header: "Amount",
-    accessor: "orderHistory.totalAmount",
-  },
-  
   {
     Header: "Order Date",
     accessor: "orderHistory.orderDate",
@@ -103,12 +107,78 @@ const COLUMNS = [
     accessor: "orderHistory.deliveryAddressDetails.addressLine1"
   },
   {
+    Header: "Amount",
+    accessor: "orderHistory.totalAmount",
+  },
+  ...( ordersType === "ACCEPTED"
+    ? [
+      {
+        Header: "Cancel",
+        accessor: "",
+        Cell: (row) => {
+          return (
+            <button type="button" onClick={() => openIsDeleteOrder(row.row.original.orderHistory.orderId)}>
+              <Icon icon="heroicons:x-mark" className="text-[24px] bg-opacity-25  rounded text-danger-500 bg-danger-500"></Icon>
+            </button>
+          )
+    
+        }
+      },
+    ]
+    : []),
+  {
     Header: "Vehicle Type",
     accessor: "vehicleId",
+    Cell: (row) => {
+      return (
+        <div>
+          {row?.cell?.value === 1 ? (
+            <img className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
+          ) : row?.cell?.value === 2 ? (
+            <img className="object-cover" width={30} alt="threewheeler" class="mr-2 rounded-0" src={threewheeler}></img>
+          ) : row?.cell?.value === 3 ? (
+            <img className=" object-cover" width={30} alt="tataace" class="mr-2 rounded-0" src={tataace}></img>
+          ) : (
+            <img className="object-cover" width={30} alt="pickup_8ft" class="mr-2 rounded-0" src={pickup_8ft}></img>
+          )
+          }
+
+        </div>
+      )
+
+    }
   },
   {
     Header:"Platform",
-    accessor:"orderHistory.platform"
+    accessor:"orderHistory.platform",
+    Cell: (row) => {
+      return (
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm1.8 18H14l-2-3.4l-2 3.4H8.2l2.9-4.5L8.2 11H10l2 3.4l2-3.4h1.8l-2.9 4.5zM13 9V3.5L18.5 9z"/></svg>
+        </div>
+      )
+
+    }
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    Cell: (row) => {
+      const navigate = useNavigate();
+      const handleViewClick = () => {
+        const orderId = row.row.original.orderHistory.orderId;
+        navigate(`/order-detail/${orderId}`);
+      };
+      return (
+        <div className="flex space-x-3 rtl:space-x-reverse">
+          <Tooltip content="View" placement="top" arrow animation="shift-away">
+            <button className="action-btn bg-scooton" type="button" onClick={handleViewClick}>
+              <Icon icon="heroicons:eye" />
+            </button>
+          </Tooltip>
+        </div>
+      );
+    },
   },
   
 ];
@@ -123,6 +193,8 @@ const OfflineOrders = () => {
   const [filterby, setFilterBy] = React.useState('NONE');
   const [pagesizedata, setpagesizedata]=useState(10);
   const [totalCount, setTotalCount] = useState(0);
+  const [deleteordermodel, setDeleteOrderModel] = useState(false);
+  const [orderid, setOrderDeleteId] = useState();
   const maxPagesToShow = 5;
   useEffect(() => {
     fetchOrders("ALL ORDERS");
@@ -150,10 +222,31 @@ const OfflineOrders = () => {
         setLoading(false);
       });
   };
+
+  const openIsDeleteOrder = async (id) => {
+    setDeleteOrderModel(true)
+    setOrderDeleteId(id)
+  }
+
+  const replaceOrder = () => {
+    axios.post(`${BASE_URL}/order/accepted-order-reorder/${orderid}`).then((response)=>{
+      toast.success(response)
+    }).catch((error) => {
+      console.error(error);
+    })
+  }
+
+  const cancelOrder = () => {
+    axios.post(`${BASE_URL}/order/cancel-order/${orderid}`).then((response)=>{
+      toast.success(response)
+    }).catch((error) => {
+      console.error(error);
+    })
+  }
   
   
 
-  const columns = useMemo(() => COLUMNS, []);
+  const columns = useMemo(() => COLUMNS(openIsDeleteOrder,ordersType), [ordersType]);
   const tableInstance = useTable(
     {
       columns,
@@ -236,9 +329,12 @@ const OfflineOrders = () => {
   useEffect(() => {
     setCurrentPage(pageIndex);
   }, [pageIndex]);
+
+
   
   return (
     <>
+      <ToastContainer/>
       <Card>
         <div className="md:flex justify-between items-center mb-6">
           <h4 className="card-title">All Riders</h4>
@@ -473,6 +569,37 @@ const OfflineOrders = () => {
           </ul>
         </div>
       </Card>
+
+      {deleteordermodel && (
+        <Modal
+          activeModal={deleteordermodel}
+          uncontrol
+          className="max-w-md"
+          title=""
+          centered
+          onClose={() => setDeleteOrderModel(false)}
+        >
+          <div className="">
+            <h5 className="text-center">Order Replace/Cancel</h5>
+            <div className="d-flex gap-2 justify-content-center mt-4">
+              <p>
+                Are you want to Replace Order ?
+              </p>
+              <Button className="btn btn-dark" type="button" onClick={() => {replaceOrder();setDeleteOrderModel(false)}}>
+                yes
+              </Button>
+            </div>
+            <div className="d-flex gap-2 justify-content-center mt-4">
+                <p>
+                  Are you want to Cancel Order ?
+                </p>
+                <Button className="btn btn-dark" type="button" onClick={() =>{cancelOrder();setDeleteOrderModel(false)}}>
+                  yes
+                </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

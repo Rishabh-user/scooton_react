@@ -49,7 +49,7 @@ const Dashboard = () => {
                 <div className="flex items-center space-x-6 rtl:space-x-reverse">                  
                   <div className="flex-1">
                     <div className="text-slate-800 dark:text-slate-300 text-sm mb-1 font-medium">
-                      Total Order Delivered
+                      Total Order Received
                     </div>
                     <div className="text-slate-900 dark:text-white tet-lg font-medium">
                       {orderData.responseIncoming}
