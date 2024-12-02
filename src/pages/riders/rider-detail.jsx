@@ -44,8 +44,7 @@ const RiderDetail = () => {
         fileName:''
     })
     const navigate = useNavigate();
-
-   
+    const [isDeleteModal, setIsDeleteModal] = useState(false);    
 
     const [updateridersdetails, setUpdateRiderDetails] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -322,13 +321,32 @@ const RiderDetail = () => {
     if (loading) {
         return <Loading />;
     }
+    
+
+
+  const deleteRider = async (riderId) => {
+    try {
+      const response = await axios.delete(
+        `${BASE_URL}/login/delete/${riderId}` 
+      );
+      if (response.status === 200) {
+        toast.success("Rider deleted successfully!");
+         
+      } else {
+        toast.error("Failed to delete rider. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting rider:", error);
+      toast.error("An error occurred while deleting the rider.");
+    }
+  };
   return (
     <>
         <ToastContainer/>
         <Card>
             <div className="card-header md:flex justify-between items-center mb-5 px-0 pt-0">
                 <div className="flex items-center">
-                    <Link to="/">
+                    <Link to="/all-riders">
                         <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                     </Link>
                     <h4 className="card-title ms-2 mb-0">Rider Details  <span className="px-2 py-1 text-sm rounded-[6px] bg-danger-500 text-white">Rider Id: {riderId}</span></h4>
@@ -336,7 +354,40 @@ const RiderDetail = () => {
                 <div className="flex gap-2">
                     {/* <button type="button" className="btn btn-dark"><img src={} /></button> */}
                     <button type="button" className="btn btn-dark p-2"><Icon icon="heroicons:bell-alert" className="text-[20px]"></Icon></button>
-                    <button type="button" className="btn btn-dark p-2"><Icon icon="heroicons:trash" className="text-[20px]"></Icon></button>
+                    <button type="button" className="btn btn-dark p-2" onClick={() => setIsDeleteModal(true)}><Icon icon="heroicons:trash" className="text-[20px]"></Icon></button>
+                    {isDeleteModal && (
+                        <Modal
+                        activeModal={isDeleteModal}
+                        uncontrol
+                        className="max-w-md"
+                        title=""
+                        centered
+                        onClose={() => setIsDeleteModal(false)}
+                        >
+                        <div>
+                            <h5 className="text-center">Are you sure you want to delete this rider?</h5>
+                            <div className="d-flex gap-2 justify-content-center mt-4">
+                            <Button
+                                className="btn btn-dark"
+                                type="button"
+                                onClick={() => setIsDeleteModal(false)} // Close the modal on "No"
+                            >
+                                No
+                            </Button>
+                            <Button
+                                className="btn btn-outline-light"
+                                type="button"
+                                onClick={() => {
+                                deleteRider(riderId); // Call delete API with riderId
+                                setIsDeleteModal(false); // Close the modal
+                                }}
+                            >
+                                Yes
+                            </Button>
+                            </div>
+                        </div>
+                        </Modal>
+                    )}
                     <button type="button" className="btn btn-dark p-2"><Icon icon="heroicons:map-pin" className="text-[20px]"></Icon></button>
                 </div>
             </div>
@@ -911,22 +962,22 @@ const RiderDetail = () => {
       
       {documentModel && (  
         <Modal
-        activeModal={documentModel}
-        uncontrol
-        className="max-w-xl"
-        title=""
-        
-        onClose={() => setIsDocumentModel(false)}
+            activeModal={documentModel}
+            uncontrol
+            className="max-w-4xl"
+            title=""
+            centered            
+            onClose={() => setIsDocumentModel(false)}
         >
-            <div className="">
-            <iframe
-                src={viewDocumentModelDetail}
-                width="100%"
-                height="500px"
-                title="Document Viewer"
-                ></iframe>
+            <div className="viewdocument-frame">
+                <iframe
+                    src={viewDocumentModelDetail}
+                    width="100%"
+                    height="400px"
+                    title="Document Viewer"
+                />         
             </div>
-          </Modal>
+        </Modal>
       )} 
     </>
   );

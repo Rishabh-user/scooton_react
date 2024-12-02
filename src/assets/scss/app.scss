@@ -187,7 +187,7 @@
 }
 table thead th{background-color: #f1f1f1;}
 table thead th:first-child {width: 90px;}
-.table-td, .table-th{padding-top: .75rem;padding-bottom: .75rem;}
+.table-td, .table-th{padding-top: .5rem;padding-bottom: .5rem;}
 .backdrop-filter {backdrop-filter: blur(4px);background-color: #00000073;}
 .onOff-riders>div {
   display: flex;
@@ -200,7 +200,7 @@ table thead th:first-child {width: 90px;}
   height: 10px;
   background-color: #ffa560;
   border-radius: 50%;
-  margin-right: .5rem;line-height: normal;
+  margin-right: .25rem;line-height: normal;
 }
 .onOff-riders>div.online>span{background-color: green;}
 .onOff-riders>div.offline>span{background-color: red;}
@@ -208,7 +208,7 @@ table thead th:first-child {width: 90px;}
 .rider-filter{display: flex;gap:10px;}
 .rider-filter>div{flex:1;}
 .flex-1{flex:1;}
-.MuiInputBase-formControl{height: 45px;}
+.MuiInputBase-formControl{height: 40px;}
 .filter-orderlist {
   display: flex;
   justify-content: center;
@@ -238,8 +238,28 @@ table thead th:first-child {width: 90px;}
 .mobile-view{display: none;}
 .all-riders {display: flex;justify-content: space-between;}
 .all-rider-mobile{display: flex;align-items: center;gap: 10px;flex-wrap: wrap;}
+.filterbyRider {display: flex;border: 1px solid #c4c4c4; border-radius: .25rem;height: 40px;}
+.filterbyRider fieldset{border: 0;}
+.filterbyRider>div+div fieldset{border-left: 1px solid #c4c4c4; border-radius: 0;}
+.filter-showhide{position: relative;}
+.filter-show{background-color: #fff;border: 1px solid #ccc;border-radius: .25rem;
+width: 100%;padding: 1rem;box-shadow: 0px 0px 18px #e8e8e8;margin-bottom: 1rem;}
+.filter-show>div{display: flex;gap:10px}
+.viewdocument-frame iframe {height: 400px;}
 
 @media (max-width:991px){
   .desktop-view-filter{display: none;}
   .mobile-view{display: block;}
+  .mobile-view .btn{padding: .5rem;}
+  // .filter-show{position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);}
+  .filter-show>div{display: block;gap:10px}
+  .filter-showhide{position: sticky;top:70px;background-color: #fff;}
+  .filter-show .MuiFormControl-fullWidth{display: flex;flex-direction: row;}
+  .filter-show .MuiFormControl-fullWidth label{flex:1}
+  .filter-show .MuiFormControl-fullWidth .MuiOutlinedInput-root, .filter-show .MuiFormControl-fullWidth>.filterbyRider{flex: 2;font-size: 14px;}
+}
+@media (max-width:768px){
+  .onOff-riders{column-gap: 10px !important;gap: 0px;}
+  
+  .all-rider-mobile{gap: 5px;}
 }

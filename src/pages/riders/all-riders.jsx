@@ -191,10 +191,10 @@ const AllRiders = () => {
   const [totalCount, setTotalCount] = useState(0);
   const maxPagesToShow = 5;
 
-  const [show, setShow] = useState(false);
+  // const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
@@ -372,152 +372,136 @@ const AllRiders = () => {
     setpagesizedata(newSize); 
     setCurrentPage(0);  
   };
+  // show hide
+  const [isVisible, setIsVisible] = useState(false);
+  const handleShow = () => {
+    setIsVisible(!isVisible); 
+  };
 
   return (
     <>
       <Card>
-        <div className="md:flex justify-between items-center mb-6">
-          <div className="rider-status">
-            <div className="all-riders">
-              <h4 className="card-title">
-                <div className="all-rider-mobile">
-                  <span>All Riders </span>
-                  <div className="onOff-riders">
-                    <div className="all-rider"><span></span> {activeridercount?.allRider} (Total Riders)</div>
-                    <div className="online"><span></span> {activeridercount?.onlineRider} (Online)</div>
-                    <div className="offline"><span></span> {activeridercount?.offlineRider} (Offline)</div>
+        <div className="filter-showhide">
+          <div className="md:flex justify-between items-center mb-3 ">
+            <div className="rider-status">
+              <div className="all-riders">
+                <h4 className="card-title">
+                  <div className="all-rider-mobile">
+                    <span>All Riders </span>
+                    <div className="onOff-riders">
+                      <div className="all-rider"><span></span> {activeridercount?.allRider} (Total Riders)</div>
+                      <div className="online"><span></span> {activeridercount?.onlineRider} (Online)</div>
+                      <div className="offline"><span></span> {activeridercount?.offlineRider} (Offline)</div>
+                    </div>
                   </div>
-                </div>
-              </h4>
-              <span className="mobile-view">
-                <Button className="btn btn-dark" onClick={handleShow}>
+                </h4>
+                <span className="mobile-view">
+                  <Button className="btn btn-dark" onClick={handleShow}>
+                    <Icon icon="heroicons:adjustments-horizontal" className="text-[20px]"></Icon>
+                  </Button>
+                </span>
+              </div>
+            </div>
+            <div className="rider-filter">            
+              <div className="d-flex justify-content-end">              
+                <Button className="btn btn-dark desktop-view-filter" onClick={handleShow}>
                   <Icon icon="heroicons:adjustments-horizontal" className="text-[20px]"></Icon>
                 </Button>
-              </span>
+              </div>
             </div>
           </div>
-          <div className="rider-filter">            
-            <div className="d-flex justify-content-end">              
-              <Button className="btn btn-dark desktop-view-filter" onClick={handleShow}>
-                <Icon icon="heroicons:adjustments-horizontal" className="text-[20px]"></Icon>
-              </Button>
-              <Modal show={show} onHide={handleClose} centered>
-                <Modal.Header closeButton>
-                  <Modal.Title>Filter Rider</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <div className="">
-                    <div className="flex-1">
-                      <FormControl fullWidth className="mb-3">
-                        <label className="text-sm mb-1">Rider Status</label>
-                        <Select
-                          id="demo-simple-select"
-                          //label="Rider_Status"
-                          value={riderstatus}
-                          onChange={riderStatusFilter}
-                          displayEmpty
-                          inputProps={{ 'aria-label': 'Without label' }}
-                        >
-                          <MenuItem value="">Rider Status</MenuItem>
-                          <MenuItem value="ALL">ALL</MenuItem>
-                          <MenuItem value="ONLINE">ONLINE</MenuItem>
-                          <MenuItem value="OFFLINE">OFFLINE</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                    <div className="flex-1">
-                      <FormControl fullWidth className="mb-3">
-                        <label className="text-sm mb-1">Document Status</label>
-                        <Select
-                          id="demo-simple-select"
-                          //label="Document"
-                          value={documentstatus}
-                          onChange={documentStatusFilter}
-                          displayEmpty
-                          inputProps={{ 'aria-label': 'Without label' }}
-                        >
-                          <MenuItem value="ALL">All</MenuItem>
-                          <MenuItem value="NEW_USER">New User</MenuItem>
-                          <MenuItem value="REGISTERED">Registered</MenuItem>
-                          <MenuItem value="DOCUMENT_PENDING">Document Pending</MenuItem>
-                          <MenuItem value="DOCUMENT_REJECTED">Document Rejected</MenuItem>
-                          <MenuItem value="REVIEW_PENDING">Review Pending</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                    <div className="flex-1">
-                      <FormControl fullWidth className="mb-3">
-                        <label className="text-sm mb-1">Vehicle Type</label>
-                        <Select
-                          id="demo-simple-select"
-                          //label="Vehicle_Status"
-                          value={vehicleid}
-                          onChange={vehicleIdFilter}
-                          displayEmpty
-                          inputProps={{ 'aria-label': 'Without label' }}
-                        >
-                          <MenuItem value="0">ALL</MenuItem>
-                          <MenuItem value="2">Two Wheeler EV</MenuItem>
-                          <MenuItem value="4">Three Wheeler</MenuItem>
-                          <MenuItem value="7">Pickup 8ft</MenuItem>
-                          <MenuItem value="3">TATA Ace</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-                  </div>
-                  <FormControl fullWidth className="mb-3">
-                    <label className="text-sm mb-1">Filter By</label>
-                    <div className="d-flex">
-                    {/* <InputGroup
+        {isVisible && (
+          <div className="filter-show">
+            <div className="">
+              <div className="flex-1">
+                <FormControl fullWidth className="mb-3">
+                  <label className="text-sm mb-1">Rider Status</label>
+                  <Select
+                    id="demo-simple-select"
+                    //label="Rider_Status"
+                    value={riderstatus}
+                    onChange={riderStatusFilter}
+                    displayEmpty
+                    inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                    <MenuItem value="">Rider Status</MenuItem>
+                    <MenuItem value="ALL">ALL</MenuItem>
+                    <MenuItem value="ONLINE">ONLINE</MenuItem>
+                    <MenuItem value="OFFLINE">OFFLINE</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+              <div className="flex-1">
+                <FormControl fullWidth className="mb-3">
+                  <label className="text-sm mb-1">Document Status</label>
+                  <Select
+                    id="demo-simple-select"
+                    //label="Document"
+                    value={documentstatus}
+                    onChange={documentStatusFilter}
+                    displayEmpty
+                    inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                    <MenuItem value="ALL">All</MenuItem>
+                    <MenuItem value="NEW_USER">New User</MenuItem>
+                    <MenuItem value="REGISTERED">Registered</MenuItem>
+                    <MenuItem value="DOCUMENT_PENDING">Document Pending</MenuItem>
+                    <MenuItem value="DOCUMENT_REJECTED">Document Rejected</MenuItem>
+                    <MenuItem value="REVIEW_PENDING">Review Pending</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+              <div className="flex-1">
+                <FormControl fullWidth className="mb-3">
+                  <label className="text-sm mb-1">Vehicle Type</label>
+                  <Select
+                    id="demo-simple-select"
+                    //label="Vehicle_Status"
+                    value={vehicleid}
+                    onChange={vehicleIdFilter}
+                    displayEmpty
+                    inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                    <MenuItem value="0">ALL</MenuItem>
+                    <MenuItem value="2">Two Wheeler EV</MenuItem>
+                    <MenuItem value="4">Three Wheeler</MenuItem>
+                    <MenuItem value="7">Pickup 8ft</MenuItem>
+                    <MenuItem value="3">TATA Ace</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+              <div className="flex-1">
+                <FormControl fullWidth className="mb-3">
+                  <label className="text-sm mb-1">Filter By</label>
+                  <div className="filterbyRider">                    
+                    <Select
+                      id="demo-simple-select"
+                      value={filterby}
+                      onChange={handleChange}
+                      displayEmpty
+                      inputProps={{ 'aria-label': 'Without label' }}
+                    >
+                      <MenuItem value="NONE">NONE</MenuItem>
+                      <MenuItem value="RIDERID">Rider ID</MenuItem>
+                      <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                      <MenuItem value="RIDERNAME">Rider Name</MenuItem>
+                    </Select>
+                    <TextField
+                      id="search"
                       type="text"
-                      placeholder="Search...."
-                      fullWidth
-                      append={
-                        <Select
-                          id="demo-simple-select"
-                          value={filterby}
-                          onChange={handleChange}
-                          displayEmpty
-                          inputProps={{ 'aria-label': 'Without label' }}
-                        >
-                          <MenuItem value="NONE">NONE</MenuItem>
-                          <MenuItem value="RIDERID">Rider ID</MenuItem>
-                          <MenuItem value="MOBILE">Mobile Number</MenuItem>
-                          <MenuItem value="RIDERNAME">Rider Name</MenuItem>
-                        </Select>
-                      }
-                    /> */}
-                      <Select
-                        id="demo-simple-select"
-                        value={filterby}
-                        onChange={handleChange}
-                        displayEmpty
-                        inputProps={{ 'aria-label': 'Without label' }}
-                      >
-                        <MenuItem value="NONE">NONE</MenuItem>
-                        <MenuItem value="RIDERID">Rider ID</MenuItem>
-                        <MenuItem value="MOBILE">Mobile Number</MenuItem>
-                        <MenuItem value="RIDERNAME">Rider Name</MenuItem>
-                      </Select>
-                      <TextField
-                        id="search"
-                        type="text"
-                        name="search"
-                        placeholder="Filter By"
-                        value={search}
-                        onChange={handleSearchChange}
-                      />
-                    </div>
-                  </FormControl>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button className="btn btn-dark" onClick={handleClose}>
-                    Apply
-                  </Button>
-                </Modal.Footer>
-              </Modal>
+                      name="search"
+                      className=""
+                      placeholder="Filter By"
+                      value={search}
+                      onChange={handleSearchChange}
+                    />
+                  </div>
+                </FormControl>
+              </div>
             </div>
+            
           </div>
+        )}
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
@@ -649,11 +633,10 @@ const AllRiders = () => {
                         return (
                           <li key={pageNumber}>
                             <button
-                              className={
-                                pageNumber === currentPage
-                                  ? "bg-scooton-900 text-white"
-                                  : ""
-                              }
+                              className={` ${pageNumber === currentPage
+                                  ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium"
+                                  : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal"
+                                } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150 `}
                               onClick={() => setCurrentPage(pageNumber)}
                             >
                               {pageNumber + 1}
