@@ -62,7 +62,7 @@ import Settings from "./pages/configuration/setting";
 import AddHomePage from "./pages/home-page/add-homepage";
 function App() {
   return (
-    <main className="App  relative">
+    <main className="App  relative h-100">
       <Routes>
         
         <Route

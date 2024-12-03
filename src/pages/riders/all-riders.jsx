@@ -463,6 +463,7 @@ const AllRiders = () => {
                     inputProps={{ 'aria-label': 'Without label' }}
                   >
                     <MenuItem value="0">ALL</MenuItem>
+                    <MenuItem value="1">Two Wheeler</MenuItem>
                     <MenuItem value="2">Two Wheeler EV</MenuItem>
                     <MenuItem value="4">Three Wheeler</MenuItem>
                     <MenuItem value="7">Pickup 8ft</MenuItem>

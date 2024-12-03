@@ -14,16 +14,17 @@ import Modal from "../../components/ui/Modal";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { TabPanel, Tabs, Tab, TabList } from "react-tabs";
-import Flatpickr from "react-flatpickr";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import * as XLSX from "xlsx";
 
 const Settings = () => {
     const navigate = useNavigate();
     const[logoutAll, setLogoutAllList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [logoutDevice, setLogoutDevice] = useState();
-    const [isLogoutModal, setIsLogoutModal] = useState(false);
-    const [from_date, setFromDate] = useState("");
-    const [to_date, setToDate] = useState("");
+    const [isLogoutModal, setIsLogoutModal] = useState(false);   
 
     useEffect(() => {
       const fetchLogoutAllList = async () => {
@@ -82,79 +83,98 @@ const Settings = () => {
        }
     }
 
-    const getTodayDate = () => {
-        const today = new Date();
-        console.log("today",today)
-        const month = String(today.getMonth() + 1).padStart(2, '0'); 
-        const day = String(today.getDate()).padStart(2, '0');
-        const year = today.getFullYear();
-        
-        return `${month}-${day}-${year}`;
-    };
-   
-    const todaydate = getTodayDate()
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
-    const isDateWithinOneMonth = (start, end) => {
-        const startDate = new Date(start);
-        const endDate = new Date(end);
-        const maxEndDate = new Date(startDate);
-        maxEndDate.setMonth(startDate.getMonth() + 1);
-         
-        console.log("gap",endDate <= maxEndDate)
-    
-        return endDate <= maxEndDate;
+    const handleStartDateChange = (newValue) => {
+        setStartDate(newValue);
+        validateDateRange(newValue, endDate);
     };
-    
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
 
-    
-        if (name === "from_date") {
-            setFromDate(value);
-            
-            if (to_date && !isDateWithinOneMonth(value, to_date)) {
-                //toast.error("The selected dates must be within one month of each other.")
-                setToDate(""); 
-            }
-        } else if (name === "to_date") {
-            if (from_date && !isDateWithinOneMonth(from_date, value)) {
-                //toast.error("The selected dates must be within one month of each other.")
-                return;
-            }
-            setToDate(value);
+    const handleEndDateChange = (newValue) => {
+        setEndDate(newValue);
+        validateDateRange(startDate, newValue);
+    };
+
+    const validateDateRange = (start, end) => {
+        if (start && end) {
+        const differenceInDays = dayjs(end).diff(dayjs(start), "day") + 1;
+        setIsButtonDisabled(differenceInDays > 30 || differenceInDays <= 0);
+        } else {
+        setIsButtonDisabled(true);
         }
     };
 
-    const formatDateToDatetimeLocal = (dateString) => {
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-      
-        return `${month}-${day}-${year}`;
-      };
-
-    const exportCsv = async (fromdate, todate) =>{
-       console.log("dates",fromdate,todate)
-       const fromdatevalue = formatDateToDatetimeLocal(fromdate);
-       const todatevalue = formatDateToDatetimeLocal(todate)
-       try{
-            await axios.get(`${BASE_URL}/order/v2/orders/get-city-wide-orders-by-date?from_date=${fromdatevalue}&to_date=${todatevalue}`).then((response) => {
-                toast.success("CSV downloaded successfully")
-            })
-       }catch{
-        toast.error(error)
-       }
-       
-    }
-
+    const exportCsv = async () => {
+        if (!startDate || !endDate) return;
+    
+        const formattedFromDate = dayjs(startDate).format("MM-DD-YYYY");
+        const formattedToDate = dayjs(endDate).format("MM-DD-YYYY");
+    
+        try {
+            const response = await axios.get(
+                `${BASE_URL}/order/v2/orders/get-city-wide-orders-by-date?from_date=${formattedFromDate}&to_date=${formattedToDate}`,
+                {
+                    responseType: "json",
+                }
+            );
+    
+            if (response.data?.length === 0) {
+                alert("No data found for the specified date range.");
+                return;
+            }
+    
+            const csvData = response.data.map((item) => {
+                const { orderDetails, customerDetails, riderDetails } = item.jsonData;
+                return {
+                    "Order ID": orderDetails?.orderId || "N/A",
+                    "Order Status": orderDetails?.orderStatus || "N/A",
+                    "Order Type": orderDetails?.orderType || "N/A",
+                    "Order Date": orderDetails?.orderDateTime || "N/A",
+                    "User Mobile": orderDetails?.userMobileNumber || "N/A",
+                    "User Name": orderDetails?.userName?.trim() || "N/A",
+                    "MRP": orderDetails?.orderAmount?.mrp || 0,
+                    "Discount": orderDetails?.orderAmount?.discount || 0,
+                    "Final Price": orderDetails?.orderAmount?.finalPrice || 0,
+                    "Delivery Date": orderDetails?.deliveryDateTime || "N/A",
+                    "Pickup Address": customerDetails?.pickupAddress || "N/A",
+                    "Pickup Contact": customerDetails?.pickupContact || "N/A",
+                    "Delivery Address": customerDetails?.deliveryAddress || "N/A",
+                    "Delivery Contact": customerDetails?.deliveryContact || "N/A",
+                    "Rider ID": riderDetails?.riderId || "N/A",
+                    "Rider Name": riderDetails?.riderName || "N/A",
+                    "Rider Contact": riderDetails?.riderContact || "N/A",
+                    "On-Role Rider": riderDetails?.onRoleRider || "N/A",
+                    "Vehicle Type": riderDetails?.vehicleType || "N/A",
+                };
+            });
+    
+            // Create a workbook and add a worksheet
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.json_to_sheet(csvData);
+    
+            // Add the worksheet to the workbook
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+    
+            // Write the workbook to a file
+            XLSX.writeFile(
+                workbook,
+                `orders_${formattedFromDate}_to_${formattedToDate}.xlsx`
+            );
+        } catch (error) {
+            console.error("Error exporting data:", error);
+            alert("An error occurred while exporting the data.");
+        }
+    };
+    
     if (loading) {
         return <Loading />;
     }
   return (
     <>
         <ToastContainer/>
-        <Card>
+        <Card className="h-100">
             <Tabs>
                 <div className="max-w-[800px] mx-auto">
                     <TabList>
@@ -237,47 +257,40 @@ const Settings = () => {
                             <h4 className="card-title">Export Order Data</h4>
                         </div>
                     </div>
-                    <div className="grid xl:grid-cols-3 md:grid-cols-3 grid-cols-1 gap-3 items-end">
-                        {/* <TextField
-                            id="from_date"
-                            type="date" 
-                            name="from_date"
-                            value={from_date}
-                            onChange={handleInputChange}          
-                        />     */}
-                        <Flatpickr
-                            type="date"
-                            id="from_date"
-                            className="form-control py-3"
-                            value={from_date}
-                            onChange={handleInputChange} 
-                            style={{backgroundColor: 'transparent'}}
-                        />
-                                         
-                        {/* <TextField
-                            id="to_date"
-                            type="date"
-                            name="to_date"
-                            value={to_date}
-                            maxDate={new Date}
-                            onChange={handleInputChange}                
-                        /> */}
-                        <Flatpickr
-                            id="to_date"
-                            type="date"
-                            className="form-control py-3"
-                            name="to_date"
-                            value={to_date}
-                            maxDate={new Date}
-                            onChange={handleInputChange} 
-                            style={{backgroundColor: 'transparent'}}
-                        />
-                        <div className="w-100 h-100"><Button type="button" className="btn h-100 items-center btn-dark py-2" disabled={isDateWithinOneMonth()} onClick={() => exportCsv(from_date,to_date)}>Export</Button></div>
+                    <div className="export-data">                        
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <div className="flex w-100 gap-3">
+                                <div className="">
+                                    <DatePicker
+                                        label="Start Date"
+                                        value={startDate}
+                                        onChange={handleStartDateChange}
+                                        maxDate={dayjs()}
+                                    />
+                                </div>
+                                <div className="">
+                                    <DatePicker
+                                        label="End Date"
+                                        value={endDate}
+                                        onChange={handleEndDateChange}
+                                        maxDate={dayjs()}
+                                    />
+                                </div>
+                                <button
+                                    className="btn btn-dark"
+                                    disabled={isButtonDisabled}
+                                    onClick={exportCsv}
+                                >
+                                    Export
+                                </button>
+                            </div>
+                        </LocalizationProvider>                   
+                    </div>
+                    <div className="mt-4">
+                        <p><strong>Note*</strong> <i>For every export,you can set the date limit to a maximum of 30 days.</i></p>
                     </div>
                 </TabPanel>
             </Tabs>
-           
-           
             
         </Card>
             {isLogoutModal && 

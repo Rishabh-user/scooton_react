@@ -246,6 +246,7 @@ table thead th:first-child {width: 90px;}
 width: 100%;padding: 1rem;box-shadow: 0px 0px 18px #e8e8e8;margin-bottom: 1rem;}
 .filter-show>div{display: flex;gap:10px}
 .viewdocument-frame iframe {height: 400px;}
+.export-data .MuiInputBase-formControl {height: 50px;}
 
 @media (max-width:991px){
   .desktop-view-filter{display: none;}
