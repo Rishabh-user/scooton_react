@@ -7,6 +7,13 @@ import Textinput from "@/components/ui/Textinput";
 import Switch from "@/components/ui/Switch";
 import { BASE_URL } from "../../api";
 import Loading from "../../components/Loading";
+import twowheeler from '../../assets/images/icon/Two_Wheeler_EV.png';
+import threewheeler from '../../assets/images/icon/Three_Wheeler.png';
+import tataace from '../../assets/images/icon/Tata_Ace.png'
+import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
+import Eeco from '../../assets/images/icon/Eeco.png';
+import { useNavigate } from "react-router-dom";
+import Tooltip from "@/components/ui/Tooltip";
 
 const COLUMNS = [
   {
@@ -99,7 +106,7 @@ const COLUMNS = [
   },
   {
     Header: "Online/Offline",
-    accessor: "riderInfo.active",
+    accessor: "riderInfo.riderActiveForOrders",
     Cell: ({ value }) => {
       const statusClass = value ? "text-success-500 bg-success-500" : "text-warning-500 bg-warning-500";
       const statusText = value ? "Online" : "Offline";
@@ -118,6 +125,45 @@ const COLUMNS = [
   {
     Header: "Vehicle Type",
     accessor: "riderInfo.vehicleType",
+    Cell: (row) => {
+      return (
+        <div>
+          {row?.cell?.value === 'Two Wheeler EV' || row?.cell?.value === 'Two Wheeler' ? (
+            <img className="object-cover mr-2" width={30} alt="twowheeler" src={twowheeler} />
+          ) : row?.cell?.value === 'Three Wheeler' ? (
+            <img className="object-cover mr-2" width={30} alt="threewheeler" src={threewheeler} />
+          ) : row?.cell?.value === 'Tata Ace' ? (
+            <img className="object-cover mr-2" width={30} alt="tataace" src={tataace} />
+          ) : row?.cell?.value === 'Pickup 8ft' ? (
+            <img className="object-cover mr-2" width={30} alt="pickup_8ft" src={pickup_8ft} />
+          ) : row?.cell?.value === 'Eeco' ? (
+            <img className="object-cover mr-2" width={30} alt="eeco" src={Eeco} />
+          ) : row?.cell?.value === 'Champion' ? (
+            <img className="object-cover mr-2" width={30} alt="champion" src={campion} />
+          ) : null}
+        </div>
+      );
+    }
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    Cell: (row) => {
+      const navigate = useNavigate();
+      const handleViewClick = () => {
+        const riderId = row.row.original.riderInfo.id;
+        navigate(`/rider-detail/${riderId}`);
+      };
+      return (
+        <div className="flex space-x-3 rtl:space-x-reverse">
+          <Tooltip content="View" placement="top" arrow animation="shift-away">
+            <button className="action-btn bg-scooton" type="button" onClick={handleViewClick}>
+              <Icon icon="heroicons:eye" />
+            </button>
+          </Tooltip>
+        </div>
+      );
+    },
   },
 ];
 
@@ -211,14 +257,7 @@ const OnRoleRiders = () => {
     <>
       <Card>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">On Role Riders</h4>
-          <div>
-            <Textinput
-                placeholder="Search by mobile number"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+          <h4 className="card-title">On Role Riders</h4>         
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">

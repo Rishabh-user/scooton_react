@@ -18,6 +18,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import * as XLSX from "xlsx";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Settings = () => {
     const navigate = useNavigate();
@@ -85,6 +86,7 @@ const Settings = () => {
 
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [loadingCSV, setLoadingCSV] = useState(false);
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
     const handleStartDateChange = (newValue) => {
@@ -107,12 +109,12 @@ const Settings = () => {
     };
 
     const exportCsv = async () => {
-        if (!startDate || !endDate) return;
-    
+        if (!startDate || !endDate) return;    
         const formattedFromDate = dayjs(startDate).format("MM-DD-YYYY");
-        const formattedToDate = dayjs(endDate).format("MM-DD-YYYY");
-    
+        const formattedToDate = dayjs(endDate).format("MM-DD-YYYY");   
+         
         try {
+            setLoadingCSV(true);
             const response = await axios.get(
                 `${BASE_URL}/order/v2/orders/get-city-wide-orders-by-date?from_date=${formattedFromDate}&to_date=${formattedToDate}`,
                 {
@@ -122,6 +124,7 @@ const Settings = () => {
     
             if (response.data?.length === 0) {
                 alert("No data found for the specified date range.");
+                setLoadingCSV(false); 
                 return;
             }
     
@@ -148,23 +151,20 @@ const Settings = () => {
                     "On-Role Rider": riderDetails?.onRoleRider || "N/A",
                     "Vehicle Type": riderDetails?.vehicleType || "N/A",
                 };
-            });
-    
-            // Create a workbook and add a worksheet
+            });    
             const workbook = XLSX.utils.book_new();
             const worksheet = XLSX.utils.json_to_sheet(csvData);
     
-            // Add the worksheet to the workbook
             XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
     
-            // Write the workbook to a file
             XLSX.writeFile(
                 workbook,
                 `orders_${formattedFromDate}_to_${formattedToDate}.xlsx`
             );
         } catch (error) {
             console.error("Error exporting data:", error);
-            alert("An error occurred while exporting the data.");
+        }finally {
+            setLoadingCSV(false);
         }
     };
     
@@ -277,13 +277,18 @@ const Settings = () => {
                                     />
                                 </div>
                                 <button
-                                    className="btn btn-dark"
+                                    className={`btn btn-dark`}
                                     disabled={isButtonDisabled}
                                     onClick={exportCsv}
-                                >
-                                    Export
-                                </button>
+                                >   Export</button>
                             </div>
+                           {loadingCSV && (
+                             <div className="loader-fixed">
+                                <span className="flex items-center gap-2">
+                                    <CircularProgress size={40} color="inherit" />                                
+                                </span>
+                             </div>
+                           )}
                         </LocalizationProvider>                   
                     </div>
                     <div className="mt-4">
@@ -291,7 +296,6 @@ const Settings = () => {
                     </div>
                 </TabPanel>
             </Tabs>
-            
         </Card>
             {isLogoutModal && 
                 <Modal

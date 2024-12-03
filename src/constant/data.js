@@ -11,7 +11,7 @@ export const menuItems = [
   },
   {
     title: "Orders",
-    icon: "heroicons-outline:home",
+    icon: "heroicons-outline:clipboard-document-list",
     link: "orders",
     child: [
       {

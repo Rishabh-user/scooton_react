@@ -111,7 +111,7 @@ const COLUMNS = [
   },
   {
     Header: "Online/Offline",
-    accessor: "riderInfo.active",
+    accessor: "riderInfo.riderActiveForOrders",
     Cell: ({ value }) => {
       const statusClass = value ? "text-success-500 bg-success-500" : "text-warning-500 bg-warning-500";
       const statusText = value ? "Online" : "Offline";
@@ -176,7 +176,9 @@ const COLUMNS = [
 const RegisteredRiders = () => {
   const [loading, setLoading] = useState(true);
   const [riderData, setRiderData] = useState([]);
+  const [activeridercount, setActiveRiderCount] = useState([])
   const [search, setSearch] = useState("");
+  const [riderstatus, setRiderStatus]= useState('All')
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [pagesizedata, setpagesizedata]=useState(10);
@@ -209,7 +211,44 @@ const RegisteredRiders = () => {
         });
     }
   }
+  // Get Rider Count
+  useEffect(() => {
+    try {
+      axios.get(`${BASE_URL}/login/get-online-offline-rider/0/REGISTERED`).then((response) => {
+        setActiveRiderCount(response.data)
+      })
+    } catch {
+      console.log(error)
+    }
+  }, [])
+  // End
+  const filterRiders = () => {
+    try {
+      axios
+        .get(
+          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/${riderstatus}/0?page=${currentPage}&size=100`
+        )
+        .then((response) => {
+          setRiderData(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching rider data:", error);
+        }).finally(() => {
+          setLoading(false);
+        });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
   
+  useEffect(() => {
+    filterRiders();
+  }, [riderstatus, currentPage]);
+
+  const riderStatusFilter = (event) => {
+    console.log("Rider status:", event.target.value);
+    setRiderStatus(event.target.value);
+  };
   
 
   const columns = useMemo(() => COLUMNS, []);
@@ -286,39 +325,104 @@ const RegisteredRiders = () => {
       setLoading(false); 
     });
   }
+
   
   return (
     <>
       <Card>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Registered Riders </h4>
+          <div className="rider-status">
+            <div className="all-riders">
+              <h4 className="card-title">
+                <div className="all-rider-mobile">
+                  <span>Registered Riders</span>
+                  <div className="onOff-riders">
+                    <div className="all-rider"><span></span> {activeridercount.allRider} (Total Riders)</div>
+                    <div className="online"><span></span> {activeridercount.onlineRider} (Online)</div>
+                    <div className="offline"><span></span> {activeridercount.offlineRider} (Offline)</div>
+                  </div>
+                </div>
+              </h4>              
+            </div>
+            <div className="d-flex gap-2">
+              {Array.isArray(activeridercount?.onlineRiderCategoryWise) &&
+              activeridercount.onlineRiderCategoryWise.map((riderVehicle) => {
+                const { categoryId, vehicleType } = riderVehicle;
+                return (
+                  <span key={categoryId}>
+                    {categoryId === 1 && vehicleType === "Two Wheeler" ? (
+                      <div className="rider-count">
+                        <img src={twowheeler} alt="Two-Wheeler" width={30} />
+                        {riderVehicle.riderCount} 
+                      </div>
+                    ) : categoryId === 2 && vehicleType === "Three Wheeler" ? (
+                      <div className="rider-count">
+                        <img src={threewheeler} alt="Three-Wheeler" width={30} />
+                        {riderVehicle.riderCount} 
+                      </div>
+                    ) : categoryId === 3 && vehicleType === "Tata Ace" ? (
+                      <div className="rider-count">
+                        <img src={tataace} alt="Tata Ace" width={30} />
+                        {riderVehicle.riderCount} 
+                      </div>
+                    ) : categoryId === 4 && vehicleType === "Pickup 8ft" ? (
+                      <div className="rider-count">
+                        <img src={pickup_8ft} alt="Pickup 8ft" width={30} />
+                        {riderVehicle.riderCount} 
+                      </div>
+                    ) : null}
+                  </span>
+                );
+              })}             
+            </div>
+          </div>
           <div className="flex gap-2">
-            <FormControl fullWidth>
-              <label className="text-sm">Filter By</label>
-              <Select
-                id="demo-simple-select"
-                value={filterby}
-                //label="Filter By"
-                onChange={handleChange}
-                displayEmpty
-                inputProps={{ 'aria-label': 'Without label' }}
-              >
-                <MenuItem value="NONE">NONE</MenuItem>
-                <MenuItem value="RIDERID">Rider ID</MenuItem>
-                <MenuItem value="RIDERNAME">Rider Name</MenuItem>
-                <MenuItem value="MOBILE">Mobile Number</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl>
-              <label className="text-sm">Filter By</label>
-              <TextField
-                id="search"
-                type="text"
-                name="search"
-                value={search}
-                onChange={handleSearchChange}
-              />
-            </FormControl>
+            <div className="flex-1">
+              <FormControl fullWidth className="mb-3">
+                <label className="text-sm">Rider Status</label>
+                <Select
+                  id="demo-simple-select"
+                  //label="Rider_Status"
+                  value={riderstatus}
+                  onChange={riderStatusFilter}
+                  displayEmpty
+                  inputProps={{ 'aria-label': 'Without label' }}
+                >
+                  <MenuItem value="">Rider Status</MenuItem>
+                  <MenuItem value="ALL">ALL</MenuItem>
+                  <MenuItem value="ONLINE">ONLINE</MenuItem>
+                  <MenuItem value="OFFLINE">OFFLINE</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+            <div className="flex-1">
+              <FormControl fullWidth>
+                <label className="text-sm">Filter By</label>
+                <div className="filterbyRider">                    
+                  <Select
+                    id="demo-simple-select"
+                    value={filterby}
+                    onChange={handleChange}
+                    displayEmpty
+                    inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                    <MenuItem value="NONE">NONE</MenuItem>
+                    <MenuItem value="RIDERID">Rider ID</MenuItem>
+                    <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                    <MenuItem value="RIDERNAME">Rider Name</MenuItem>
+                  </Select>
+                  <TextField
+                    id="search"
+                    type="text"
+                    name="search"
+                    className=""
+                    placeholder="Filter By"
+                    value={search}
+                    onChange={handleSearchChange}
+                  />
+                </div>
+              </FormControl>
+            </div>
           </div>
         </div>
         <div className="overflow-x-auto -mx-6">
@@ -405,7 +509,6 @@ const RegisteredRiders = () => {
           <ul className="flex items-center space-x-3 rtl:space-x-reverse">
             {totalCount > pagesizedata && (
               <>
-                {/* First Page Button */}
                 <li>
                   <button
                     onClick={() => gotoPage(0)}
@@ -415,8 +518,6 @@ const RegisteredRiders = () => {
                     <Icon icon="heroicons:chevron-double-left-solid" />
                   </button>
                 </li>
-
-                {/* Previous Page Button */}
                 <li>
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
@@ -426,17 +527,14 @@ const RegisteredRiders = () => {
                     Prev
                   </button>
                 </li>
-
-                {/* Page Numbers */}
                 {(() => {
-                  const totalPages = pageCount; // Total number of pages
-                  const currentGroup = Math.floor(currentPage / maxPagesToShow); // Current group of pages
-                  const startPage = currentGroup * maxPagesToShow; // Starting page of the current group
-                  const endPage = Math.min(startPage + maxPagesToShow, totalPages); // Ending page of the current group
+                  const totalPages = pageCount; 
+                  const currentGroup = Math.floor(currentPage / maxPagesToShow);
+                  const startPage = currentGroup * maxPagesToShow; 
+                  const endPage = Math.min(startPage + maxPagesToShow, totalPages);
 
                   return (
                     <>
-                      {/* Previous dots */}
                       {startPage > 0 && (
                         <li>
                           <button onClick={() => setCurrentPage(startPage - 1)}>
@@ -444,18 +542,15 @@ const RegisteredRiders = () => {
                           </button>
                         </li>
                       )}
-
-                      {/* Render page numbers */}
                       {Array.from({ length: endPage - startPage }).map((_, idx) => {
                         const pageNumber = startPage + idx;
                         return (
                           <li key={pageNumber}>
                             <button
-                              className={
-                                pageNumber === currentPage
-                                  ? "bg-scooton-900 text-white"
-                                  : ""
-                              }
+                              className={` ${pageNumber === currentPage
+                                ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium"
+                                : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal"
+                              } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150 `}
                               onClick={() => setCurrentPage(pageNumber)}
                             >
                               {pageNumber + 1}
@@ -464,7 +559,6 @@ const RegisteredRiders = () => {
                         );
                       })}
 
-                      {/* Next dots */}
                       {endPage < totalPages && (
                         <li>
                           <button onClick={() => setCurrentPage(endPage)}>
@@ -476,7 +570,6 @@ const RegisteredRiders = () => {
                   );
                 })()}
 
-                {/* Next Page Button */}
                 <li>
                   <button
                     onClick={() => setCurrentPage(currentPage + 1)}

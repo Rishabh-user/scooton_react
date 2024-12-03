@@ -116,7 +116,7 @@ const COLUMNS = [
   },
   {
     Header: "Online/Offline",
-    accessor: "riderInfo.active",
+    accessor: "riderInfo.riderActiveForOrders",
     Cell: ({ value }) => {
       const statusClass = value ? "text-success-500 bg-success-500" : "text-warning-500 bg-warning-500";
       const statusText = value ? "Online" : "Offline";
@@ -140,7 +140,9 @@ const COLUMNS = [
         <div>
           {row.row.original.riderInfo.vehicleId === 1 ? (
             <img className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
-          ) : row.row.original.riderInfo.vehicleId === 2 ? (
+          ): row.row.original.riderInfo.vehicleId === 2 ? (
+              <img className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
+          ): row.row.original.riderInfo.vehicleId === 4 ? (
             <img className="object-cover" width={30} alt="threewheeler" class="mr-2 rounded-0" src={threewheeler}></img>
           ) : row.row.original.riderInfo.vehicleId === 3 ? (
             <img className=" object-cover" width={30} alt="tataace" class="mr-2 rounded-0" src={tataace}></img>
@@ -243,7 +245,6 @@ const AllRiders = () => {
     try {
       axios.get(`${BASE_URL}/login/get-online-offline-rider/0/ALL`).then((response) => {
         setActiveRiderCount(response.data)
-
       })
     } catch {
       console.log(error)
@@ -612,14 +613,13 @@ const AllRiders = () => {
 
                 {/* Page Numbers */}
                 {(() => {
-                  const totalPages = pageCount; // Total number of pages
-                  const currentGroup = Math.floor(currentPage / maxPagesToShow); // Current group of pages
-                  const startPage = currentGroup * maxPagesToShow; // Starting page of the current group
-                  const endPage = Math.min(startPage + maxPagesToShow, totalPages); // Ending page of the current group
+                  const totalPages = pageCount; 
+                  const currentGroup = Math.floor(currentPage / maxPagesToShow); 
+                  const startPage = currentGroup * maxPagesToShow; 
+                  const endPage = Math.min(startPage + maxPagesToShow, totalPages); 
 
                   return (
                     <>
-                      {/* Previous dots */}
                       {startPage > 0 && (
                         <li>
                           <button onClick={() => setCurrentPage(startPage - 1)}>
@@ -627,8 +627,6 @@ const AllRiders = () => {
                           </button>
                         </li>
                       )}
-
-                      {/* Render page numbers */}
                       {Array.from({ length: endPage - startPage }).map((_, idx) => {
                         const pageNumber = startPage + idx;
                         return (

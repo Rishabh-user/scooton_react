@@ -443,11 +443,10 @@ const UserList = () => {
                         return (
                           <li key={pageNumber}>
                             <button
-                              className={
-                                pageNumber === currentPage
-                                  ? "bg-scooton-900 text-white"
-                                  : ""
-                              }
+                                className={` ${pageNumber === currentPage
+                                  ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium"
+                                  : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal"
+                                } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150 `}
                               onClick={() => setCurrentPage(pageNumber)}
                             >
                               {pageNumber + 1}
