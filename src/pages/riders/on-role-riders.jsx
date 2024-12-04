@@ -78,7 +78,7 @@ const COLUMNS = [
         second: "2-digit",
         hour12: true
       });
-      return <span>{`${formattedDate}, ${formattedTime}`}</span>;
+      return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },
   {
@@ -97,7 +97,7 @@ const COLUMNS = [
         second: "2-digit",
         hour12: true
       });
-      return <span>{`${formattedDate}, ${formattedTime}`}</span>;
+      return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },
   {

@@ -257,10 +257,31 @@ width: 100%;padding: 1rem;box-shadow: 0px 0px 18px #e8e8e8;margin-bottom: 1rem;}
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center;z-index: 999;backdrop-filter: blur(4px);
 }
 .rider-count{display: flex;border: 1px solid #e31e24;gap: 8px;border-radius: .25rem;padding: .5rem .5rem;align-items: center;
   height: 40px;background-color: #e31e240f;}
+.rider-datetime span {white-space: nowrap;}  
+// Progressbar
+.multistep-prgressbar ul { display: flex; gap: 20px; justify-content: space-between;}
+.multistep-prgressbar ul .multistep-list{ flex: 1;}
+.multistep-prgressbar ul .multistep-list .multistep-item {
+  cursor: pointer;position: relative;z-index: 9;padding: .75rem 1rem;
+}
+.multistep-prgressbar .multistep-list .multistep-item:after, .multistep-prgressbar .multistep-list .multistep-item:before{
+    position: absolute;
+    left: 0;
+    content: " ";
+    width: 100%;
+    height: 50%;
+    z-index: -1;
+    background-color: #f3f3f3;
+}
+.multistep-prgressbar ul .multistep-list.active .multistep-item{color: #fff;}
+.multistep-prgressbar ul .multistep-list.active .multistep-item:after, .multistep-prgressbar ul .multistep-list.active .multistep-item:before{background-color: #e31e24;}
+.multistep-prgressbar ul .multistep-list .multistep-item:before{top: 0;transform: skew(20deg);border-radius: 0.2em 0.2em 0 0;}
+.multistep-prgressbar ul .multistep-list .multistep-item:after{  bottom: 0; transform: skew(-20deg); border-radius: 0 0 0.2em 0.2em;}
+
 
 @media (max-width:991px){
   .desktop-view-filter{display: none;}

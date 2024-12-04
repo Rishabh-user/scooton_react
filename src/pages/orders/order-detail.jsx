@@ -5,12 +5,23 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import axios from "axios";
 import { BASE_URL } from "../../api";
 import Loading from "../../components/Loading";
+import Modal from "../../components/ui/Modal";
+import Button from "../../components/ui/Button";
 
 const OrderDetail = () => {
   const { orderId } = useParams();
   const [orderDetail, setOrderDetail] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isPickupModal, setisPickupModal] = useState(false);
+  const [isDeliveryModal, setisdeliveryModal] = useState(false);
 
+  const openPickupModal = async() => {
+    setisPickupModal(true);
+  }
+  const openDeliveryModal = async() => {
+    setisdeliveryModal(true);
+  }
+ 
   useEffect(() => {
     const fetchOrderDetail = async () => {
       try {
@@ -49,7 +60,27 @@ const OrderDetail = () => {
     cancelDetails,
     riderDetails,
     vehiceDetails,
+    tripDetails
   } = orderDetail;
+
+  const handlePickupConfirm = async (payload) => {      
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/rider/pickup-delivery-otp-verification-admin/`,
+        payload
+      );
+      console.log('Response:', response.data);
+      if (response.data.success) {
+        alert('Pickup confirmed successfully!');
+        setisPickupModal(false);
+      } else {
+        alert('Failed to confirm pickup: ' + response.data.message);
+      }
+    } catch (error) {
+      console.error('Error confirming pickup:', error);
+      alert('An error occurred while confirming pickup. Please try again.');
+    }
+  };
 
   return (
     <Card>
@@ -61,6 +92,78 @@ const OrderDetail = () => {
                 <h4 className="card-title ms-2">Order Details</h4>
             </div>
             <img src={vehiceDetails.imageUrl} alt={vehiceDetails.vehicleType} width={50} />
+        </div>
+        <div className="multistep-prgressbar">
+            <ul>
+                <li className={`multistep-list ${orderDetails.orderStatus === 'In Progress' || orderDetails.orderStatus === 'In Transit' ? 'active' : ''}`}>
+                    <span>{orderDetails.orderDateTime}</span>
+                    <div className="multistep-item">Order Placed</div>
+                </li>
+                <li className={`multistep-list  ${tripDetails?.orderAccepted ? 'active' : ''}`}>
+                    <span>{tripDetails?.orderAcceptedDateTime || ' '}</span>
+                    <div className="multistep-item">Accepted</div>
+                </li>
+                <li className={`multistep-list ${tripDetails?.orderInTransit ? 'active' : ''}`}>
+                    <span>{tripDetails?.orderInTransitDateTime || ' '}</span>
+                    <div className="multistep-item" onClick={() => openPickupModal()}>Pickup</div>
+                    {isPickupModal && (
+                        <Modal
+                            activeModal={isPickupModal}
+                            uncontrol
+                            className="max-w-md"
+                            title=""
+                            centered
+                            onClose={() => setisPickupModal(false)}
+                        >
+                        <div className="">
+                          <h5 className="text-center">Pickup Service</h5>
+                          <p className="text-center my-3">Confirm Pickup Order</p>
+                          <div className="d-flex gap-2 justify-content-center mt-4">
+                            <Button className="btn btn-dark" type="button" onClick={() => setisPickupModal(false)}>
+                              No
+                            </Button>
+                            <Button className="btn btn-outline-light" type="button" 
+                                onClick={() => handlePickupConfirm({
+                                    orderId: orderId,
+                                    orderType: orderDetails.orderType,
+                                    otp: orderDetails.pickupOtp
+                                })}
+                            >
+                              Yes
+                            </Button>
+                          </div>
+                        </div>
+                      </Modal>
+                    )}
+                </li>
+                <li className={`multistep-list ${tripDetails?.orderDelivered ? 'active' : ''}`}>
+                    <span>{tripDetails?.orderDeliveredDateTime || ' '}</span>
+                    <div className="multistep-item"  onClick={() => openDeliveryModal()}>Delivered</div>
+                    {isDeliveryModal && (
+                        <Modal
+                            activeModal={isDeliveryModal}
+                            uncontrol
+                            className="max-w-md"
+                            title=""
+                            centered
+                            onClose={() => setisdeliveryModal(false)}
+                        >
+                        <div className="">
+                          <h5 className="text-center">Delivery Service</h5>
+                          <p className="text-center my-3">Confirm Delivery Order</p>
+                          <div className="d-flex gap-2 justify-content-center mt-4">
+                            <Button className="btn btn-dark" type="button" onClick={() => setisdeliveryModal(false)}>
+                              No
+                            </Button>
+                            <Button className="btn btn-outline-light" type="button" >
+                              Yes
+                            </Button>
+                          </div>
+                        </div>
+                      </Modal>
+                    )}
+                </li>
+            </ul>
         </div>
         <div className="mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
             <h6 className="text-scooton-500 p-4 border-bottom">Order Info</h6>

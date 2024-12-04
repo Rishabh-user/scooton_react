@@ -38,7 +38,7 @@ export const menuItems = [
   },
   {
     title: "Riders",
-    icon: "heroicons-outline:home",
+    icon: "heroicons-outline:truck",
     link: "orders",
     child: [
       {

@@ -285,7 +285,7 @@ const Settings = () => {
                            {loadingCSV && (
                              <div className="loader-fixed">
                                 <span className="flex items-center gap-2">
-                                    <CircularProgress size={40} color="inherit" />                                
+                                    <Loading />                              
                                 </span>
                              </div>
                            )}

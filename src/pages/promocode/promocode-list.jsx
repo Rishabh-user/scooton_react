@@ -8,18 +8,12 @@ import Tooltip from "@/components/ui/Tooltip";
 import Loading from "../../components/Loading";
 import Modal from "../../components/ui/Modal";
 import Button from "@/components/ui/Button";
-// import Textinput from "@/components/ui/Textinput";4
-import TextField from "@mui/material/TextField";
-//import Switch from "@/components/ui/Switch";
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-//import Switch from '@mui/material/Switch';
+
 import Switch from "@/components/ui/Switch";
 import { toast,ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 
-//import Switch from "../../components/ui/Switch";
 
 const promocodeType = ["FIXED", "PERCENTAGE"];
 
@@ -43,13 +37,27 @@ const COLUMNS = (deletePromocode, openEditModal) => [
   {
     Header: "Expiration",
     accessor: "expireDate",
+    Cell: ({ cell }) => {
+      const date = new Date(cell.value);
+      const formattedDate = date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit"
+      });
+      const formattedTime = date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      });
+      return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span>, <span className="riderTime">{`${formattedTime}`}</span></div>;
+    },
   },
   {
     Header: "Status",
     accessor: "status",
     Cell: ({ row }) => {
       const [isActive, setIsActive] = useState(row.original.active);
-      const [checked, setChecked] = useState(false);
        const toggleActive = async (id) => {
         try {
           const newState = !isActive;
@@ -63,10 +71,8 @@ const COLUMNS = (deletePromocode, openEditModal) => [
         }
       };
 
-      return (
-        
-        <span>
-          
+      return (        
+        <span>          
           <Switch
             value={isActive}
             onChange={() => toggleActive(row.original.promocodeId)}

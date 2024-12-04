@@ -68,7 +68,7 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
         second: "2-digit",
         hour12: true
       });
-      return <span>{`${formattedDate}, ${formattedTime}`}</span>;
+      return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },
   {
@@ -465,28 +465,27 @@ const AllOrders = () => {
           <div className="flex gap-2">
             <FormControl fullWidth>
               <label className="text-sm">Filter By</label>
-              <Select
-                id="demo-simple-select"
-                value={filterby}
-                //label="Filter By"
-                onChange={handleChange}
-                displayEmpty
-                inputProps={{ 'aria-label': 'Without label' }}
-              >
-                <MenuItem value="NONE">NONE</MenuItem>
-                <MenuItem value="ORDERID">ORDER ID</MenuItem>
-                <MenuItem value="MOBILE">Mobile Number</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl>
-              <label className="text-sm">Filter By</label>
-              <TextField
-                id="search"
-                type="text"
-                name="search"
-                value={search}
-                onChange={handleSearchChange}
-              />
+              <div className="filterbyRider"> 
+                <Select
+                  id="demo-simple-select"
+                  value={filterby}
+                  //label="Filter By"
+                  onChange={handleChange}
+                  displayEmpty
+                  inputProps={{ 'aria-label': 'Without label' }}
+                >
+                  <MenuItem value="NONE">NONE</MenuItem>
+                  <MenuItem value="ORDERID">ORDER ID</MenuItem>
+                  <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                </Select>           
+                <TextField
+                  id="search"
+                  type="text"
+                  name="search"
+                  value={search}
+                  onChange={handleSearchChange}
+                />
+              </div>
             </FormControl>
           </div>
         </div>
@@ -638,11 +637,10 @@ const AllOrders = () => {
                         return (
                           <li key={pageNumber}>
                             <button
-                              className={
-                                pageNumber === currentPage
-                                  ? "bg-scooton-900 text-white"
-                                  : ""
-                              }
+                              className={` ${pageNumber === currentPage
+                                ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium"
+                                : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal"
+                              } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150 `}
                               onClick={() => setCurrentPage(pageNumber)}
                             >
                               {pageNumber + 1}

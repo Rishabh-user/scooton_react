@@ -271,7 +271,7 @@ const RiderDetail = () => {
     }
 
     const [currentPage, setCurrentPage] = useState(1); 
-    const itemsPerPage = 10; 
+    const itemsPerPage = 50; 
   
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -287,7 +287,7 @@ const RiderDetail = () => {
     };
 
     const [walletcurrentPage, setWalletCurrentPage] = useState(1);
-    const walletitemsPerPage = 10;
+    const walletitemsPerPage = 50;
 
     const walletstartIndex = (walletcurrentPage - 1) * walletitemsPerPage;
     const walletendIndex = walletstartIndex + walletitemsPerPage;
@@ -303,7 +303,7 @@ const RiderDetail = () => {
     };
 
     const [earringcurrentPage, setEarringCurrentPage] = useState(1);
-    const earringitemsPerPage = 10;
+    const earringitemsPerPage = 50;
 
     const earringstartIndex = (earringcurrentPage - 1) * earringitemsPerPage;
     const earringendIndex = earringstartIndex + earringitemsPerPage;
@@ -859,16 +859,16 @@ const RiderDetail = () => {
                                 <thead className=" bg-slate-200 dark:bg-slate-700">
                                     <tr>
                                         <th className=" table-th">
-                                            <span className="block px-6 py-3 font-semibold">Sr. No</span>
+                                            <span>Sr. No</span>
                                         </th>
                                         <th className=" table-th">
-                                            <span className="block px-6 py-3 font-semibold">Trip Id</span>
+                                            <span>Trip Id</span>
                                         </th>
                                         <th className=" table-th">
-                                            <span className="block px-6 py-3 font-semibold">Trip Date</span>
+                                            <span>Trip Date</span>
                                         </th>
                                         <th className=" table-th">
-                                            <span className="block px-6 py-3 font-semibold">Trip Amount</span>
+                                            <span>Trip Amount</span>
                                         </th>
                                     </tr>  
                                 </thead> 

@@ -3,27 +3,20 @@ import Icon from "@/components/ui/Icon";
 import axios from "axios";
 import { useTable, useRowSelect, useSortBy, usePagination, } from "react-table";
 import Card from "../../components/ui/Card";
-import Textinput from "@/components/ui/Textinput";
-import Switch from "@/components/ui/Switch";
 import { BASE_URL } from "../../api";
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@/components/ui/Tooltip";
 import Loading from "../../components/Loading";
 import TextField from "@mui/material/TextField";
-import SplitDropdown from "@/components/ui/Split-dropdown";
 import twowheeler from '../../assets/images/icon/Two_Wheeler_EV.png';
 import threewheeler from '../../assets/images/icon/Three_Wheeler.png';
 import tataace from '../../assets/images/icon/Tata_Ace.png'
 import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import Riders from '../../assets/images/icon/icon-redoff-trip.png'
 import Button from "../../components/ui/Button";
-import { Modal } from "react-bootstrap";
-import InputGroup from "@/components/ui/InputGroup"
+
 
 const COLUMNS = [
   {
@@ -88,7 +81,7 @@ const COLUMNS = [
         second: "2-digit",
         hour12: true
       });
-      return <span>{`${formattedDate}, ${formattedTime}`}</span>;
+      return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },
   {
@@ -107,7 +100,7 @@ const COLUMNS = [
         second: "2-digit",
         hour12: true
       });
-      return <span>{`${formattedDate}, ${formattedTime}`}</span>;
+      return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },
   {
@@ -150,10 +143,8 @@ const COLUMNS = [
             <img className="object-cover" width={30} alt="pickup_8ft" class="mr-2 rounded-0" src={pickup_8ft}></img>
           )
           }
-
         </div>
       )
-
     }
   },
   {
@@ -193,10 +184,6 @@ const AllRiders = () => {
   const [totalCount, setTotalCount] = useState(0);
   const maxPagesToShow = 5;
 
-  // const [show, setShow] = useState(false);
-
-  // const handleClose = () => setShow(false);
-  // const handleShow = () => setShow(true);
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
@@ -219,27 +206,7 @@ const AllRiders = () => {
           setLoading(false);
         });
     }
-  }, [currentPage,pagesizedata]);
-  // useEffect(() => {
-  //   const token = localStorage.getItem("jwtToken");
-  //   if (token && search) {
-  //     axios
-  //       .post(`${BASE_URL}/user/search-by-mobile-number`, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         params: {
-  //           mobileNumber: search,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         setUserData(response.data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching user data:", error);
-  //       });
-  //   }
-  // }, [search]);
+  }, [currentPage,pagesizedata]); 
 
   useEffect(() => {
     try {
@@ -309,8 +276,8 @@ const AllRiders = () => {
   const FilterOrder = () => {
     const endpoint =
       filterby === "NONE"
-        ? `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=${pagesizedata}`
-        : `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=${pagesizedata}`;
+        ? `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=0&size=${pagesizedata}`
+        : `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=0&size=${pagesizedata}`;
     
     axios
       .get(endpoint)
@@ -411,99 +378,111 @@ const AllRiders = () => {
               </div>
             </div>
           </div>
-        {isVisible && (
-          <div className="filter-show">
-            <div className="">
-              <div className="flex-1">
-                <FormControl fullWidth className="mb-3">
-                  <label className="text-sm mb-1">Rider Status</label>
-                  <Select
-                    id="demo-simple-select"
-                    //label="Rider_Status"
-                    value={riderstatus}
-                    onChange={riderStatusFilter}
-                    displayEmpty
-                    inputProps={{ 'aria-label': 'Without label' }}
-                  >
-                    <MenuItem value="">Rider Status</MenuItem>
-                    <MenuItem value="ALL">ALL</MenuItem>
-                    <MenuItem value="ONLINE">ONLINE</MenuItem>
-                    <MenuItem value="OFFLINE">OFFLINE</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-              <div className="flex-1">
-                <FormControl fullWidth className="mb-3">
-                  <label className="text-sm mb-1">Document Status</label>
-                  <Select
-                    id="demo-simple-select"
-                    //label="Document"
-                    value={documentstatus}
-                    onChange={documentStatusFilter}
-                    displayEmpty
-                    inputProps={{ 'aria-label': 'Without label' }}
-                  >
-                    <MenuItem value="ALL">All</MenuItem>
-                    <MenuItem value="NEW_USER">New User</MenuItem>
-                    <MenuItem value="REGISTERED">Registered</MenuItem>
-                    <MenuItem value="DOCUMENT_PENDING">Document Pending</MenuItem>
-                    <MenuItem value="DOCUMENT_REJECTED">Document Rejected</MenuItem>
-                    <MenuItem value="REVIEW_PENDING">Review Pending</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-              <div className="flex-1">
-                <FormControl fullWidth className="mb-3">
-                  <label className="text-sm mb-1">Vehicle Type</label>
-                  <Select
-                    id="demo-simple-select"
-                    //label="Vehicle_Status"
-                    value={vehicleid}
-                    onChange={vehicleIdFilter}
-                    displayEmpty
-                    inputProps={{ 'aria-label': 'Without label' }}
-                  >
-                    <MenuItem value="0">ALL</MenuItem>
-                    <MenuItem value="1">Two Wheeler</MenuItem>
-                    <MenuItem value="2">Two Wheeler EV</MenuItem>
-                    <MenuItem value="4">Three Wheeler</MenuItem>
-                    <MenuItem value="7">Pickup 8ft</MenuItem>
-                    <MenuItem value="3">TATA Ace</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-              <div className="flex-1">
-                <FormControl fullWidth className="mb-3">
-                  <label className="text-sm mb-1">Filter By</label>
-                  <div className="filterbyRider">                    
+          {isVisible && (
+            <div className="filter-show">
+              <div className="">
+                {/* <div className="flex-1">
+                  <FormControl fullWidth className="mb-3">
+                    <label className="text-sm mb-1">Service Area</label>
                     <Select
                       id="demo-simple-select"
-                      value={filterby}
-                      onChange={handleChange}
+                      value={riderstatus}
+                      onChange={riderStatusFilter}
                       displayEmpty
                       inputProps={{ 'aria-label': 'Without label' }}
                     >
-                      <MenuItem value="NONE">NONE</MenuItem>
-                      <MenuItem value="RIDERID">Rider ID</MenuItem>
-                      <MenuItem value="MOBILE">Mobile Number</MenuItem>
-                      <MenuItem value="RIDERNAME">Rider Name</MenuItem>
+                      <MenuItem value="ALL">ALL</MenuItem>
                     </Select>
-                    <TextField
-                      id="search"
-                      type="text"
-                      name="search"
-                      className=""
-                      placeholder="Filter By"
-                      value={search}
-                      onChange={handleSearchChange}
-                    />
-                  </div>
-                </FormControl>
+                  </FormControl>
+                </div> */}
+                <div className="flex-1">
+                  <FormControl fullWidth className="mb-3">
+                    <label className="text-sm mb-1">Rider Status</label>
+                    <Select
+                      id="demo-simple-select"
+                      value={riderstatus}
+                      onChange={riderStatusFilter}
+                      displayEmpty
+                      inputProps={{ 'aria-label': 'Without label' }}
+                    >
+                      <MenuItem value="ALL">ALL</MenuItem>
+                      <MenuItem value="ONLINE">ONLINE</MenuItem>
+                      <MenuItem value="OFFLINE">OFFLINE</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+                <div className="flex-1">
+                  <FormControl fullWidth className="mb-3">
+                    <label className="text-sm mb-1">Document Status</label>
+                    <Select
+                      id="demo-simple-select"
+                      //label="Document"
+                      value={documentstatus}
+                      onChange={documentStatusFilter}
+                      displayEmpty
+                      inputProps={{ 'aria-label': 'Without label' }}
+                    >
+                      <MenuItem value="ALL">All</MenuItem>
+                      <MenuItem value="NEW_USER">New User</MenuItem>
+                      <MenuItem value="REGISTERED">Registered</MenuItem>
+                      <MenuItem value="DOCUMENT_PENDING">Document Pending</MenuItem>
+                      <MenuItem value="DOCUMENT_REJECTED">Document Rejected</MenuItem>
+                      <MenuItem value="REVIEW_PENDING">Review Pending</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+                <div className="flex-1">
+                  <FormControl fullWidth className="mb-3">
+                    <label className="text-sm mb-1">Vehicle Type</label>
+                    <Select
+                      id="demo-simple-select"
+                      //label="Vehicle_Status"
+                      value={vehicleid}
+                      onChange={vehicleIdFilter}
+                      displayEmpty
+                      inputProps={{ 'aria-label': 'Without label' }}
+                    >
+                      <MenuItem value="0">ALL</MenuItem>
+                      <MenuItem value="1">Two Wheeler</MenuItem>
+                      <MenuItem value="2">Two Wheeler EV</MenuItem>
+                      <MenuItem value="4">Three Wheeler</MenuItem>
+                      <MenuItem value="7">Pickup 8ft</MenuItem>
+                      <MenuItem value="3">TATA Ace</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+                <div className="flex-1">
+                  <FormControl fullWidth className="mb-3">
+                    <label className="text-sm mb-1">Filter By</label>
+                    <div className="filterbyRider">                    
+                      <Select
+                        id="demo-simple-select"
+                        value={filterby}
+                        onChange={handleChange}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                      >
+                        <MenuItem value="NONE">NONE</MenuItem>
+                        <MenuItem value="RIDERID">Rider ID</MenuItem>
+                        <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                        <MenuItem value="RIDERNAME">Rider Name</MenuItem>
+                      </Select>
+                      <TextField
+                        id="search"
+                        type="text"
+                        name="search"
+                        className=""
+                        placeholder="Filter By"
+                        value={search}
+                        onChange={handleSearchChange}
+                      />
+                    </div>
+                  </FormControl>
+                </div>
               </div>
+              
             </div>
-            
-          </div>
-        )}
+          )}
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
@@ -589,7 +568,6 @@ const AllRiders = () => {
           <ul className="flex items-center space-x-3 rtl:space-x-reverse">
             {totalCount > pagesizedata && (
               <>
-                {/* First Page Button */}
                 <li>
                   <button
                     onClick={() => gotoPage(0)}
@@ -599,8 +577,6 @@ const AllRiders = () => {
                     <Icon icon="heroicons:chevron-double-left-solid" />
                   </button>
                 </li>
-
-                {/* Previous Page Button */}
                 <li>
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
@@ -610,8 +586,6 @@ const AllRiders = () => {
                     Prev
                   </button>
                 </li>
-
-                {/* Page Numbers */}
                 {(() => {
                   const totalPages = pageCount; 
                   const currentGroup = Math.floor(currentPage / maxPagesToShow); 
@@ -643,8 +617,6 @@ const AllRiders = () => {
                           </li>
                         );
                       })}
-
-                      {/* Next dots */}
                       {endPage < totalPages && (
                         <li>
                           <button onClick={() => setCurrentPage(endPage)}>
@@ -655,8 +627,6 @@ const AllRiders = () => {
                     </>
                   );
                 })()}
-
-                {/* Next Page Button */}
                 <li>
                   <button
                     onClick={() => setCurrentPage(currentPage + 1)}
@@ -668,8 +638,6 @@ const AllRiders = () => {
                     Next
                   </button>
                 </li>
-
-                {/* Last Page Button */}
                 <li>
                   <button
                     onClick={() => gotoPage(pageCount - 1)}
