@@ -23,6 +23,7 @@ import twowheeler from '../../assets/images/icon/Two_Wheeler_EV.png';
 import threewheeler from '../../assets/images/icon/Three_Wheeler.png';
 import tataace from '../../assets/images/icon/Tata_Ace.png'
 import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
+import axiosInstance from "../../api";
 
 const notificationtype =['All','INDIVIDUAL']
 
@@ -255,12 +256,12 @@ const CityWideOrders = () => {
   const sendNotification = () => {
     try {
       if (mobile) {
-        axios.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}/${mobile}`).then((response) => {
+        axiosInstance.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}/${mobile}`).then((response) => {
           toast.success("Notification Sended Successfully")
           setNotification(false);
         })
       } else {
-        axios.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}`).then((response) => {
+        axiosInstance.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}`).then((response) => {
           toast.success("Notification Sended Successfully")
           setNotification(false);
         })
@@ -295,7 +296,7 @@ const CityWideOrders = () => {
   const fetchOrders = (orderType) => {
     setLoading(true);
     SetOrderType(orderType)
-    axios
+    axiosInstance
       .post(
         `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/false?page=${currentPage}&size=${pagesizedata}`,
         { "orderType": orderType, "searchType": "NONE" },
@@ -326,7 +327,7 @@ const CityWideOrders = () => {
 
   const FilterOrder = () => {
     setLoading(true);
-    axios
+    axiosInstance
       .post(
         `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/false?page=${currentPage}&size=100`,
         { "number": search, "orderType": ordersType, "searchType": filterby },
@@ -346,7 +347,7 @@ const CityWideOrders = () => {
 
   const deletePlaceOrder = () => {
     
-      axios.post(`${BASE_URL}/order/cancel-order/${orderdeleteid}`,{
+    axiosInstance.post(`${BASE_URL}/order/cancel-order/${orderdeleteid}`,{
         type: "CITYWIDE"
       }).then((response) => {
         toast.success("Order cancel successfully");
