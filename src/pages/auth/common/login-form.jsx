@@ -70,7 +70,7 @@ const schema = yup
       }
     } catch (error) {
       console.error("Login error: ", error);
-      toast.error("Error logging in. Please try again later.", {
+      toast.error("Invalid credentials.", {
         position: "top-right",
         autoClose: 1500,
         hideProgressBar: false,
@@ -88,7 +88,7 @@ const schema = yup
   return (
     <>
       <ToastContainer />
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 ">
+      <form onSubmit={handleSubmit(onSubmit)} className=" ">
    
         {/* <Textinput
           name="userId"
@@ -108,32 +108,35 @@ const schema = yup
           className="h-[48px] "
         /> */}
 
-        <input
-          {...register("userId")}
-          placeholder="User ID"
-          className="h-[48px] form-control"
-        />
-        <p className="text-red-500">{errors.userId?.message}</p>
-        
-        <input
-          {...register("password")}
-          type="password"
-          placeholder="Password"
-          className="h-[48px] form-control"
-        />
-        <p className="text-red-500">{errors.password?.message}</p>
-        <div className="flex justify-between">
+        <div className="mb-3">
+          <input
+            {...register("userId")}
+            placeholder="User ID"
+            className="h-[48px] form-control"
+          />
+          <p className="text-red-500">{errors.userId?.message}</p>
+        </div>        
+        <div className="mb-3">
+          <input
+            {...register("password")}
+            type="password"
+            placeholder="Password"
+            className="h-[48px] form-control"
+          />
+          <p className="text-red-500">{errors.password?.message}</p>
+        </div>
+        <div className="flex justify-between mb-3">
           <Checkbox
             value={checked}
             onChange={() => setChecked(!checked)}
             label="Keep me signed in"
           />
-          <Link
+          {/* <Link
             to="/forgot-password"
             className="text-sm text-scooton-800 dark:text-scooton-400 leading-6 font-medium"
           >
             Forgot Password?{" "}
-          </Link>
+          </Link> */}
         </div>
 
         <button className={` btn text-white bg-scooton-500 dark:bg-scooton-500 block w-full text-center` }>Sign in</button>

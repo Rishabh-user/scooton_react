@@ -223,10 +223,15 @@ const RegisteredRiders = () => {
   }, [])
   // End
   const filterRiders = () => {
+    const token = localStorage.getItem("jwtToken");
     try {
       axios
         .get(
-          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/${riderstatus}/0?page=${currentPage}&size=100`
+          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/${riderstatus}/0?page=${currentPage}&size=100`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         )
         .then((response) => {
           setRiderData(response.data);
@@ -315,7 +320,13 @@ const RegisteredRiders = () => {
   };
 
   const FilterRiders = () =>{
-    axios.get(`${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=30`).then((response) => {
+    const token = localStorage.getItem("jwtToken");
+    axios.get(`${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=30`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+    ).then((response) => {
       setRiderData(response.data);
     })
     .catch((error) => {

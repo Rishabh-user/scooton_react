@@ -119,9 +119,14 @@ const PromocodeList = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
-    if (token) {
-      axios
-        .get(`${BASE_URL}/promo-code/get-all?page=${currentPage}&size=${pagesizedata}`)
+    if (token) {      
+      axios.get(`${BASE_URL}/promo-code/get-all?page=${currentPage}&size=${pagesizedata}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then((response) => {
           setprocodeList(response.data);
           setTotalCount(Number(response.headers["x-total-count"])); 
@@ -191,6 +196,7 @@ const PromocodeList = () => {
 
   const editPromodecode = async (id) => {
     try {
+      const token = localStorage.getItem("jwtToken");
       const formattedStartDate = formatDate(selectedPromoCode?.startDate);
       const formattedExpireDate = formatDate(selectedPromoCode?.expireDate);
   
@@ -199,7 +205,7 @@ const PromocodeList = () => {
         publicShownvalue = true
       else
         publicShownvalue = false
-  
+
       await axios.post(`${BASE_URL}/promo-code/update/${id}`, 
         {
           active: promoCodeData?.active,
@@ -210,7 +216,13 @@ const PromocodeList = () => {
           promocodeId: promoCodeData?.promocodeId,
           startDate: formattedStartDate,
           publicShown: publicShownvalue
-       }).then((response) => {
+       }, 
+       {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+       }
+      ).then((response) => {
         toast.success("Promocode Updated successfully!");
        });
       setprocodeList(prevPromoCodes => 

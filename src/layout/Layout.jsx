@@ -66,7 +66,7 @@ const Layout = () => {
         ></div>
       )}
       <div
-        className={`content-wrapper transition-all duration-150 h-100 ${
+        className={`content-wrapper transition-all duration-150 ${
           width > 1280 ? switchHeaderClass() : ""
         }`}
       >
@@ -74,7 +74,7 @@ const Layout = () => {
         <div className="page-content  h-100 page-min-height  ">
           <div
             className={
-              contentWidth === "boxed" ? "container mx-auto" : "container-fluid h-100"
+              contentWidth === "boxed" ? "container mx-auto" : "container-fluid"
             }
           >
             <Suspense fallback={<Loading />}>
@@ -102,7 +102,7 @@ const Layout = () => {
                   ease: "easeInOut",
                   duration: 0.5,
                 }}
-                style={{height: 'calc(100% - 30px)'}}
+                
               >
                 <Breadcrumbs />
                 {<Outlet />}

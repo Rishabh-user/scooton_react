@@ -219,38 +219,38 @@ const UserList = () => {
         });
     }
   }, [currentPage,pagesizedata]);
-  // useEffect(() => {
-  //   const token = localStorage.getItem("jwtToken");
-  //   const fetchData = async () => {
-  //     try {
-  //       if (!token) return;
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    const fetchData = async () => {
+      try {
+        if (!token) return;
   
-  //       if (search) {
-  //         // Search by mobile number if `search` is not empty
-  //         const response = await axios.post(
-  //           `${BASE_URL}/user/search-by-mobile-number`,
-  //           {},
-  //           {
-  //             headers: { Authorization: `Bearer ${token}` },
-  //             params: { mobileNumber: search, page: currentPage, size: 100 },
-  //           }
-  //         );
-  //         setUserData(response.data);
-  //       } else {
-  //         // Fetch all users if `search` is empty
-  //         const response = await axios.get(`${BASE_URL}/user/get-all`, {
-  //           headers: { Authorization: `Bearer ${token}` },
-  //           params: { page: currentPage, size: 100 },
-  //         });
-  //         setUserData(response.data);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //     }
-  //   };
+        if (search) {
+          // Search by mobile number if `search` is not empty
+          const response = await axios.post(
+            `${BASE_URL}/user/search-by-mobile-number`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${token}` },
+              params: { mobileNumber: search, page: currentPage, size: 100 },
+            }
+          );
+          setUserData(response.data);
+        } else {
+          // Fetch all users if `search` is empty
+          const response = await axios.get(`${BASE_URL}/user/get-all`, {
+            headers: { Authorization: `Bearer ${token}` },
+            params: { page: currentPage, size: 100 },
+          });
+          setUserData(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
   
-  //   fetchData();
-  // }, [search, currentPage])
+    fetchData();
+  }, [search, currentPage])
   
   
 

@@ -109,17 +109,23 @@ const Settings = () => {
     };
 
     const exportCsv = async () => {
+        
         if (!startDate || !endDate) return;    
         const formattedFromDate = dayjs(startDate).format("MM-DD-YYYY");
         const formattedToDate = dayjs(endDate).format("MM-DD-YYYY");   
          
         try {
+            const token = localStorage.getItem("jwtToken");
             setLoadingCSV(true);
             const response = await axios.get(
                 `${BASE_URL}/order/v2/orders/get-city-wide-orders-by-date?from_date=${formattedFromDate}&to_date=${formattedToDate}`,
                 {
                     responseType: "json",
-                }
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+                
             );
     
             if (response.data?.length === 0) {
