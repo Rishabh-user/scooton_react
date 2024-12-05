@@ -7,8 +7,11 @@ import { BASE_URL } from "../../api";
 import Loading from "../../components/Loading";
 import Modal from "../../components/ui/Modal";
 import Button from "../../components/ui/Button";
+import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const OrderDetail = () => {
+  const navigate = useNavigate();
   const { orderId } = useParams();
   const [orderDetail, setOrderDetail] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -69,43 +72,101 @@ const OrderDetail = () => {
         `${BASE_URL}/rider/pickup-delivery-otp-verification-admin/`,
         payload
       );
-      console.log('Response:', response.data);
       if (response.data.success) {
-        alert('Pickup confirmed successfully!');
         setisPickupModal(false);
+        toast.success('Pickup confirmed successfully!'); 
+        navigate(0);      
       } else {
-        alert('Failed to confirm pickup: ' + response.data.message);
+        toast.error('Failed to confirm pickup: ' + response.data.message);
       }
     } catch (error) {
-      console.error('Error confirming pickup:', error);
-      alert('An error occurred while confirming pickup. Please try again.');
+      toast.error('An error occurred while confirming pickup. Please try again.');
+    }
+  };
+  const handleDeliveryConfirm = async (payload) => {      
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/rider/pickup-delivery-otp-verification-admin/`,
+        payload
+      );
+      if (response.data.success) {
+        toast.success('Delivery confirmed successfully!');
+        setisdeliveryModal(false);
+        window.location.reload();
+      } else {
+        toast.error('Failed to confirm pickup: ' + response.data.message);
+      }
+    } catch (error) {
+      toast.error('An error occurred while confirming pickup. Please try again.');
+    }
+  };
+  const downloadInvoice = async () => {      
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/order/orders/admin/getInvoice/${orderId}`,
+        null,
+        {
+            responseType: 'blob', 
+        }
+     );
+      if (response.data.success) {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `Invoice_${orderId}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success('Invoice Download successfully!');
+      } else {
+        toast.error('Failed to failed to download: ' + response.data.message);
+      }
+    } catch (error) {
+      toast.error('An error occurred while downloading invoice. Please try again.');
     }
   };
 
   return (
     <Card>
-        <div className="md:flex justify-between items-center mb-5 border-bottom">
-            <div className="flex items-center">
-                <Link to="/">
+        <ToastContainer />
+        <div className="md:flex justify-between items-center mb-4 border-bottom">
+            <div className="flex items-center mb-2">
+                <Link to="/all-orders">
                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                 </Link>
-                <h4 className="card-title ms-2">Order Details</h4>
+                <h4 className="card-title ms-2 mb-0">Order Details</h4>
             </div>
-            <img src={vehiceDetails.imageUrl} alt={vehiceDetails.vehicleType} width={50} />
+            <div className="mb-2 d-flex gap-4">
+                <img src={vehiceDetails.imageUrl} alt={vehiceDetails.vehicleType} width={40} />
+                <button type="button" className="btn btn-sm btn-dark py-1 px-2" onClick={downloadInvoice}>Get Invoice</button>                
+            </div>
         </div>
         <div className="multistep-prgressbar">
             <ul>
-                <li className={`multistep-list ${orderDetails.orderStatus === 'In Progress' || orderDetails.orderStatus === 'In Transit' ? 'active' : ''}`}>
+                <li className={`multistep-list ${orderDetails.orderStatus === 'In Progress' 
+                    || orderDetails.orderStatus === 'In Transit' 
+                    || orderDetails.orderStatus === 'Delivered' ? 'active' : ''}`}>
                     <span>{orderDetails.orderDateTime}</span>
                     <div className="multistep-item">Order Placed</div>
                 </li>
                 <li className={`multistep-list  ${tripDetails?.orderAccepted ? 'active' : ''}`}>
+                    {tripDetails?.orderAcceptedTimeTaken && (
+                        <span className="orderTimetaken">{tripDetails?.orderAcceptedTimeTaken || ' '}</span>
+                    )}                    
                     <span>{tripDetails?.orderAcceptedDateTime || ' '}</span>
                     <div className="multistep-item">Accepted</div>
                 </li>
                 <li className={`multistep-list ${tripDetails?.orderInTransit ? 'active' : ''}`}>
+                    {tripDetails?.orderInTransitTimeTaken && (
+                        <span className="orderTimetaken">{tripDetails?.orderInTransitTimeTaken || ' '}</span>
+                    )}                    
                     <span>{tripDetails?.orderInTransitDateTime || ' '}</span>
-                    <div className="multistep-item" onClick={() => openPickupModal()}>Pickup</div>
+                    <div className="multistep-item" onClick={() => {
+                            if (!tripDetails?.orderInTransit) {
+                                openPickupModal();
+                            }
+                        }}> Pickup
+                    </div>
                     {isPickupModal && (
                         <Modal
                             activeModal={isPickupModal}
@@ -125,8 +186,8 @@ const OrderDetail = () => {
                             <Button className="btn btn-outline-light" type="button" 
                                 onClick={() => handlePickupConfirm({
                                     orderId: orderId,
-                                    orderType: orderDetails.orderType,
-                                    otp: orderDetails.pickupOtp
+                                    orderType: "CITYWIDE",
+                                    otp: "0000"
                                 })}
                             >
                               Yes
@@ -137,8 +198,18 @@ const OrderDetail = () => {
                     )}
                 </li>
                 <li className={`multistep-list ${tripDetails?.orderDelivered ? 'active' : ''}`}>
+                    {tripDetails?.orderDeliveredTimeTaken && (
+                        <span className="orderTimetaken">{tripDetails?.orderDeliveredTimeTaken || ' '}</span>
+                    )}                    
                     <span>{tripDetails?.orderDeliveredDateTime || ' '}</span>
-                    <div className="multistep-item"  onClick={() => openDeliveryModal()}>Delivered</div>
+                    <div className="multistep-item"
+                        onClick={() => {
+                            if (!tripDetails?.orderDelivered) {
+                                openDeliveryModal();
+                            }
+                        }}
+                        > Delivered
+                    </div>
                     {isDeliveryModal && (
                         <Modal
                             activeModal={isDeliveryModal}
@@ -155,7 +226,13 @@ const OrderDetail = () => {
                             <Button className="btn btn-dark" type="button" onClick={() => setisdeliveryModal(false)}>
                               No
                             </Button>
-                            <Button className="btn btn-outline-light" type="button" >
+                            <Button className="btn btn-outline-light" type="button" 
+                                onClick={() => handleDeliveryConfirm({
+                                    orderId: orderId,
+                                    orderType: "CITYWIDE",
+                                    otp: "0000"
+                                })}
+                            >
                               Yes
                             </Button>
                           </div>
