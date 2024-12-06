@@ -39,6 +39,7 @@ const RiderDetail = () => {
     const [approved, setApproved] = useState(true);
     const [rechageAmount, setRechageAmount] = useState({ amount: "" });
     const [documentModel, setIsDocumentModel] = useState(false)
+    const [walletAmount , setWalletAmount] = useState([]);
     const [viewDocumentModelDetail, setDocumentModelDetail] = useState({
         id:'',
         fileName:''
@@ -77,6 +78,7 @@ const RiderDetail = () => {
             
             setRiderOrderDetail(riderOrderResponse.data.jsonData.orderDetails);
             setRiderWalletDetail(riderWalletResponse.data.jsonData.walletTxn);
+            setWalletAmount(riderWalletResponse.data.jsonData.balance);
             setRiderTripDetail(riderTripResponse.data.jsonData.tripDetails);
             setDocumentDetail(documentResponse.data.jsonData.documentDetails || []);
             setDeviceDetails(documentResponse.data.jsonData.deviceDetails);
@@ -766,7 +768,7 @@ const RiderDetail = () => {
                     </TabPanel>
                     <TabPanel>
                         <div className="wallets">
-                           <h6 className="mt-3">Wallet Details <span className="text-sm text-scooton-500">(Balance : 0.0)</span></h6>
+                           <h6 className="mt-3">Wallet Details <span className="text-sm text-scooton-500">(Balance : {walletAmount})</span></h6>
                            <button type="button" onClick={ () => rechargeWallet()} className="btn btn-dark p-2"><Icon icon="heroicons:wallet" className="text-[20px]"></Icon></button>
                         </div>                        
                         

@@ -138,24 +138,22 @@ const Settings = () => {
                 const { orderDetails, customerDetails, riderDetails } = item.jsonData;
                 return {
                     "Order ID": orderDetails?.orderId || "N/A",
-                    "Order Status": orderDetails?.orderStatus || "N/A",
-                    "Order Type": orderDetails?.orderType || "N/A",
                     "Order Date": orderDetails?.orderDateTime || "N/A",
                     "User Mobile": orderDetails?.userMobileNumber || "N/A",
                     "User Name": orderDetails?.userName?.trim() || "N/A",
-                    "MRP": orderDetails?.orderAmount?.mrp || 0,
-                    "Discount": orderDetails?.orderAmount?.discount || 0,
-                    "Final Price": orderDetails?.orderAmount?.finalPrice || 0,
-                    "Delivery Date": orderDetails?.deliveryDateTime || "N/A",
+                    "Order Amount (MRP)": orderDetails?.orderAmount?.mrp || 0,
+                    "Order Amount (Discount)": orderDetails?.orderAmount?.discount || 0,
+                    "Order Amount (Final Price)": orderDetails?.orderAmount?.finalPrice || 0,
+                    "Order Status": orderDetails?.orderStatus || "N/A",
+                    "Delivery DateTime": orderDetails?.deliveryDateTime || "N/A",
                     "Pickup Address": customerDetails?.pickupAddress || "N/A",
-                    "Pickup Contact": customerDetails?.pickupContact || "N/A",
                     "Delivery Address": customerDetails?.deliveryAddress || "N/A",
                     "Delivery Contact": customerDetails?.deliveryContact || "N/A",
                     "Rider ID": riderDetails?.riderId || "N/A",
                     "Rider Name": riderDetails?.riderName || "N/A",
                     "Rider Contact": riderDetails?.riderContact || "N/A",
-                    "On-Role Rider": riderDetails?.onRoleRider || "N/A",
                     "Vehicle Type": riderDetails?.vehicleType || "N/A",
+                    "Rider Payout": riderDetails?.riderPayout || "N/A",
                 };
             });    
             const workbook = XLSX.utils.book_new();

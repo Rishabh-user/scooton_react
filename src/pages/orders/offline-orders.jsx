@@ -59,7 +59,7 @@ const COLUMNS = (openIsDeleteOrder,ordersType) => [
         second: "2-digit",
         hour12: true
       });
-      return <span>{`${formattedDate}, ${formattedTime}`}</span>;
+      return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },  
   {
@@ -88,7 +88,11 @@ const COLUMNS = (openIsDeleteOrder,ordersType) => [
                 row?.cell?.value === "DISPATCHED"
                   ? "text-warning-500 bg-warning-400"
                   : ""
-              }
+            }
+            ${row?.cell?.value === "ACCEPTED"
+              ? "text-info-500 bg-info-400"
+              : ""
+            }
             
              `}
             >
@@ -195,8 +199,11 @@ const OfflineOrders = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [deleteordermodel, setDeleteOrderModel] = useState(false);
   const [orderid, setOrderDeleteId] = useState();
+  const [serviceArea, setServiceArea] = useState([]);
+  const [serviceAreaStatus, setServiceAreaStatus] = useState('All');
   const maxPagesToShow = 5;
   useEffect(() => {
+    setLoading(true);
     fetchOrders("ALL ORDERS");
   }, [currentPage,pagesizedata]);
 
@@ -329,62 +336,148 @@ const OfflineOrders = () => {
   useEffect(() => {
     setCurrentPage(pageIndex);
   }, [pageIndex]);
+  // get Service area 
+  useEffect(() => {
+    const fetchServiceAreas = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/service-area/get-all`);
+        setServiceArea(response.data);
+      } catch (error) {
+        console.error('Error fetching service areas:', error);
+      }
+    };
+    fetchServiceAreas();
+  }, []);
 
+  const filterOrders = () => {
+    setLoading(true);
+    const token = localStorage.getItem("jwtToken");
+    try {
+      axios
+        .post(
+          `${BASE_URL}/order-history/search-city-wide-orders/${serviceAreaStatus}?page=${currentPage}&size=100`,
+          {
+            orderType: "PLACED",
+            searchType: "NONE", 
+            number: 0,           
+          },
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .then((response) => {
+          setOrderData(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching rider data:", error);
+        }).finally(() => {
+          setLoading(false);
+        });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    filterOrders();
+  }, [serviceAreaStatus, currentPage]);
+
+  const serviceAreaStatusFilter = (event) => {
+    console.log("Rider status:", event.target.value);
+    setServiceAreaStatus(event.target.value);
+  };
+  // show hide
+  const [isVisible, setIsVisible] = useState(false);
+  const handleShow = () => {
+    setIsVisible(!isVisible); 
+  };
 
   
   return (
     <>
       <ToastContainer/>
       <Card>
-        <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">All Riders</h4>
-          <div className="flex gap-2">
-            <FormControl fullWidth>
-              <label className="text-sm">Filter By</label>
-              <Select
-                id="demo-simple-select"
-                value={filterby}
-                //label="Filter By"
-                onChange={handleChange}
-                displayEmpty
-                inputProps={{ 'aria-label': 'Without label' }}
-              >
-                <MenuItem value="NONE">NONE</MenuItem>
-                <MenuItem value="ORDERID">ORDER ID</MenuItem>
-                <MenuItem value="MOBILE">Mobile Number</MenuItem>
-              </Select>
-            </FormControl>
+      <div className="order-header">
+          <div className="mb-4">
+            <div className="md:flex justify-between items-center mb-2">
+              <h4 className="card-title mb-0">Offline Orders</h4>
+              <div className="rider-filter">            
+                <div className="d-flex justify-content-end">              
+                  <Button className="btn btn-dark desktop-view-filter" onClick={handleShow}>
+                    <Icon icon="heroicons:adjustments-horizontal" className="text-[20px]"></Icon>
+                  </Button>
+                </div>
+              </div>
+            </div>
+            {isVisible && (
+              <div className="filter-show">
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <FormControl fullWidth className="mb-3">
+                      <label className="text-sm">Service Area</label>
+                      <Select
+                        id="demo-simple-select"
+                        value={serviceAreaStatus}
+                        onChange={serviceAreaStatusFilter}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                      >
+                        <MenuItem value="ALL" selected>ALL</MenuItem>
+                        {serviceArea.map((city, index) => (
+                          <MenuItem value={city.id} key={index} id={city.id}>{city.name}</MenuItem>
+                        ))}                        
+                      </Select>
+                    </FormControl>
+                  </div>
+                  <div className="flex-1">
+                    <FormControl fullWidth>
+                      <label className="text-sm">Filter By</label>
+                        <div className="filterbyRider"> 
+                          <Select
+                            id="demo-simple-select"
+                            value={filterby}
+                            //label="Filter By"
+                            onChange={handleChange}
+                            displayEmpty
+                            inputProps={{ 'aria-label': 'Without label' }}
+                          >
+                            <MenuItem value="NONE">NONE</MenuItem>
+                            <MenuItem value="ORDERID">ORDER ID</MenuItem>
+                            <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                          </Select>           
+                          <TextField
+                            id="search"
+                            type="text"
+                            name="search"
+                            value={search}
+                            onChange={handleSearchChange}
+                          />
+                        </div>
+                      </FormControl>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+          </div>
+          <div className="filter-orderlist">
             <FormControl>
-              <label className="text-sm">Filter By</label>
-              <TextField
-                id="search"
-                type="text"
-                name="search"
-                value={search}
-                onChange={handleSearchChange}
-              />
+              <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="row-radio-buttons-group"
+                onChange={(e) => fetchOrders(e.target.value)}
+                defaultValue="ALL ORDERS"
+              >
+                <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
+                <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
+                <FormControlLabel value="PICKED" control={<Radio />} label="PICKED" />
+                <FormControlLabel value="DELIVERED" control={<Radio />} label="DELIVERED" />
+                <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
+                <FormControlLabel value="ALL ORDERS" control={<Radio />} label="ALL ORDERS" />
+              </RadioGroup>
             </FormControl>
           </div>
         </div>
-        <div className="filter-orderlist">
-          <FormControl>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-              onChange={(e) => fetchOrders(e.target.value)}
-              defaultValue="ALL ORDERS"
-            >
-              <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
-              <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
-              <FormControlLabel value="PICKED" control={<Radio />} label="PICKED" />
-              <FormControlLabel value="DELIVERED" control={<Radio />} label="DELIVERED" />
-              <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
-              <FormControlLabel value="ALL ORDERS" control={<Radio />} label="ALL ORDERS" />
-            </RadioGroup>
-          </FormControl>
-        </div>
-        <div className="overflow-x-auto -mx-6">
+        <div className="overflow-x-auto -mx-6 my-4">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden ">
               {loading ? (

@@ -78,7 +78,8 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
       return (
         <span className="block w-full">
           <span
-            className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${row?.cell?.value === "COMPLETED"
+            className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 
+            ${row?.cell?.value === "COMPLETED"
               ? "text-success-500 bg-success-500"
               : ""
               } 
@@ -92,6 +93,10 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
               }
             ${row?.cell?.value === "DISPATCHED"
                 ? "text-warning-500 bg-warning-400"
+                : ""
+              }
+              ${row?.cell?.value === "ACCEPTED"
+                ? "text-info-500 bg-info-400"
                 : ""
               }
             
@@ -253,15 +258,24 @@ const AllOrders = () => {
   }
 
   const deletePlaceOrder = () => {
-    try {
-      axios.post(`${BASE_URL}/order/cancel-order/${orderdeleteid}`).then((response) => {
-        toast.success("Order cancel successfully");
-      })
-    } catch {
-      (error) => {
-        toast.error("Failed");
+    const token = localStorage.getItem('jwtToken');
+    axios.post(`${BASE_URL}/order/cancel-order/${orderdeleteid}`,{
+        type: "CITYWIDE"
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }
+      ).then((response) => {
+        toast.success("Order cancel successfully");
+        setOrderData((prevList) => prevList.filter((item) => item.order_Id !== orderdeleteid));
+      })
+    .catch (
+      (error) => {
+        toast.error("This order can't be cancel");
+      }
+    )
   }
 
   const handleMobileNumber = (event) => {
@@ -273,14 +287,25 @@ const AllOrders = () => {
     setNotification(event.target.value);
   };
   const sendNotification = () => {
+    const token = localStorage.getItem('jwtToken');
     try {
       if (mobile) {
-        axios.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}/${mobile}`).then((response) => {
+        axios.get(`${BASE_URL}/order/v2/send-order-notification-particular-rider/${notificationid}/${mobile}`,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        })
+        .then((response) => {
           toast.success("Notification Sended Successfully")
           setNotification(false);
         })
       } else {
-        axios.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}`).then((response) => {
+        axios.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}`,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        })
+        .then((response) => {
           toast.success("Notification Sended Successfully")
           setNotification(false);
         })
@@ -290,6 +315,35 @@ const AllOrders = () => {
       toast.error("Notification not Sended");
     }
   }
+  // const sendNotification = async () => {
+  //   const token = localStorage.getItem('jwtToken');
+  //   if (!token) {
+  //     toast.error("Authorization token not found");
+  //     return;
+  //   }  
+  //   try {
+  //     const url = mobile
+  //       ? `${BASE_URL}/order/v2/send-order-notification-particular-rider/${notificationid}/${mobile}`
+  //       : `${BASE_URL}/order/v2/send-order-notification/${notificationid}`;
+  
+  //     const response = await axios.get(url, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  
+  //     if (response.status === 200) {
+  //       toast.success("Notification sent successfully!");
+  //       setNotificationModel(false);
+  //     } else {
+  //       toast.error("Failed to send notification");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error sending notification:", error);
+  //     toast.error(
+  //       error.response?.data?.message || "Notification not sent. Please try again."
+  //     );
+  //   }
+  // };
+  
 
   const handleChange = (event) => {
     console.log("qwerty", event.target.value)
@@ -324,6 +378,7 @@ const AllOrders = () => {
   // }, []);
 
   useEffect(() => {
+    setLoading(true);
     if (id?.ordertype) { 
       console.log("Redirected with params:", id.ordertype);
   
@@ -685,7 +740,6 @@ const AllOrders = () => {
           <ul className="flex items-center space-x-3 rtl:space-x-reverse">
             {totalCount > pagesizedata && (
               <>
-                {/* First Page Button */}
                 <li>
                   <button
                     onClick={() => gotoPage(0)}
@@ -695,8 +749,6 @@ const AllOrders = () => {
                     <Icon icon="heroicons:chevron-double-left-solid" />
                   </button>
                 </li>
-
-                {/* Previous Page Button */}
                 <li>
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
@@ -706,17 +758,14 @@ const AllOrders = () => {
                     Prev
                   </button>
                 </li>
-
-                {/* Page Numbers */}
                 {(() => {
-                  const totalPages = pageCount; // Total number of pages
-                  const currentGroup = Math.floor(currentPage / maxPagesToShow); // Current group of pages
-                  const startPage = currentGroup * maxPagesToShow; // Starting page of the current group
-                  const endPage = Math.min(startPage + maxPagesToShow, totalPages); // Ending page of the current group
+                  const totalPages = pageCount; 
+                  const currentGroup = Math.floor(currentPage / maxPagesToShow); 
+                  const startPage = currentGroup * maxPagesToShow; 
+                  const endPage = Math.min(startPage + maxPagesToShow, totalPages); 
 
                   return (
                     <>
-                      {/* Previous dots */}
                       {startPage > 0 && (
                         <li>
                           <button onClick={() => setCurrentPage(startPage - 1)}>
@@ -724,8 +773,6 @@ const AllOrders = () => {
                           </button>
                         </li>
                       )}
-
-                      {/* Render page numbers */}
                       {Array.from({ length: endPage - startPage }).map((_, idx) => {
                         const pageNumber = startPage + idx;
                         return (
@@ -742,8 +789,6 @@ const AllOrders = () => {
                           </li>
                         );
                       })}
-
-                      {/* Next dots */}
                       {endPage < totalPages && (
                         <li>
                           <button onClick={() => setCurrentPage(endPage)}>
@@ -754,8 +799,6 @@ const AllOrders = () => {
                     </>
                   );
                 })()}
-
-                {/* Next Page Button */}
                 <li>
                   <button
                     onClick={() => setCurrentPage(currentPage + 1)}
@@ -798,44 +841,30 @@ const AllOrders = () => {
           <div className="">
             <h5 className="text-center mb-4">Send Notification</h5>
             <div className="mb-3">
-              <label className="form-label">Select Role</label>
+              <label className="form-label mb-1">Select Role</label>
               <select class="form-select" onChange={handlenotification}>
                 <option selected>Notification</option>
                 <option value="ALL">All</option>
                 <option value="INDIVIDUAL">Individual</option>
               </select>
-            </div>
-            {/* <div>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Filter By</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={notification}
-                  label="Filter By"
-                  onChange={handlenotification}
-                >
-                  <MenuItem value="ALL">All</MenuItem>
-                  <MenuItem value="INDIVIDAUL">Individual</MenuItem>
-                </Select>
-              </FormControl>
-            </div> */}
-            <div>
-              <TextField
-                label="Mobile Number"
+            </div>           
+            <div className="mb-3">
+              <label className="form-label mb-1">Mobile Number</label>
+              <input                
                 id="mobile"
                 type="number"
                 name="mobile"
                 value={mobile}
                 onChange={handleMobileNumber}
+                className="form-control"
               />
             </div>
             <div className="d-flex gap-2 justify-content-center mt-4">
-              <Button className="btn btn-dark" type="button" onClick={sendNotification} >
-                Send Notification
-              </Button>
               <Button className="btn btn-outline-light" type="button" onClick={() => { setNotificationModel(false) }}>
                 Cancel
+              </Button>
+              <Button className="btn btn-dark" type="button" onClick={() => { sendNotification(); setNotificationModel(false) }} >
+                Send Notification
               </Button>
             </div>
           </div>

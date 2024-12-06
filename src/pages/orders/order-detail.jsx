@@ -105,6 +105,7 @@ const OrderDetail = () => {
         }
     };
     const downloadInvoice = async () => {
+        setisLoadingInvoice(true);
         try {
             
             const response = await axios.post(
@@ -126,7 +127,9 @@ const OrderDetail = () => {
             }
         } catch (error) {
             toast.error('An error occurred while downloading invoice. Please try again.');
-        }
+        } finally {
+            setLoading(false);
+          };
     };
 
     return (
@@ -145,13 +148,13 @@ const OrderDetail = () => {
                         {orderDetails.orderStatus === 'Delivered' && (
                             <button type="button" className="btn btn-sm btn-dark py-1 px-2" onClick={downloadInvoice}>Get Invoice</button>
                         )}
-                        {/* {isLoadingInvoice && (
+                        {isLoadingInvoice && (
                             <div className="loader-fixed">
                                 <span className="flex items-center gap-2">
                                     <Loading />
                                 </span>
                             </div>
-                        )} */}
+                        )}
                     </div>
                 </div>
                 <div className="multistep-prgressbar">

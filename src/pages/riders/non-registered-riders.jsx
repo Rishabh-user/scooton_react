@@ -29,8 +29,8 @@ const COLUMNS = [
     accessor: "riderInfo.firstName",
     Cell: (row) => {
         const { original } = row.row;
-        const firstName = original.riderInfo.firstName || "";
-        const lastName = original.riderInfo.lastName || "";
+        const firstName = original.riderInfo?.firstName || "";
+        const lastName = original.riderInfo?.lastName || "";
         const imageUrl = original.media ? original.media.url : null;
   
         const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
@@ -128,13 +128,13 @@ const COLUMNS = [
     Cell: (row) => {
       return (
         <div>
-          {row.row.original.riderInfo.vehicleId === 1 ? (
+          {row.row.original.riderInfo?.vehicleId === 1 ? (
             <img className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
-          ): row.row.original.riderInfo.vehicleId === 2 ? (
+          ): row.row.original.riderInfo?.vehicleId === 2 ? (
               <img className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
-          ): row.row.original.riderInfo.vehicleId === 4 ? (
+          ): row.row.original.riderInfo?.vehicleId === 4 ? (
             <img className="object-cover" width={30} alt="threewheeler" class="mr-2 rounded-0" src={threewheeler}></img>
-          ) : row.row.original.riderInfo.vehicleId === 3 ? (
+          ) : row.row.original.riderInfo?.vehicleId === 3 ? (
             <img className=" object-cover" width={30} alt="tataace" class="mr-2 rounded-0" src={tataace}></img>
           ) : (
             <img className="object-cover" width={30} alt="pickup_8ft" class="mr-2 rounded-0" src={pickup_8ft}></img>
@@ -159,6 +159,8 @@ const NonRegisteredRiders = () => {
   const [vehicleid, setVehicleId]= useState('0');
   const [filterby, setFilterBy] = React.useState("NONE");
   const [pagesizedata, setpagesizedata]=useState(50);
+  const [serviceArea, setServiceArea] = useState([]);
+  const [serviceAreaStatus, setServiceAreaStatus] = useState('All');
   const [totalCount, setTotalCount] = useState(0);
   const maxPagesToShow = 5;
 
@@ -325,6 +327,53 @@ const NonRegisteredRiders = () => {
   const handleShow = () => {
     setIsVisible(!isVisible); 
   };
+  // get Service area 
+  useEffect(() => {
+    const fetchServiceAreas = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/service-area/get-all`);
+        setServiceArea(response.data);
+      } catch (error) {
+        console.error('Error fetching service areas:', error);
+      }
+    };
+    fetchServiceAreas();
+  }, []);
+
+  const filterOrders = () => {
+    const token = localStorage.getItem("jwtToken");
+    try {
+      axios
+        .post(
+          `${BASE_URL}/order-history/search-city-wide-orders/${serviceAreaStatus}?page=${currentPage}&size=100`,
+          {
+            orderType: "PLACED",
+            searchType: "NONE", 
+            number: 0,           
+          },
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .then((response) => {
+          setRiderData(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching rider data:", error);
+        }).finally(() => {
+          setLoading(false);
+        });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+  
+  useEffect(() => {
+    filterOrders();
+  }, [serviceAreaStatus, currentPage]);
+
+  const serviceAreaStatusFilter = (event) => {
+    console.log("Rider status:", event.target.value);
+    setServiceAreaStatus(event.target.value);
+  };
   
   return (
     <>
@@ -361,12 +410,28 @@ const NonRegisteredRiders = () => {
           {isVisible && (
             <div className="filter-show">
               <div className="">
+              <div className="flex-1">
+                  <FormControl fullWidth className="mb-3">
+                    <label className="text-sm">Service Area</label>
+                    <Select
+                      id="demo-simple-select"
+                      value={serviceAreaStatus}
+                      onChange={serviceAreaStatusFilter}
+                      displayEmpty
+                      inputProps={{ 'aria-label': 'Without label' }}
+                    >
+                      <MenuItem value="ALL" selected>ALL</MenuItem>
+                      {serviceArea.map((city, index) => (
+                        <MenuItem value={city.id} key={index} id={city.id}>{city.name}</MenuItem>
+                      ))}                        
+                    </Select>
+                  </FormControl>
+                </div>
                 <div className="flex-1">
                   <FormControl fullWidth className="mb-3">
                     <label className="text-sm mb-1">Rider Status</label>
                     <Select
                       id="demo-simple-select"
-                      //label="Rider_Status"
                       value={riderstatus}
                       onChange={riderStatusFilter}
                       displayEmpty
