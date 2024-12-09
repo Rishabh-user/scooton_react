@@ -9,6 +9,7 @@ import { BASE_URL } from "../../api";
 import Loading from "../../components/Loading";
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@/components/ui/Tooltip";
+import { toast } from "react-toastify";
 
 const COLUMNS = [
   
@@ -63,6 +64,14 @@ const COLUMNS = [
     accessor: "createdAt",
     Cell: ({ cell }) => {
       const date = new Date(cell.value);
+      if (isNaN(date.getTime())) {
+        return (
+          <div className="rider-datetime text-center">
+            <span className="riderDate">..</span>            
+            <span className="riderTime">..</span>
+          </div>
+        );
+      }
       const formattedDate = date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
@@ -82,6 +91,14 @@ const COLUMNS = [
     accessor: "lastActivity",
     Cell: ({ cell }) => {
       const date = new Date(cell.value);
+      if (isNaN(date.getTime())) {
+        return (
+          <div className="rider-datetime text-center">
+            <span className="riderDate">..</span>            
+            <span className="riderTime">..</span>
+          </div>
+        );
+      }
       const formattedDate = date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
@@ -134,13 +151,12 @@ const COLUMNS = [
     accessor: "active",
     Cell: ({ row }) => {
       const [isActive, setIsActive] = useState(row.original.active);
-      const [checked, setChecked] = useState(false);
        const toggleActive = async (id) => {
         try {
           const newState = !isActive;
           await axios.post(`${BASE_URL}/user/active/${id}`,{active: newState});
           setIsActive(newState);
-         
+          toast.success()
           
         } catch (error) {
           console.error("Error toggling user active state:", error);
@@ -303,12 +319,14 @@ const UserList = () => {
       <Card>
         <div className="md:flex justify-between items-center mb-6">
           <h4 className="card-title">Users List</h4>
-          <div>
-            <Textinput
+          <div className="d-flex border rounded align-items-center p-2">
+            <input
                 placeholder="Search by mobile number"
+                className="focus-invisible"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
             />
+            <Icon icon="heroicons-outline:search" />
           </div>
         </div>
         <div className="overflow-x-auto -mx-6">

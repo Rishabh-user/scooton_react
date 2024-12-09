@@ -69,8 +69,10 @@ const schema = yup
         });
       }
     } catch (error) {
+      const errorMessage = 
+      error.response?.data?.error;
       console.error("Login error: ", error);
-      toast.error("Invalid credentials.", {
+      toast.error(errorMessage, {
         position: "top-right",
         autoClose: 1500,
         hideProgressBar: false,
@@ -114,7 +116,7 @@ const schema = yup
             placeholder="User ID"
             className="h-[48px] form-control"
           />
-          <p className="text-red-500">{errors.userId?.message}</p>
+          <p className="text-red-500 text-sm text-right">{errors.userId?.message}</p>
         </div>        
         <div className="mb-3">
           <input
@@ -123,7 +125,7 @@ const schema = yup
             placeholder="Password"
             className="h-[48px] form-control"
           />
-          <p className="text-red-500">{errors.password?.message}</p>
+          <p className="text-red-500 text-sm text-right">{errors.password?.message}</p>
         </div>
         <div className="flex justify-between mb-3">
           <Checkbox

@@ -131,6 +131,7 @@
   --tw-bg-opacity: 1;
   background-color: rgb(255 193 7 / 19%);
 }
+.focus-invisible:focus-visible{outline: none;}
 .btn:hover{background-color: #000;outline: 0; border-color: #000;box-shadow: none;}
 .btn-primary{ background-color: var(--primary);}
 .btn-outline-light:hover{background-color: var(--primary);color: #fff;border-color: var(--primary);}
@@ -304,10 +305,16 @@ width: 100%;padding: 1rem;box-shadow: 0px 0px 18px #e8e8e8;margin-bottom: 1rem;}
   .filter-showhide{position: sticky;top:70px;background-color: #fff;}
   .filter-show .MuiFormControl-fullWidth{display: flex;flex-direction: row;}
   .filter-show .MuiFormControl-fullWidth label{flex:1}
+  .react-tabs__tab{font-size: 14px;}
   .filter-show .MuiFormControl-fullWidth .MuiOutlinedInput-root, .filter-show .MuiFormControl-fullWidth>.filterbyRider{flex: 2;font-size: 14px;}
 }
 @media (max-width:768px){
   .onOff-riders{column-gap: 10px !important;gap: 0px;}
   
   .all-rider-mobile{gap: 5px;}
+  .react-tabs__tab-list{overflow-x: auto;}
+  .react-tabs__tab{padding: 8px 12px;white-space: nowrap;}
+}
+@media (max-width:1366px) {
+  .loginwrapper .left-column h4{font-size: 32px;line-height: 38px;}
 }

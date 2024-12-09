@@ -13,28 +13,8 @@ const Error = lazy(() => import("./pages/404"));
 import Layout from "./layout/Layout";
 
 
-
-// chart page
-const AppexChartPage = lazy(() => import("./pages/chart/appex-chart"));
-const ChartJs = lazy(() => import("./pages/chart/chartjs"));
-const Recharts = lazy(() => import("./pages/chart/recharts"));
-
-// map page
-const MapPage = lazy(() => import("./pages/map"));
-
-
-// utility pages
-const InvoicePage = lazy(() => import("./pages/utility/invoice"));
-const InvoiceAddPage = lazy(() => import("./pages/utility/invoice-add"));
-const InvoicePreviewPage = lazy(() =>
-  import("./pages/utility/invoice-preview")
-);
-const InvoiceEditPage = lazy(() => import("./pages/utility/invoice-edit"));
-const PricingPage = lazy(() => import("./pages/utility/pricing"));
-
 // const Settings = lazy(() => import("./pages/utility/settings"));
 const Profile = lazy(() => import("./pages/utility/profile"));
-const IconPage = lazy(() => import("./pages/icons"));
 const NotificationPage = lazy(() => import("./pages/utility/notifications"));
 
 
@@ -95,18 +75,6 @@ function App() {
         />
         <Route path="/*" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
-         
-          
-          <Route path="appex-chart" element={<AppexChartPage />} />
-          <Route path="chartjs" element={<ChartJs />} />
-          <Route path="recharts" element={<Recharts />} />
-          <Route path="map" element={<MapPage />} />
-          
-          <Route path="invoice" element={<InvoicePage />} />
-          <Route path="invoice-add" element={<InvoiceAddPage />} />
-          <Route path="invoice-preview" element={<InvoicePreviewPage />} />
-          <Route path="invoice-edit" element={<InvoiceEditPage />} />
-          <Route path="pricing" element={<PricingPage />} />
           
           <Route path="profile" element={<Profile />} />
          
