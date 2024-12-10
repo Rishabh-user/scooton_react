@@ -14,8 +14,8 @@ import { BASE_URL } from "../../../api";
 
 const schema = yup
   .object({
-    userId: yup.string().trim().required("UserId is Required"),
-    password: yup.string().trim().required("Password is Required"),
+    userId: yup.string().trim().required("UserId is required"),
+    password: yup.string().trim().required("Password is required"),
   })
   .required();
 
@@ -126,20 +126,7 @@ const schema = yup
             className="h-[48px] form-control"
           />
           <p className="text-red-500 text-sm text-right">{errors.password?.message}</p>
-        </div>
-        <div className="flex justify-between mb-3">
-          <Checkbox
-            value={checked}
-            onChange={() => setChecked(!checked)}
-            label="Keep me signed in"
-          />
-          {/* <Link
-            to="/forgot-password"
-            className="text-sm text-scooton-800 dark:text-scooton-400 leading-6 font-medium"
-          >
-            Forgot Password?{" "}
-          </Link> */}
-        </div>
+        </div>       
 
         <button className={` btn text-white bg-scooton-500 dark:bg-scooton-500 block w-full text-center` }>Sign in</button>
       </form>

@@ -133,19 +133,18 @@ const COLUMNS = [
     Cell: (row) => {
       return (
         <div>
-          {row?.cell?.value === 'Two Wheeler EV' || row?.cell?.value === 'Two Wheeler' ? (
-            <img className="object-cover mr-2" width={30} alt="twowheeler" src={twowheeler} />
-          ) : row?.cell?.value === 'Three Wheeler' ? (
-            <img className="object-cover mr-2" width={30} alt="threewheeler" src={threewheeler} />
-          ) : row?.cell?.value === 'Tata Ace' ? (
-            <img className="object-cover mr-2" width={30} alt="tataace" src={tataace} />
-          ) : row?.cell?.value === 'Pickup 8ft' ? (
-            <img className="object-cover mr-2" width={30} alt="pickup_8ft" src={pickup_8ft} />
-          ) : row?.cell?.value === 'Eeco' ? (
-            <img className="object-cover mr-2" width={30} alt="eeco" src={Eeco} />
-          ) : row?.cell?.value === 'Champion' ? (
-            <img className="object-cover mr-2" width={30} alt="champion" src={campion} />
-          ) : null}
+          {row.row.original.riderInfo?.vehicleId === 1 ? ( 
+            <img className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
+          ): row.row.original.riderInfo?.vehicleId === 2 ? (
+              <img className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
+          ): row.row.original.riderInfo?.vehicleId === 4 ? (
+            <img className="object-cover" width={30} alt="threewheeler" class="mr-2 rounded-0" src={threewheeler}></img>
+          ) : row.row.original.riderInfo?.vehicleId === 3 ? (
+            <img className=" object-cover" width={30} alt="tataace" class="mr-2 rounded-0" src={tataace}></img>
+          ) : (
+            <img className="object-cover" width={30} alt="pickup_8ft" class="mr-2 rounded-0" src={pickup_8ft}></img>
+          )
+          }
         </div>
       );
     }

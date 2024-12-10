@@ -17,9 +17,10 @@ const promocodeType = ["FIXED", "PERCENTAGE"];
 const AddPromocode = () => {
   const [formData, setFormData] = useState({
     promoCode: "",
-    discount: "",
+    amount: "",
     promoCodeType: promocodeType[0],
     publicShown: false,
+    active: true,
     startDate: "",
     expireDate: ""
   });
@@ -71,12 +72,12 @@ const AddPromocode = () => {
       }).then((response) => {
         toast.success("Promocode added successfully!");
         console.log(response.data);
-        setTimeout(() => {
-          window.location.reload()
-        }, 500);
+        // setTimeout(() => {
+        //   window.location.reload()
+        // }, 500);
         setFormData({
           promoCode: '',
-          discount: '',
+          amount: '',
           promoCodeType: promocodeType[0],  
           publicShown: false,
           startDate: '',
@@ -86,7 +87,7 @@ const AddPromocode = () => {
       
       
     } catch (error) {
-      toast.error("Promocode not added")
+      toast.error("Fill all fields")
       console.error("Error adding promocode:", error);
     }
   };
@@ -112,10 +113,10 @@ const AddPromocode = () => {
                   <div className="col-md-6 mb-4">
                     <label className="form-label mb-1">Discount</label>
                     <input
-                      id="discount"
+                      id="amount"
                       type="text"
                       className="form-control"
-                      value={formData.discount}
+                      value={formData.amount}
                       onChange={handleChange}
                     />
                   </div>

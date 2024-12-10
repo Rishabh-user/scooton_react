@@ -58,10 +58,13 @@ const COLUMNS = (deletePromocode, openEditModal) => [
     accessor: "status",
     Cell: ({ row }) => {
       const [isActive, setIsActive] = useState(row.original.active);
+      const token = localStorage.getItem("jwtToken");
        const toggleActive = async (id) => {
         try {
           const newState = !isActive;
-          await axios.post(`${BASE_URL}/promo-code/active/${id}`,{active: newState}).then((response) => {
+          await axios.post(`${BASE_URL}/promo-code/active/${id}`,{active: newState},
+            { headers: { Authorization: `Bearer ${token}` } },
+          ).then((response) => {
             toast.success("Promocode status change successfully!");
           });
           setIsActive(newState);
@@ -139,8 +142,15 @@ const PromocodeList = () => {
   }, [currentPage,pagesizedata]);
 
   const deletePromocode = async (id) => {
+    const token = localStorage.getItem("jwtToken");
     try {
-      await axios.delete(`${BASE_URL}/promo-code/delete/${id}`).then((response) => {
+      await axios.delete(`${BASE_URL}/promo-code/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ).then((response) => {
         toast.success("Promocode deleted successfully!");
       });
       setprocodeList((prevList) => prevList.filter((item) => item.promocodeId !== id));
@@ -199,12 +209,6 @@ const PromocodeList = () => {
       const token = localStorage.getItem("jwtToken");
       const formattedStartDate = formatDate(selectedPromoCode?.startDate);
       const formattedExpireDate = formatDate(selectedPromoCode?.expireDate);
-  
-      let publicShownvalue = false
-      if(promoCodeData?.publicShown === 'on')
-        publicShownvalue = true
-      else
-        publicShownvalue = false
 
       await axios.post(`${BASE_URL}/promo-code/update/${id}`, 
         {
@@ -215,7 +219,7 @@ const PromocodeList = () => {
           promoCodeType:promoCodeData?.promoCodeType,
           promocodeId: promoCodeData?.promocodeId,
           startDate: formattedStartDate,
-          publicShown: publicShownvalue
+          publicShown: promoCodeData?.publicShown
        }, 
        {
         headers: {

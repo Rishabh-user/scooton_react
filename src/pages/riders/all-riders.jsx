@@ -410,11 +410,11 @@ const AllRiders = () => {
   return (
     <>
       <Card>
-        <div className="filter-showhide">
-          <div className="md:flex justify-between items-center mb-3 ">
+        <div className="filter-showhide order-header">
+          <div className="md:flex justify-between items-center">
             <div className="rider-status">
-              <div className="all-riders">
-                <h4 className="card-title">
+              <div className="all-riders items-center">
+                <h4 className="card-title mb-0">
                   <div className="all-rider-mobile">
                     <span>All Riders </span>
                     <div className="onOff-riders">
@@ -548,7 +548,7 @@ const AllRiders = () => {
             </div>
           )}
         </div>
-        <div className="overflow-x-auto -mx-6">
+        <div className="overflow-x-auto -mx-6 my-4">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden ">
               {loading ? (

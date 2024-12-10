@@ -327,9 +327,15 @@ const RiderDetail = () => {
 
 
   const deleteRider = async (riderId) => {
+    const token = localStorage.getItem("jwtToken");
     try {
       const response = await axios.delete(
-        `${BASE_URL}/login/delete/${riderId}` 
+        `${BASE_URL}/login/delete/${riderId}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
       );
       if (response.status === 200) {
         toast.success("Rider deleted successfully!");

@@ -131,6 +131,10 @@
   --tw-bg-opacity: 1;
   background-color: rgb(255 193 7 / 19%);
 }
+.form-check .form-check-input {
+  height: 1.2rem;
+  border-color: #b8b7b7;
+}
 .focus-invisible:focus-visible{outline: none;}
 .btn:hover{background-color: #000;outline: 0; border-color: #000;box-shadow: none;}
 .btn-primary{ background-color: var(--primary);}
@@ -302,7 +306,7 @@ width: 100%;padding: 1rem;box-shadow: 0px 0px 18px #e8e8e8;margin-bottom: 1rem;}
   .mobile-view .btn{padding: .5rem;}
   // .filter-show{position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);}
   .filter-show>div{display: block;gap:10px}
-  .filter-showhide{position: sticky;top:70px;background-color: #fff;}
+  .filter-showhide{position: sticky;top:62px;background-color: #fff;}
   .filter-show .MuiFormControl-fullWidth{display: flex;flex-direction: row;}
   .filter-show .MuiFormControl-fullWidth label{flex:1}
   .react-tabs__tab{font-size: 14px;}

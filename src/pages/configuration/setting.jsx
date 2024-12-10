@@ -194,7 +194,7 @@ const Settings = () => {
                         </div>
                     </div>
                     <div className="mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
-                        <table className="w-full border-collapse table-fixed dark:border-slate-700 dark:border">
+                        <table className="w-full border-collapse dark:border-slate-700 dark:border">
                             <thead>
                                 <tr>
                                     <th className="dark:bg-slate-700 dark:text-slate-300 text-xs text-left font-medium leading-4 uppercase text-slate-600">
@@ -222,15 +222,15 @@ const Settings = () => {
                                 ) : (
                                     logoutAll.map((logout, index) => (
                                         <tr key={index}>
-                                            <td className="px-6 py-4">{index + 1}</td>
-                                            <td className="px-6 py-4">
+                                            <td className="table-td px-6 py-3">{index + 1}</td>
+                                            <td className="table-td px-6 py-3">
                                                 {logout.firstName}
                                             </td>
-                                            <td className="px-6 py-4">
+                                            <td className="table-td px-6 py-3">
                                                 {logout.mobileNumber}                                                
                                             </td>   
-                                            <td className="px-6 py-4">{logout.email}</td>                                         
-                                            <td className="px-6 py-4">
+                                            <td className="table-td px-6 py-3">{logout.email}</td>                                         
+                                            <td className="table-td px-6 py-3">
                                                 {logout.role}
                                             </td>
                                             
