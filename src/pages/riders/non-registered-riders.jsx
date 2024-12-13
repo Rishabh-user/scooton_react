@@ -14,6 +14,8 @@ import twowheeler from '../../assets/images/icon/Two_Wheeler_EV.png';
 import threewheeler from '../../assets/images/icon/Three_Wheeler.png';
 import tataace from '../../assets/images/icon/Tata_Ace.png'
 import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
+import { useNavigate } from "react-router-dom";
+import Tooltip from "@/components/ui/Tooltip";
 
 const COLUMNS = [
   {
@@ -143,6 +145,26 @@ const COLUMNS = [
         </div>
       )
     }
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    Cell: (row) => {
+      const navigate = useNavigate();
+      const handleViewClick = () => {
+        const riderId = row.row.original.riderInfo.id;
+        navigate(`/rider-detail/${riderId}`);
+      };
+      return (
+        <div className="flex space-x-3 rtl:space-x-reverse">
+          <Tooltip content="View" placement="top" arrow animation="shift-away">
+            <button className="action-btn bg-scooton" type="button" onClick={handleViewClick}>
+              <Icon icon="heroicons:eye" />
+            </button>
+          </Tooltip>
+        </div>
+      );
+    },
   },
 ];
 
@@ -374,7 +396,15 @@ const NonRegisteredRiders = () => {
     console.log("Rider status:", event.target.value);
     setServiceAreaStatus(event.target.value);
   };
-  
+   // Clear the search input field
+   const resetFilters = () => {
+    setServiceAreaStatus("ALL");
+    setRiderStatus("ALL");
+    setDocumentStatus("ALL");
+    setVehicleId("0");
+    setFilterBy("NONE");
+    setSearch(""); 
+  }
   return (
     <>
       <Card>
@@ -411,7 +441,7 @@ const NonRegisteredRiders = () => {
             <div className="filter-show">
               <div className="">
               <div className="flex-1">
-                  <FormControl fullWidth className="mb-3">
+                  <FormControl fullWidth className="">
                     <label className="text-sm">Service Area</label>
                     <Select
                       id="demo-simple-select"
@@ -428,7 +458,7 @@ const NonRegisteredRiders = () => {
                   </FormControl>
                 </div>
                 <div className="flex-1">
-                  <FormControl fullWidth className="mb-3">
+                  <FormControl fullWidth className="">
                     <label className="text-sm mb-1">Rider Status</label>
                     <Select
                       id="demo-simple-select"
@@ -445,7 +475,7 @@ const NonRegisteredRiders = () => {
                   </FormControl>
                 </div>
                 <div className="flex-1">
-                  <FormControl fullWidth className="mb-3">
+                  <FormControl fullWidth className="">
                     <label className="text-sm mb-1">Document Status</label>
                     <Select
                       id="demo-simple-select"
@@ -464,7 +494,7 @@ const NonRegisteredRiders = () => {
                   </FormControl>
                 </div>
                 <div className="flex-1">
-                  <FormControl fullWidth className="mb-3">
+                  <FormControl fullWidth className="">
                     <label className="text-sm mb-1">Vehicle Type</label>
                     <Select
                       id="demo-simple-select"
@@ -484,7 +514,7 @@ const NonRegisteredRiders = () => {
                   </FormControl>
                 </div>
                 <div className="flex-1">
-                  <FormControl fullWidth className="mb-3">
+                  <FormControl fullWidth className="">
                     <label className="text-sm mb-1">Filter By</label>
                     <div className="filterbyRider">                    
                       <Select
@@ -511,8 +541,15 @@ const NonRegisteredRiders = () => {
                     </div>
                   </FormControl>
                 </div>
-              </div>
-              
+                <div className="d-flex gap-2 justify-content-end">
+                  <div className="h-100">
+                    <button className="btn btn-dark h-100 text-xl" onClick={resetFilters}><Icon icon="heroicons:arrow-path" /></button>
+                  </div>
+                  <div className="h-100">
+                    <button className="btn btn-dark h-100 py-2" onClick={() => setIsVisible(false)}>Submit</button>
+                  </div>
+                </div>
+              </div>              
             </div>
           )}
         </div>

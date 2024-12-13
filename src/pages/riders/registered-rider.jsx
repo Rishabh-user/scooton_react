@@ -19,6 +19,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from "@mui/material/TextField";
+import Button from "../../components/ui/Button";
 
 const COLUMNS = [
   {
@@ -335,105 +336,143 @@ const RegisteredRiders = () => {
       setLoading(false); 
     });
   }
+  // show hide
+  const [isVisible, setIsVisible] = useState(false);
+  const handleShow = () => {
+    setIsVisible(!isVisible); 
+  };
+   // Clear the search input field
+   const resetFilters = () => {
+    setServiceAreaStatus("ALL");
+    setRiderStatus("ALL");
+    setDocumentStatus("ALL");
+    setVehicleId("0");
+    setFilterBy("NONE");
+    setSearch(""); 
+  }
 
   
   return (
     <>
       <Card>
-        <div className="md:flex justify-between items-center mb-6">
-          <div className="rider-status">
-            <div className="all-riders">
-              <h4 className="card-title">
-                <div className="all-rider-mobile">
-                  <span>Registered Riders</span>
-                  <div className="onOff-riders">
-                    <div className="all-rider"><span></span> {activeridercount.allRider} (Total Riders)</div>
-                    <div className="online"><span></span> {activeridercount.onlineRider} (Online)</div>
-                    <div className="offline"><span></span> {activeridercount.offlineRider} (Offline)</div>
+        <div className="filter-showhide">
+          <div className="md:flex justify-between items-center mb-6">
+            <div className="rider-status">
+              <div className="all-riders">
+                <h4 className="card-title">
+                  <div className="all-rider-mobile">
+                    <span>Registered Riders</span>
+                    <div className="onOff-riders">
+                      <div className="all-rider"><span></span> {activeridercount.allRider} (Total Riders)</div>
+                      <div className="online"><span></span> {activeridercount.onlineRider} (Online)</div>
+                      <div className="offline"><span></span> {activeridercount.offlineRider} (Offline)</div>
+                    </div>
+                  </div>
+                </h4>
+                <span className="mobile-view">
+                  <Button className="btn btn-dark" onClick={handleShow}>
+                    <Icon icon="heroicons:adjustments-horizontal" className="text-[20px]"></Icon>
+                  </Button>
+                </span>              
+              </div>
+              <div className="d-flex gap-2">
+                {Array.isArray(activeridercount?.onlineRiderCategoryWise) &&
+                activeridercount.onlineRiderCategoryWise.map((riderVehicle) => {
+                  const { categoryId, vehicleType } = riderVehicle;
+                  return (
+                    <span key={categoryId}>
+                      {categoryId === 1 && vehicleType === "Two Wheeler" ? (
+                        <div className="rider-count">
+                          <img src={twowheeler} alt="Two-Wheeler" width={30} />
+                          {riderVehicle.riderCount} 
+                        </div>
+                      ) : categoryId === 2 && vehicleType === "Three Wheeler" ? (
+                        <div className="rider-count">
+                          <img src={threewheeler} alt="Three-Wheeler" width={30} />
+                          {riderVehicle.riderCount} 
+                        </div>
+                      ) : categoryId === 3 && vehicleType === "Tata Ace" ? (
+                        <div className="rider-count">
+                          <img src={tataace} alt="Tata Ace" width={30} />
+                          {riderVehicle.riderCount} 
+                        </div>
+                      ) : categoryId === 4 && vehicleType === "Pickup 8ft" ? (
+                        <div className="rider-count">
+                          <img src={pickup_8ft} alt="Pickup 8ft" width={30} />
+                          {riderVehicle.riderCount} 
+                        </div>
+                      ) : null}
+                    </span>
+                  );
+                })}             
+              </div>
+            </div>
+            <div className="rider-filter">            
+              <div className="d-flex justify-content-end">              
+                <Button className="btn btn-dark desktop-view-filter" onClick={handleShow}>
+                  <Icon icon="heroicons:adjustments-horizontal" className="text-[20px]"></Icon>
+                </Button>
+              </div>
+            </div>            
+          </div>
+          {isVisible && (
+              <div className="filter-show">
+                <div className="">                 
+                  <div className="flex-1">
+                    <FormControl fullWidth className="">
+                      <label className="text-sm mb-1">Rider Status</label>
+                      <Select
+                        id="demo-simple-select"
+                        value={riderstatus}
+                        onChange={riderStatusFilter}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                      >
+                        <MenuItem value="ALL">ALL</MenuItem>
+                        <MenuItem value="ONLINE">ONLINE</MenuItem>
+                        <MenuItem value="OFFLINE">OFFLINE</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>                  
+                  <div className="flex-1">
+                    <FormControl fullWidth className="">
+                      <label className="text-sm mb-1">Filter By</label>
+                      <div className="filterbyRider">                    
+                        <Select
+                          id="demo-simple-select"
+                          value={filterby}
+                          onChange={handleChange}
+                          displayEmpty
+                          inputProps={{ 'aria-label': 'Without label' }}
+                        >
+                          <MenuItem value="NONE">NONE</MenuItem>
+                          <MenuItem value="RIDERID">Rider ID</MenuItem>
+                          <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                          <MenuItem value="RIDERNAME">Rider Name</MenuItem>
+                        </Select>
+                        <TextField
+                          id="search"
+                          type="text"
+                          name="search"
+                          className=""
+                          placeholder="Filter By"
+                          value={search}
+                          onChange={handleSearchChange}
+                        />
+                      </div>
+                    </FormControl>
+                  </div>
+                  <div className="d-flex gap-2 justify-content-end">
+                    <div className="h-100">
+                      <button className="btn btn-dark h-100 text-xl" onClick={resetFilters}><Icon icon="heroicons:arrow-path" /></button>
+                    </div>
+                    <div className="h-100">
+                      <button className="btn btn-dark h-100 py-2" onClick={() => setIsVisible(false)}>Submit</button>
+                    </div>
                   </div>
                 </div>
-              </h4>              
-            </div>
-            <div className="d-flex gap-2">
-              {Array.isArray(activeridercount?.onlineRiderCategoryWise) &&
-              activeridercount.onlineRiderCategoryWise.map((riderVehicle) => {
-                const { categoryId, vehicleType } = riderVehicle;
-                return (
-                  <span key={categoryId}>
-                    {categoryId === 1 && vehicleType === "Two Wheeler" ? (
-                      <div className="rider-count">
-                        <img src={twowheeler} alt="Two-Wheeler" width={30} />
-                        {riderVehicle.riderCount} 
-                      </div>
-                    ) : categoryId === 2 && vehicleType === "Three Wheeler" ? (
-                      <div className="rider-count">
-                        <img src={threewheeler} alt="Three-Wheeler" width={30} />
-                        {riderVehicle.riderCount} 
-                      </div>
-                    ) : categoryId === 3 && vehicleType === "Tata Ace" ? (
-                      <div className="rider-count">
-                        <img src={tataace} alt="Tata Ace" width={30} />
-                        {riderVehicle.riderCount} 
-                      </div>
-                    ) : categoryId === 4 && vehicleType === "Pickup 8ft" ? (
-                      <div className="rider-count">
-                        <img src={pickup_8ft} alt="Pickup 8ft" width={30} />
-                        {riderVehicle.riderCount} 
-                      </div>
-                    ) : null}
-                  </span>
-                );
-              })}             
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <FormControl fullWidth className="mb-3">
-                <label className="text-sm">Rider Status</label>
-                <Select
-                  id="demo-simple-select"
-                  //label="Rider_Status"
-                  value={riderstatus}
-                  onChange={riderStatusFilter}
-                  displayEmpty
-                  inputProps={{ 'aria-label': 'Without label' }}
-                >
-                  <MenuItem value="">Rider Status</MenuItem>
-                  <MenuItem value="ALL">ALL</MenuItem>
-                  <MenuItem value="ONLINE">ONLINE</MenuItem>
-                  <MenuItem value="OFFLINE">OFFLINE</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-            <div className="flex-1">
-              <FormControl fullWidth>
-                <label className="text-sm">Filter By</label>
-                <div className="filterbyRider">                    
-                  <Select
-                    id="demo-simple-select"
-                    value={filterby}
-                    onChange={handleChange}
-                    displayEmpty
-                    inputProps={{ 'aria-label': 'Without label' }}
-                  >
-                    <MenuItem value="NONE">NONE</MenuItem>
-                    <MenuItem value="RIDERID">Rider ID</MenuItem>
-                    <MenuItem value="MOBILE">Mobile Number</MenuItem>
-                    <MenuItem value="RIDERNAME">Rider Name</MenuItem>
-                  </Select>
-                  <TextField
-                    id="search"
-                    type="text"
-                    name="search"
-                    className=""
-                    placeholder="Filter By"
-                    value={search}
-                    onChange={handleSearchChange}
-                  />
-                </div>
-              </FormControl>
-            </div>
-          </div>
+              </div>
+          )}
         </div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">

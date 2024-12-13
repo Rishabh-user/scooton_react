@@ -248,8 +248,8 @@ table thead th:first-child {width: 90px;}
 .filterbyRider>div+div fieldset{border-left: 1px solid #c4c4c4; border-radius: 0;}
 .filter-showhide{position: relative;}
 .filter-show{background-color: #fff;border: 1px solid #ccc;border-radius: .25rem;
-width: 100%;padding: 1rem;box-shadow: 0px 0px 18px #e8e8e8;margin-bottom: 1rem;}
-.filter-show>div{display: flex;gap:10px}
+width: 100%;padding: 1rem;margin-bottom: 1rem;}
+.filter-show>div{display: flex;gap:10px;align-items: flex-end;}
 .viewdocument-frame iframe {height: 400px;}
 .export-data .MuiInputBase-formControl {height: 50px;}
 .loader-fixed {
@@ -306,18 +306,26 @@ width: 100%;padding: 1rem;box-shadow: 0px 0px 18px #e8e8e8;margin-bottom: 1rem;}
   .mobile-view .btn{padding: .5rem;}
   // .filter-show{position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);}
   .filter-show>div{display: block;gap:10px}
-  .filter-showhide{position: sticky;top:62px;background-color: #fff;}
+  
   .filter-show .MuiFormControl-fullWidth{display: flex;flex-direction: row;}
   .filter-show .MuiFormControl-fullWidth label{flex:1}
   .react-tabs__tab{font-size: 14px;}
   .filter-show .MuiFormControl-fullWidth .MuiOutlinedInput-root, .filter-show .MuiFormControl-fullWidth>.filterbyRider{flex: 2;font-size: 14px;}
 }
 @media (max-width:768px){
-  .onOff-riders{column-gap: 10px !important;gap: 0px;}
-  
+  .onOff-riders{column-gap: 10px !important;gap: 0px;}  
   .all-rider-mobile{gap: 5px;}
   .react-tabs__tab-list{overflow-x: auto;}
   .react-tabs__tab{padding: 8px 12px;white-space: nowrap;}
+  .filter-show .MuiFormControl-fullWidth{margin-bottom: .5rem;}
+  .filter-show{transform: translate(-50%, -50%);
+    position: fixed;
+    width: 95%;
+    top: 50%;
+    left: 50%;
+    z-index: 9999;
+  }
+  .backdrop-filter{background-color: #00000094;position: fixed;width: 100%;height: 100%;top:0;left: 0;z-index: 999;}
 }
 @media (max-width:1366px) {
   .loginwrapper .left-column h4{font-size: 32px;line-height: 38px;}

@@ -53,7 +53,7 @@ const COLUMNS = [
             </div>
           </div>
           <div className="flex-1 text-start">
-            <h4 className="text-sm font-medium text-slate-600 whitespace-nowrap">
+            <h4 className="text-sm font-medium text-slate-600">
               {row?.cell?.value || "No Name"}
             </h4>
           </div>
@@ -188,6 +188,7 @@ const AllRiders = () => {
 
 
   useEffect(() => {
+    setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
       axios
@@ -283,6 +284,7 @@ const AllRiders = () => {
   };
 
   const FilterOrder = () => {
+    setLoading(true);
     const token = localStorage.getItem("jwtToken");
     const endpoint =
       filterby === "NONE"
@@ -406,12 +408,21 @@ const AllRiders = () => {
     console.log("Rider status:", event.target.value);
     setServiceAreaStatus(event.target.value);
   };
+  // Clear the search input field
+  const resetFilters = () => {
+    setServiceAreaStatus("ALL");
+    setRiderStatus("ALL");
+    setDocumentStatus("ALL");
+    setVehicleId("0");
+    setFilterBy("NONE");
+    setSearch(""); 
+  }
 
   return (
     <>
       <Card>
-        <div className="filter-showhide order-header">
-          <div className="md:flex justify-between items-center">
+        <div className="filter-showhide">
+          <div className="md:flex justify-between items-center mb-3">
             <div className="rider-status">
               <div className="all-riders items-center">
                 <h4 className="card-title mb-0">
@@ -440,111 +451,120 @@ const AllRiders = () => {
             </div>
           </div>
           {isVisible && (
-            <div className="filter-show">
-              <div className="">
-                <div className="flex-1">
-                  <FormControl fullWidth className="mb-3">
-                    <label className="text-sm">Service Area</label>
-                    <Select
-                      id="demo-simple-select"
-                      value={serviceAreaStatus}
-                      onChange={serviceAreaStatusFilter}
-                      displayEmpty
-                      inputProps={{ 'aria-label': 'Without label' }}
-                    >
-                      <MenuItem value="ALL" selected>ALL</MenuItem>
-                      {serviceArea.map((city, index) => (
-                        <MenuItem value={city.id} key={index} id={city.id}>{city.name}</MenuItem>
-                      ))}                        
-                    </Select>
-                  </FormControl>
-                </div>
-                <div className="flex-1">
-                  <FormControl fullWidth className="mb-3">
-                    <label className="text-sm mb-1">Rider Status</label>
-                    <Select
-                      id="demo-simple-select"
-                      value={riderstatus}
-                      onChange={riderStatusFilter}
-                      displayEmpty
-                      inputProps={{ 'aria-label': 'Without label' }}
-                    >
-                      <MenuItem value="ALL">ALL</MenuItem>
-                      <MenuItem value="ONLINE">ONLINE</MenuItem>
-                      <MenuItem value="OFFLINE">OFFLINE</MenuItem>
-                    </Select>
-                  </FormControl>
-                </div>
-                <div className="flex-1">
-                  <FormControl fullWidth className="mb-3">
-                    <label className="text-sm mb-1">Document Status</label>
-                    <Select
-                      id="demo-simple-select"
-                      //label="Document"
-                      value={documentstatus}
-                      onChange={documentStatusFilter}
-                      displayEmpty
-                      inputProps={{ 'aria-label': 'Without label' }}
-                    >
-                      <MenuItem value="ALL">All</MenuItem>
-                      <MenuItem value="NEW_USER">New User</MenuItem>
-                      <MenuItem value="REGISTERED">Registered</MenuItem>
-                      <MenuItem value="DOCUMENT_PENDING">Document Pending</MenuItem>
-                      <MenuItem value="DOCUMENT_REJECTED">Document Rejected</MenuItem>
-                      <MenuItem value="REVIEW_PENDING">Review Pending</MenuItem>
-                    </Select>
-                  </FormControl>
-                </div>
-                <div className="flex-1">
-                  <FormControl fullWidth className="mb-3">
-                    <label className="text-sm mb-1">Vehicle Type</label>
-                    <Select
-                      id="demo-simple-select"
-                      //label="Vehicle_Status"
-                      value={vehicleid}
-                      onChange={vehicleIdFilter}
-                      displayEmpty
-                      inputProps={{ 'aria-label': 'Without label' }}
-                    >
-                      <MenuItem value="0">ALL</MenuItem>
-                      <MenuItem value="1">Two Wheeler</MenuItem>
-                      <MenuItem value="2">Two Wheeler EV</MenuItem>
-                      <MenuItem value="4">Three Wheeler</MenuItem>
-                      <MenuItem value="7">Pickup 8ft</MenuItem>
-                      <MenuItem value="3">TATA Ace</MenuItem>
-                    </Select>
-                  </FormControl>
-                </div>
-                <div className="flex-1">
-                  <FormControl fullWidth className="mb-3">
-                    <label className="text-sm mb-1">Filter By</label>
-                    <div className="filterbyRider">                    
+            <div>
+              <div className="filter-show">
+                <div className="">
+                  <div className="flex-1">
+                    <FormControl fullWidth className="">
+                      <label className="text-sm">Service Area</label>
                       <Select
                         id="demo-simple-select"
-                        value={filterby}
-                        onChange={handleChange}
+                        value={serviceAreaStatus}
+                        onChange={serviceAreaStatusFilter}
                         displayEmpty
                         inputProps={{ 'aria-label': 'Without label' }}
                       >
-                        <MenuItem value="NONE">NONE</MenuItem>
-                        <MenuItem value="RIDERID">Rider ID</MenuItem>
-                        <MenuItem value="MOBILE">Mobile Number</MenuItem>
-                        <MenuItem value="RIDERNAME">Rider Name</MenuItem>
+                        <MenuItem value="ALL" selected>ALL</MenuItem>
+                        {serviceArea.map((city, index) => (
+                          <MenuItem value={city.id} key={index} id={city.id}>{city.name}</MenuItem>
+                        ))}                        
                       </Select>
-                      <TextField
-                        id="search"
-                        type="text"
-                        name="search"
-                        className=""
-                        placeholder="Filter By"
-                        value={search}
-                        onChange={handleSearchChange}
-                      />
+                    </FormControl>
+                  </div>
+                  <div className="flex-1">
+                    <FormControl fullWidth className="">
+                      <label className="text-sm mb-1">Rider Status</label>
+                      <Select
+                        id="demo-simple-select"
+                        value={riderstatus}
+                        onChange={riderStatusFilter}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                      >
+                        <MenuItem value="ALL">ALL</MenuItem>
+                        <MenuItem value="ONLINE">ONLINE</MenuItem>
+                        <MenuItem value="OFFLINE">OFFLINE</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
+                  <div className="flex-1">
+                    <FormControl fullWidth className="">
+                      <label className="text-sm mb-1">Document Status</label>
+                      <Select
+                        id="demo-simple-select"
+                        //label="Document"
+                        value={documentstatus}
+                        onChange={documentStatusFilter}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                      >
+                        <MenuItem value="ALL">All</MenuItem>
+                        <MenuItem value="NEW_USER">New User</MenuItem>
+                        <MenuItem value="REGISTERED">Registered</MenuItem>
+                        <MenuItem value="DOCUMENT_PENDING">Document Pending</MenuItem>
+                        <MenuItem value="DOCUMENT_REJECTED">Document Rejected</MenuItem>
+                        <MenuItem value="REVIEW_PENDING">Review Pending</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
+                  <div className="flex-1">
+                    <FormControl fullWidth className="">
+                      <label className="text-sm mb-1">Vehicle Type</label>
+                      <Select
+                        id="demo-simple-select"
+                        value={vehicleid}
+                        onChange={vehicleIdFilter}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                      >
+                        <MenuItem value="0">ALL</MenuItem>
+                        <MenuItem value="1">Two Wheeler</MenuItem>
+                        <MenuItem value="2">Two Wheeler EV</MenuItem>
+                        <MenuItem value="4">Three Wheeler</MenuItem>
+                        <MenuItem value="7">Pickup 8ft</MenuItem>
+                        <MenuItem value="3">TATA Ace</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
+                  <div className="flex-1">
+                    <FormControl fullWidth className="">
+                      <label className="text-sm mb-1">Filter By</label>
+                      <div className="filterbyRider">                    
+                        <Select
+                          id="demo-simple-select"
+                          value={filterby}
+                          onChange={handleChange}
+                          displayEmpty
+                          inputProps={{ 'aria-label': 'Without label' }}
+                        >
+                          <MenuItem value="NONE">NONE</MenuItem>
+                          <MenuItem value="RIDERID">Rider ID</MenuItem>
+                          <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                          <MenuItem value="RIDERNAME">Rider Name</MenuItem>
+                        </Select>
+                        <TextField
+                          id="search"
+                          type="text"
+                          name="search"
+                          className=""
+                          placeholder="Filter By"
+                          value={search}
+                          onChange={handleSearchChange}
+                        />
+                      </div>
+                    </FormControl>
+                  </div>
+                  <div className="d-flex gap-2 justify-content-end">
+                    <div className="h-100">
+                      <button className="btn btn-dark h-100 text-xl" onClick={resetFilters}><Icon icon="heroicons:arrow-path" /></button>
                     </div>
-                  </FormControl>
+                    <div className="h-100">
+                      <button className="btn btn-dark h-100 py-2" onClick={() => setIsVisible(false)}>Submit</button>
+                    </div>
+                  </div>
                 </div>
               </div>
-              
+              <div className="backdrop-filter"  onClick={() => setIsVisible(false)} ></div>
             </div>
           )}
         </div>

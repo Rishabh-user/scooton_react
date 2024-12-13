@@ -34,6 +34,7 @@ const RiderDetail = () => {
     const [language, setLanguage] = useState();
     const [isDriverActive, setIsDriverActive] = useState(false);
     const [isRechargeModal, setRechargeModel] = useState(false)
+    const [updateWallet, setUpdateWallet] = useState([]);
     const [driverRegistrationFee, setDriverRegistrationFee] = useState(false);
     const [driverRole, setDriverRole]= useState(false);
     const [approved, setApproved] = useState(true);
@@ -100,7 +101,7 @@ const RiderDetail = () => {
         }
       };  
       fetchRiderOrderDetail();
-    }, [riderId]);
+    }, [riderId, updateWallet]);
 
 
 
@@ -141,43 +142,59 @@ const RiderDetail = () => {
     
     const driverActive = async (id) => {
         const newState = !isDriverActive;
+        const token = localStorage.getItem("jwtToken");
         try{
             await axios.post(`${BASE_URL}/register/rider/active/${id}`,{
                 active: newState
-            }).then((response) => {
-                toast.success("Driver status change successfully!");
+            },{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            ).then((response) => {
+                toast.success("Rider status change successfully!");
             })
             setIsDriverActive(newState)
         }catch{
-            toast.error("Driver not activated successfully!");
+            toast.error("Rider is not deactivated successfully!");
         }
     }
 
     const driverRegistration = async (id) => {
         const newState = !driverRegistrationFee;
+        const token = localStorage.getItem("jwtToken");
         try{
             await axios.post(`${BASE_URL}/register/rider/registration-fee-paid/${id}`,{
                 active: newState
+            },{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             }).then((response) => {
-                toast.success("successfully!");
+                toast.success("Registration fee paid status is updated successfully!");
             })
             setDriverRegistrationFee(newState)
         }catch{
-            toast.error("successfully!");
+            toast.error("Registration fee paid status is not updated successfully!");
         }
     }
 
     const driveRoleChange = async (id) => {
         const newState = !driverRole;
+        const token = localStorage.getItem("jwtToken");
         try{
             await axios.post(`${BASE_URL}/register/rider/onrole/${id}`,{
                 active: newState
+            },{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             }).then((response) => {
-                toast.success("Rider role successfully!");
+                toast.success("Rider role updated successfully!");
             })
             setDriverRole(newState)
         }catch{
-            toast.error("Rider not role successfully!");
+            toast.error("Rider role is not updated successfully!");
         }
     }
 
@@ -253,14 +270,22 @@ const RiderDetail = () => {
     };
 
     const rechargeRiderWallet = async (amt,id) =>{
+    const token = localStorage.getItem("jwtToken");
      try {
         await axios.post(`${BASE_URL}/wallet/rider-wallet-recharge`,{
             riderId: id,
             amount: amt,
             type: "Admin Recharge"
-        }).then((response)=>{
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        ).then((response)=>{
             toast.success("Recharge Successfully");
             setRechargeModel(false);
+            setUpdateWallet();
         })
      }catch{
         toast.error("Not Recharge Successfully")
@@ -378,7 +403,7 @@ const RiderDetail = () => {
                             <Button
                                 className="btn btn-dark"
                                 type="button"
-                                onClick={() => setIsDeleteModal(false)} // Close the modal on "No"
+                                onClick={() => setIsDeleteModal(false)}
                             >
                                 No
                             </Button>
@@ -386,8 +411,8 @@ const RiderDetail = () => {
                                 className="btn btn-outline-light"
                                 type="button"
                                 onClick={() => {
-                                deleteRider(riderId); // Call delete API with riderId
-                                setIsDeleteModal(false); // Close the modal
+                                deleteRider(riderId); 
+                                setIsDeleteModal(false); 
                                 }}
                             >
                                 Yes
@@ -945,12 +970,12 @@ const RiderDetail = () => {
             <div className="">
               <h5 className="text-center mb-4">Recharge Rider Wallet</h5>
               <div className="w-full">
-                <TextField
-                    label="Amount"
+                <label className="form-label">Enter Amount</label>
+                <input                    
                     id="amount"
                     type="number"
                     name="amount"
-                    className="w-full"
+                    className="w-full form-control"
                     value={rechageAmount.amount || ""}
                     onChange={handleRechargeRiderWallet}
                 />
