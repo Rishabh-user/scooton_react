@@ -9,8 +9,8 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { handleLogin } from "./store";
 import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
 import { BASE_URL } from "../../../api";
+import axiosInstance from "../../../api";
 
 const schema = yup
   .object({
@@ -44,7 +44,7 @@ const schema = yup
   const onSubmit = async (data) => {
     console.log("userid",data.userId)
     try {
-      const response = await axios.post(`${BASE_URL}/auth/login/admin`, {
+      const response = await axiosInstance.post(`${BASE_URL}/auth/login/admin`, {
         user: data.userId,
         pwd: data.password,
       });  

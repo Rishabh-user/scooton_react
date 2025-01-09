@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Icon from "@/components/ui/Icon";
-import axios from "axios";
 import {useTable, useRowSelect, useSortBy, usePagination,} from "react-table";
 import Card from "../../components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
@@ -14,6 +13,7 @@ import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
 import Eeco from '../../assets/images/icon/Eeco.png';
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@/components/ui/Tooltip";
+import axiosInstance from "../../api";
 
 const COLUMNS = [
   {
@@ -176,7 +176,7 @@ const OnRoleRiders = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      axios
+      axiosInstance
         .get(`${BASE_URL}/register/rider/get-all-service-area-by-on-role-status?page=${currentPage}&size=100`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -198,7 +198,7 @@ const OnRoleRiders = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token && search) {
-      axios
+      axiosInstance
         .post(`${BASE_URL}/user/search-by-mobile-number`, {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Icon from "@/components/ui/Icon";
-import axios from "axios";
 import {useTable, useRowSelect, useSortBy, usePagination,} from "react-table";
 import Card from "../../components/ui/Card";
 import { BASE_URL } from "../../api";
 import Tooltip from "@/components/ui/Tooltip";
 import Loading from "../../components/Loading";
+import axiosInstance from "../../api";
 
 const COLUMNS = [
   {
@@ -55,7 +55,7 @@ const ServiceAreaList = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      axios
+      axiosInstance
         .get(`${BASE_URL}/service-area/get-all`, {
           headers: {
             Authorization: `Bearer ${token}`,

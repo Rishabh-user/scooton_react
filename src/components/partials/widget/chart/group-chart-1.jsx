@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
 import { BASE_URL } from "../../../../api";
-import axios from "axios";
+import axiosInstance from "../../../../api";
 
 const shapeLine1 = {
   series: [
@@ -232,7 +232,7 @@ const GroupChart1 = () => {
     const fetchOrderData = async () => {
       const token = localStorage.getItem("jwtToken");
       try {
-        const response = await axios.post(`${BASE_URL}/order-history/orders/count-total/${serviceAreaId}`,{ type: "COMPLETED" }, {
+        const response = await axiosInstance.post(`${BASE_URL}/order-history/orders/count-total/${serviceAreaId}`,{ type: "COMPLETED" }, {
           headers: {
             Authorization: `Bearer ${token}`
           }

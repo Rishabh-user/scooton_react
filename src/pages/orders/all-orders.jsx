@@ -25,6 +25,7 @@ import Modal from "../../components/ui/Modal";
 import Button from "@/components/ui/Button";
 import { toast, ToastContainer } from "react-toastify";
 import { useLocation, useParams } from "react-router-dom";
+import axiosInstance from "../../api";
 
 
 const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
@@ -250,6 +251,7 @@ const AllOrders = () => {
     console.log("id", id);
     setNotifictionId(id)
     setNotificationModel(true);
+    setMobile('');
   }
 
   const openIsDeleteOrder = async (id) => {
@@ -259,7 +261,7 @@ const AllOrders = () => {
 
   const deletePlaceOrder = () => {
     const token = localStorage.getItem('jwtToken');
-    axios.post(`${BASE_URL}/order/cancel-order/${orderdeleteid}`,{
+    axiosInstance.post(`${BASE_URL}/order/cancel-order/${orderdeleteid}`,{
         type: "CITYWIDE"
       },
       {
@@ -290,7 +292,7 @@ const AllOrders = () => {
     const token = localStorage.getItem('jwtToken');
     try {
       if (mobile) {
-        axios.get(`${BASE_URL}/order/v2/send-order-notification-particular-rider/${notificationid}/${mobile}`,{
+        axiosInstance.get(`${BASE_URL}/order/v2/send-order-notification-particular-rider/${notificationid}/${mobile}`,{
           headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -300,7 +302,7 @@ const AllOrders = () => {
           setNotification(false);
         })
       } else {
-        axios.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}`,{
+        axiosInstance.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}`,{
           headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -377,43 +379,6 @@ const AllOrders = () => {
   //   fetchOrders("PLACED");
   // }, []);
 
-  useEffect(() => {
-    setLoading(true);
-    if (id?.ordertype) { 
-      console.log("Redirected with params:", id.ordertype);
-  
-      SetOrderType(id.ordertype);
-      console.log("status1",id.ordertype, ordersType)
-      const token = localStorage.getItem("jwtToken");
-      axios
-        .post(
-          `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,
-          { "number": id.id, "orderType": id.ordertype, "searchType": id.search },
-          { headers: { Authorization: `Bearer ${token}` } },
-        )
-        .then((response) => {
-          console.log("Response datac:", response.data);
-          if (response.data) {
-            setOrderData(response.data); 
-            SetOrderType(id.ordertype);
-            setPageCount(response.data.totalPages || 0);
-            
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching order data with params:", error);
-        }).finally(() => {
-          setLoading(false);
-        });
-        ;
-      
-    } else {
-      console.log("Fetching default orders...");
-      fetchOrders("ALL ORDERS");
-    }
-  }, [id?.ordertype, currentPage,pagesizedata]);
-  
-  
 
   useEffect(() => {
     if(filterby && search){
@@ -423,10 +388,10 @@ const AllOrders = () => {
   }, [filterby, search,currentPage]);
 
   const fetchOrders = (orderType) => {
-    setLoading(true);
+    //setLoading(true);
     SetOrderType(orderType)
     const token = localStorage.getItem("jwtToken");
-    axios
+    axiosInstance
       .post(
         `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
         { "orderType": orderType, "searchType": "NONE" },
@@ -436,7 +401,7 @@ const AllOrders = () => {
         setOrderData(response.data);
         setTotalCount(Number(response.headers["x-total-count"])); 
         setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pagesizedata)); 
-        console.log("response",response)
+        console.log("responkkknse",response)
       })
       .catch((error) => {
         console.error("Error fetching order data:", error);
@@ -444,11 +409,13 @@ const AllOrders = () => {
       .finally(() => {
         setLoading(false);
       });
+      
   };
   const FilterOrder = () => {
     setLoading(true);
+    console.log("fghj")
     const token = localStorage.getItem("jwtToken");
-    axios
+    axiosInstance
       .post(
         `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,
         { "number": search, "orderType": ordersType, "searchType": filterby },
@@ -467,9 +434,10 @@ const AllOrders = () => {
   };
   // get Service area 
   useEffect(() => {
+    
     const fetchServiceAreas = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/service-area/get-all`);
+        const response = await axiosInstance.get(`${BASE_URL}/service-area/get-all`);
         setServiceArea(response.data);
       } catch (error) {
         console.error('Error fetching service areas:', error);
@@ -479,9 +447,11 @@ const AllOrders = () => {
   }, []);
 
   const filterOrders = () => {
+    setLoading(true);
+    console.log("gu")
     const token = localStorage.getItem("jwtToken");
     try {
-      axios
+      axiosInstance
         .post(
           `${BASE_URL}/order-history/search-city-wide-orders/${serviceAreaStatus}?page=${currentPage}&size=100`,
           {
@@ -504,16 +474,15 @@ const AllOrders = () => {
     }
   };
   
-  useEffect(() => {
-    filterOrders();
-  }, [serviceAreaStatus, currentPage]);
+  // useEffect(() => {
+ 
+  //   filterOrders();
+  // }, [serviceAreaStatus, currentPage]);
 
-  const serviceAreaStatusFilter = (event) => {
-    console.log("Rider status:", event.target.value);
-    setServiceAreaStatus(event.target.value);
-  };
-
-
+  // const serviceAreaStatusFilter = (event) => {
+  //   console.log("Rider status:", event.target.value);
+  //   setServiceAreaStatus(event.target.value);
+  // };
 
   // const columns = useMemo(() => COLUMNS(openIsNotificationModel), []);
   const columns = useMemo(() => COLUMNS(openIsNotificationModel, openIsDeleteOrder, ordersType), [ordersType]);
@@ -560,6 +529,7 @@ const AllOrders = () => {
   };
 
   useEffect(() => {
+   
     setCurrentPage(pageIndex);
   }, [pageIndex]);
  
@@ -569,6 +539,42 @@ const AllOrders = () => {
   const handleShow = () => {
     setIsVisible(!isVisible); 
   };
+
+  useEffect(() => {
+   
+    if (id?.ordertype) { 
+      console.log("Redirected with params:", id.ordertype);
+  
+      SetOrderType(id.ordertype);
+      console.log("status1",id.ordertype, ordersType)
+      const token = localStorage.getItem("jwtToken");
+      axiosInstance
+        .post(
+          `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,
+          { "number": id.id, "orderType": id.ordertype, "searchType": id.search },
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .then((response) => {
+          console.log("Response datac:", response.data);
+          if (response.data) {
+            setOrderData(response.data); 
+            SetOrderType(id.ordertype);
+            setPageCount(response.data.totalPages || 0);
+            
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching order data with params:", error);
+        }).finally(() => {
+          setLoading(false);
+        });
+      
+    } else {
+      console.log("Fetching default orders...");
+      setLoading(true);
+      fetchOrders("ALL ORDERS");
+    }
+  }, [id?.ordertype, currentPage,pagesizedata]);
 
   return (
     <>
@@ -580,13 +586,37 @@ const AllOrders = () => {
               <h4 className="card-title mb-0">All Orders</h4>
               <div className="rider-filter">            
                 <div className="d-flex justify-content-end">              
-                  <Button className="btn btn-dark desktop-view-filter" onClick={handleShow}>
+                  {/* <Button className="btn btn-dark desktop-view-filter" onClick={handleShow}>
                     <Icon icon="heroicons:adjustments-horizontal" className="text-[20px]"></Icon>
-                  </Button>
+                  </Button> */}
+                  <FormControl fullWidth>
+                      <label className="text-sm">Filter By</label>
+                        <div className="filterbyRider"> 
+                          <Select
+                            id="demo-simple-select"
+                            value={filterby}
+                            //label="Filter By"
+                            onChange={handleChange}
+                            displayEmpty
+                            inputProps={{ 'aria-label': 'Without label' }}
+                          >
+                            <MenuItem value="NONE">NONE</MenuItem>
+                            <MenuItem value="ORDERID">ORDER ID</MenuItem>
+                            <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                          </Select>           
+                          <TextField
+                            id="search"
+                            type="text"
+                            name="search"
+                            value={search}
+                            onChange={handleSearchChange}
+                          />
+                        </div>
+                     </FormControl>
                 </div>
               </div>
             </div>
-            {isVisible && (
+            {/* {isVisible && (
               <div className="filter-show">
                 <div className="flex gap-2">
                   <div className="flex-1">
@@ -630,11 +660,11 @@ const AllOrders = () => {
                             onChange={handleSearchChange}
                           />
                         </div>
-                      </FormControl>
+                     </FormControl>
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
             
           </div>
           <div className="filter-orderlist">
@@ -842,7 +872,7 @@ const AllOrders = () => {
             <h5 className="text-center mb-4">Send Notification</h5>
             <div className="mb-3">
               <label className="form-label mb-1">Select Role</label>
-              <select class="form-select" onChange={handlenotification}>
+              <select className="form-select" onChange={handlenotification}>
                 <option selected>Notification</option>
                 <option value="ALL">All</option>
                 <option value="INDIVIDUAL">Individual</option>

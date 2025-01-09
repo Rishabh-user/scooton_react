@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
-import axios from "axios";
 import { BASE_URL } from "../../../../api";
+import axiosInstance from "../../../../api";
 
 const RevenueBarChart = ({ height = 400 }) => {
   const [series, setSeries] = useState([]);
@@ -11,7 +11,7 @@ const RevenueBarChart = ({ height = 400 }) => {
     const token = localStorage.getItem("jwtToken");
     const fetchOrderData = async () => {
       try {
-        const response = await axios.post(
+        const response = await axiosInstance.post(
           `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=0&size=1000`,
           { orderType: "ALL ORDERS", searchType: "NONE" },
           {

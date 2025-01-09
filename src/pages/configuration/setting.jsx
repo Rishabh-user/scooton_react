@@ -3,7 +3,6 @@ import 'react-tabs/style/react-tabs.css';
 import { Link } from "react-router-dom";
 import Card from "../../components/ui/Card";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import axios from "axios";
 import { BASE_URL } from "../../api";
 import Loading from "../../components/Loading";
 import Button from "../../components/ui/Button";
@@ -19,6 +18,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import * as XLSX from "xlsx";
 import CircularProgress from "@mui/material/CircularProgress";
+import axiosInstance from "../../api";
 
 const Settings = () => {
     const navigate = useNavigate();
@@ -32,7 +32,7 @@ const Settings = () => {
         try {
           const token = localStorage.getItem('jwtToken');
           if (token) {
-            const response = await axios.get(`${BASE_URL}/auth/get-logout-details`, {
+            const response = await axiosInstance.get(`${BASE_URL}/auth/get-logout-details`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -53,7 +53,7 @@ const Settings = () => {
 
     const allRidersOnline = () => {
         try{
-            axios.post(`${BASE_URL}/auth/register-rider-online`).then((response) => {
+            axiosInstance.post(`${BASE_URL}/auth/register-rider-online`).then((response) => {
                 toast.success("Register riders online  successfully!");
             })
         }catch{
@@ -72,7 +72,7 @@ const Settings = () => {
 
     const logoutAllDevice = () => {
        try{
-        axios.post(`${BASE_URL}/auth/logout-all-device`,0).then((response) => {
+        axiosInstance.post(`${BASE_URL}/auth/logout-all-device`,0).then((response) => {
             toast.success("All Device Logout Successfully")
             localStorage.clear("jwtToken")
             setTimeout(() => {
@@ -117,7 +117,7 @@ const Settings = () => {
         try {
             const token = localStorage.getItem("jwtToken");
             setLoadingCSV(true);
-            const response = await axios.get(
+            const response = await axiosInstance.get(
                 `${BASE_URL}/order/v2/orders/get-city-wide-orders-by-date?from_date=${formattedFromDate}&to_date=${formattedToDate}`,
                 {
                     responseType: "json",

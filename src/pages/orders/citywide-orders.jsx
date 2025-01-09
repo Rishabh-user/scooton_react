@@ -260,7 +260,7 @@ const CityWideOrders = () => {
     const token = localStorage.getItem('jwtToken');
     try {
       if (mobile) {
-        axios.get(`${BASE_URL}/order/v2/send-order-notification-particular-rider/${notificationid}/${mobile}`,{
+        axiosInstance.get(`${BASE_URL}/order/v2/send-order-notification-particular-rider/${notificationid}/${mobile}`,{
           headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -270,7 +270,7 @@ const CityWideOrders = () => {
           setNotification(false);
         })
       } else {
-        axios.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}`,{
+        axiosInstance.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}`,{
           headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -429,7 +429,7 @@ const CityWideOrders = () => {
   useEffect(() => {
     const fetchServiceAreas = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/service-area/get-all`);
+        const response = await axiosInstance.get(`${BASE_URL}/service-area/get-all`);
         setServiceArea(response.data);
       } catch (error) {
         console.error('Error fetching service areas:', error);
@@ -442,7 +442,7 @@ const CityWideOrders = () => {
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     try {
-      axios
+      axiosInstance
         .post(
           `${BASE_URL}/order-history/search-city-wide-orders/${serviceAreaStatus}?page=${currentPage}&size=100`,
           {
@@ -465,14 +465,14 @@ const CityWideOrders = () => {
     }
   };
   
-  useEffect(() => {
-    filterOrders();
-  }, [serviceAreaStatus, currentPage]);
+  // useEffect(() => {
+  //   filterOrders();
+  // }, [serviceAreaStatus, currentPage]);
 
-  const serviceAreaStatusFilter = (event) => {
-    console.log("Rider status:", event.target.value);
-    setServiceAreaStatus(event.target.value);
-  };
+  // const serviceAreaStatusFilter = (event) => {
+  //   console.log("Rider status:", event.target.value);
+  //   setServiceAreaStatus(event.target.value);
+  // };
   // show hide
   const [isVisible, setIsVisible] = useState(false);
   const handleShow = () => {
@@ -487,15 +487,41 @@ const CityWideOrders = () => {
           <div className="mb-6">
             <div className="md:flex justify-between items-center mb-2">
               <h4 className="card-title mb-0">Citywide Orders</h4>
-              <div className="rider-filter">            
+              {/* <div className="rider-filter">            
                 <div className="d-flex justify-content-end">              
                   <Button className="btn btn-dark desktop-view-filter" onClick={handleShow}>
                     <Icon icon="heroicons:adjustments-horizontal" className="text-[20px]"></Icon>
                   </Button>
                 </div>
-              </div>
+              </div> */}
+                <div className="">
+                    <FormControl >
+                      {/* <label className="text-sm">Filter By</label> */}
+                        <div className="filterbyRider"> 
+                          <Select
+                            id="demo-simple-select"
+                            value={filterby}
+                            //label="Filter By"
+                            onChange={handleChange}
+                            displayEmpty
+                            inputProps={{ 'aria-label': 'Without label' }}
+                          >
+                            <MenuItem value="NONE">NONE</MenuItem>
+                            <MenuItem value="ORDERID">ORDER ID</MenuItem>
+                            <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                          </Select>           
+                          <TextField
+                            id="search"
+                            type="text"
+                            name="search"
+                            value={search}
+                            onChange={handleSearchChange}
+                          />
+                        </div>
+                      </FormControl>
+                </div>
             </div>
-            {isVisible && (
+            {/* {isVisible && (
               <div className="filter-show">
                 <div className="flex gap-2">
                   <div className="flex-1">
@@ -544,7 +570,7 @@ const CityWideOrders = () => {
                 </div>
               </div>
             )}
-            
+             */}
           </div>
           <div className="filter-orderlist">
             <FormControl>
@@ -747,7 +773,7 @@ const CityWideOrders = () => {
             <h5 className="text-center mb-4">Send Notification</h5>
             <div className="mb-3">
               <label className="form-label">Select Role</label>
-              <select class="form-select" onChange={handlenotification}>
+              <select className="form-select" onChange={handlenotification}>
                 <option selected>Notification</option>
                 <option value="ALL">All</option>
                 <option value="INDIVIDUAL">Individual</option>

@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import Icon from "@/components/ui/Icon";
-import axios from "axios";
 import { useTable, useRowSelect, useSortBy, usePagination } from "react-table";
 import Card from "../../components/ui/Card";
 import { BASE_URL } from "../../api";
@@ -12,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import Select from "@/components/ui/Select";
 import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
+import axiosInstance from "../../api";
 
 const roleDisplayNames = {
   "ROLE_SUPER_ADMIN": "Super Admin",
@@ -89,7 +89,7 @@ const RoleList = () => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       setLoading(true); // Ensure loading state is toggled
-      axios
+      axiosInstance
         .get(
           `${BASE_URL}/register/admins/get-all?page=${currentPage}&size=${pagesizedata}`,
           {
@@ -118,7 +118,7 @@ const RoleList = () => {
 
   useEffect(() => {
 
-    axios
+    axiosInstance
       .get(`${BASE_URL}/register/get-all-roles`)
       .then((response) => {
         const roles = response.data.map((role) => {
@@ -185,7 +185,7 @@ const RoleList = () => {
 
   const deleteRole = async (id) => {
     try {
-      await axios.delete(`${BASE_URL}/register/admin/delete/${id}`).then((response) => {
+      await axiosInstance.delete(`${BASE_URL}/register/admin/delete/${id}`).then((response) => {
         toast.success("Role deleted successfully!");
       });
       setRoleList((prevList) => prevList.filter((item) => item.id !== id));
@@ -196,7 +196,7 @@ const RoleList = () => {
 
   const editRoleDetails = async (id) => {
     try {
-      await axios.post(`${BASE_URL}/register/admin/update/${id}`, {
+      await axiosInstance.post(`${BASE_URL}/register/admin/update/${id}`, {
         firstName: selectedUserDetails.first_name,
         lastName: selectedUserDetails.last_name,
         mobileNumber: selectedUserDetails.mobile_number,

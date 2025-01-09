@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleLogout } from "@/pages/auth/common/store";
 
 import UserAvatar from "@/assets/images/all-img/user.png";
-import axios from "axios";
 import { BASE_URL } from "../../../../api";
+import axiosInstance from "../../../../api";
 
 const profileLabel = () => {
   const [userData, setUserData] = useState({
@@ -19,7 +19,7 @@ const profileLabel = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      axios.post(`${BASE_URL}/auth/refresh/admin`, { auth: token }, {
+      axiosInstance.post(`${BASE_URL}/auth/refresh/admin`, { auth: token }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -37,7 +37,7 @@ const profileLabel = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      axios.post(`${BASE_URL}/order-history/orders/count-total/${serviceAreaId}`,{ type: "INCOMING" }, {
+      axiosInstance.post(`${BASE_URL}/order-history/orders/count-total/${serviceAreaId}`,{ type: "INCOMING" }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

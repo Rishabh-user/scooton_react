@@ -7,8 +7,8 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
-import axios from "axios";
 import { BASE_URL } from "../../../api";
+import axiosInstance from "../../../api";
 
 const COLUMNS = [
   {
@@ -51,7 +51,7 @@ const RecentCompletedOrders = () => {
     const fetchOrderData = async () => {
       const token = localStorage.getItem("jwtToken");
       try {      
-        const responseDelivered = await axios.post(`${BASE_URL}/order-history/orders/94753`,{ type: "DELIVERED" }, {
+        const responseDelivered = await axiosInstance.post(`${BASE_URL}/order-history/orders/94753`,{ type: "DELIVERED" }, {
           headers: {
             Authorization: `Bearer ${token}`
           }

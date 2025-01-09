@@ -4,7 +4,6 @@ import 'react-tabs/style/react-tabs.css';
 import { useParams, Link } from "react-router-dom";
 import Card from "../../components/ui/Card";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import axios from "axios";
 import { BASE_URL } from "../../api";
 import Loading from "../../components/Loading";
 import Textinput from "../../components/ui/Textinput";
@@ -17,6 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Select from "@/components/ui/Select";
 import Modal from "../../components/ui/Modal";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../api";
  
 const RejectionType = ["Information Rejected", "Document Issue"];
 const DocumentStatus =["Approve","Reject"]
@@ -55,22 +55,22 @@ const RiderDetail = () => {
         try {
           const token = localStorage.getItem('jwtToken');
           if (token) {
-            const riderOrderResponse = await axios.get(`${BASE_URL}/rider/get-rider-orders/${riderId}?endDate=2025-03-31&page=0&size=500&startDate=2022-12-01`, {
+            const riderOrderResponse = await axiosInstance.get(`${BASE_URL}/rider/get-rider-orders/${riderId}?endDate=2025-03-31&page=0&size=500&startDate=2022-12-01`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             });
-            const riderWalletResponse = await axios.get(`${BASE_URL}/rider/v2/get-rider-wallet/${riderId}`, {
+            const riderWalletResponse = await axiosInstance.get(`${BASE_URL}/rider/v2/get-rider-wallet/${riderId}`, {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
             });
-            const riderTripResponse = await axios.get(`${BASE_URL}/rider/get-rider-earning/${riderId}?endDate=2025-03-31&page=0&size=500&startDate=2022-12-01`, {
+            const riderTripResponse = await axiosInstance.get(`${BASE_URL}/rider/get-rider-earning/${riderId}?endDate=2025-03-31&page=0&size=500&startDate=2022-12-01`, {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
             });
-            const documentResponse = await axios.get(`${BASE_URL}/login/get-rider-full-details/${riderId}`, {
+            const documentResponse = await axiosInstance.get(`${BASE_URL}/login/get-rider-full-details/${riderId}`, {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
@@ -86,7 +86,7 @@ const RiderDetail = () => {
             setVehicleDetails(documentResponse.data.jsonData.vehicleDetails);
             setDriverDetails(documentResponse.data.jsonData.driverDetails)
             setDocumentRejectDetails(documentResponse.data.jsonData.rejectDetails)
-            setLanguage(documentResponse.data.jsonData.language)
+            setLanguage(documentResponse.data.jsonData)
             const fetchedDriverDetails = documentResponse.data.jsonData.driverDetails;
             setIsDriverActive(fetchedDriverDetails?.active || false);
             setDriverRegistrationFee(fetchedDriverDetails?.isRegistrationFeesPaid || false);
@@ -144,7 +144,7 @@ const RiderDetail = () => {
         const newState = !isDriverActive;
         const token = localStorage.getItem("jwtToken");
         try{
-            await axios.post(`${BASE_URL}/register/rider/active/${id}`,{
+            await axiosInstance.post(`${BASE_URL}/register/rider/active/${id}`,{
                 active: newState
             },{
                 headers: {
@@ -164,7 +164,7 @@ const RiderDetail = () => {
         const newState = !driverRegistrationFee;
         const token = localStorage.getItem("jwtToken");
         try{
-            await axios.post(`${BASE_URL}/register/rider/registration-fee-paid/${id}`,{
+            await axiosInstance.post(`${BASE_URL}/register/rider/registration-fee-paid/${id}`,{
                 active: newState
             },{
                 headers: {
@@ -183,7 +183,7 @@ const RiderDetail = () => {
         const newState = !driverRole;
         const token = localStorage.getItem("jwtToken");
         try{
-            await axios.post(`${BASE_URL}/register/rider/onrole/${id}`,{
+            await axiosInstance.post(`${BASE_URL}/register/rider/onrole/${id}`,{
                 active: newState
             },{
                 headers: {
@@ -232,7 +232,7 @@ const RiderDetail = () => {
 
     const updateRiderRegistration = () =>{
         try{
-            axios.post(`${BASE_URL}/login/rider-registration`,{
+            axiosInstance.post(`${BASE_URL}/login/rider-registration`,{
                 vehicleNumber: vehicleDetails?.vehicleNumber,
                 ownerName: vehicleDetails?.ownerName,
                 ownerMobileNumber: vehicleDetails?.ownerMobileNumber,
@@ -272,7 +272,7 @@ const RiderDetail = () => {
     const rechargeRiderWallet = async (amt,id) =>{
     const token = localStorage.getItem("jwtToken");
      try {
-        await axios.post(`${BASE_URL}/wallet/rider-wallet-recharge`,{
+        await axiosInstance.post(`${BASE_URL}/wallet/rider-wallet-recharge`,{
             riderId: id,
             amount: amt,
             type: "Admin Recharge"
@@ -354,7 +354,7 @@ const RiderDetail = () => {
   const deleteRider = async (riderId) => {
     const token = localStorage.getItem("jwtToken");
     try {
-      const response = await axios.delete(
+      const response = await axiosInstance.delete(
         `${BASE_URL}/login/delete/${riderId}`,
         {
             headers: {
@@ -713,9 +713,9 @@ const RiderDetail = () => {
                                     id="language"
                                     type="text"
                                     name="language"
-                                    value={language || ""}
+                                    value={language?.language || ""}
                                     onChange={handleLanguage}
-                                />                        
+                                />                      
                             </div>
                         </div>
                         <div className="text-end">

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Card from "../../components/ui/Card";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import axios from "axios";
 import { BASE_URL } from "../../api";
 import Loading from "../../components/Loading";
 import Modal from "../../components/ui/Modal";
@@ -10,6 +9,7 @@ import Button from "../../components/ui/Button";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axiosInstance from "../../api";
 
 const OrderDetail = () => {
     const navigate = useNavigate();
@@ -34,7 +34,7 @@ const OrderDetail = () => {
             try {
                 const token = localStorage.getItem('jwtToken');
                 if (token) {
-                    const response = await axios.get(`${BASE_URL}/order/v2/orders/get-city-wide-order/${orderId}`, {
+                    const response = await axiosInstance.get(`${BASE_URL}/order/v2/orders/get-city-wide-order/${orderId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -72,7 +72,7 @@ const OrderDetail = () => {
 
     const handlePickupConfirm = async (payload) => {
         try {
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${BASE_URL}/rider/pickup-delivery-otp-verification-admin/`,
                 payload
             );
@@ -89,7 +89,7 @@ const OrderDetail = () => {
     };
     const handleDeliveryConfirm = async (payload) => {
         try {
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${BASE_URL}/rider/pickup-delivery-otp-verification-admin/`,
                 payload
             );
@@ -108,7 +108,7 @@ const OrderDetail = () => {
         setisLoadingInvoice(true);
         try {
             
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 `${BASE_URL}/order/orders/admin/getInvoice/${orderId}`,
                 {}
             );
@@ -159,103 +159,218 @@ const OrderDetail = () => {
                 </div>
                 <div className="multistep-prgressbar">
                     <ul>
-                        <li className={`multistep-list ${orderDetails.orderStatus === 'In Progress'
+                        {/* <li className={`multistep-list ${orderDetails.orderStatus === 'In Progress'
                             || orderDetails.orderStatus === 'In Transit'
                             || orderDetails.orderStatus === 'Delivered' ? 'active' : ''}`}>
                             <span>{orderDetails.orderDateTime}</span>
+                            <div className="multistep-item">Order Placed hyg</div>
+                        </li> */}
+                        <li className="multistep-list active">
+                            <span>{orderDetails.orderDateTime}</span>
                             <div className="multistep-item">Order Placed</div>
                         </li>
-                        <li className={`multistep-list  ${tripDetails?.orderAccepted ? 'active' : ''}`}>
-                            {tripDetails?.orderAcceptedTimeTaken && (
-                                <span className="orderTimetaken">{tripDetails?.orderAcceptedTimeTaken || ' '}</span>
-                            )}
-                            <span>{tripDetails?.orderAcceptedDateTime || ' '}</span>
-                            <div className="multistep-item">Accepted</div>
-                        </li>
-                        <li className={`multistep-list ${tripDetails?.orderInTransit ? 'active' : ''}`}>
-                            {tripDetails?.orderInTransitTimeTaken && (
-                                <span className="orderTimetaken">{tripDetails?.orderInTransitTimeTaken || ' '}</span>
-                            )}
-                            <span>{tripDetails?.orderInTransitDateTime || ' '}</span>
-                            <div className="multistep-item" onClick={() => {
-                                if (!tripDetails?.orderInTransit) {
-                                    openPickupModal();
-                                }
-                            }}> Pickup
-                            </div>
-                            {isPickupModal && (
-                                <Modal
-                                    activeModal={isPickupModal}
-                                    uncontrol
-                                    className="max-w-md"
-                                    title=""
-                                    centered
-                                    onClose={() => setisPickupModal(false)}
-                                >
-                                    <div className="">
-                                        <h5 className="text-center">Pickup Service</h5>
-                                        <p className="text-center my-3">Confirm Pickup Order</p>
-                                        <div className="d-flex gap-2 justify-content-center mt-4">
-                                            <Button className="btn btn-dark" type="button" onClick={() => setisPickupModal(false)}>
-                                                No
-                                            </Button>
-                                            <Button className="btn btn-outline-light" type="button"
-                                                onClick={() => handlePickupConfirm({
-                                                    orderId: orderId,
-                                                    orderType: "CITYWIDE",
-                                                    otp: "0000"
-                                                })}
-                                            >
-                                                Yes
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </Modal>
-                            )}
-                        </li>
-                        <li className={`multistep-list ${tripDetails?.orderDelivered ? 'active' : ''}`}>
-                            {tripDetails?.orderDeliveredTimeTaken && (
-                                <span className="orderTimetaken">{tripDetails?.orderDeliveredTimeTaken || ' '}</span>
-                            )}
-                            <span>{tripDetails?.orderDeliveredDateTime || ' '}</span>
-                            <div className="multistep-item"
-                                onClick={() => {
-                                    if (!tripDetails?.orderDelivered) {
-                                        openDeliveryModal();
+                        {tripDetails?.orderAccepted && (
+                             <li className={`multistep-list  ${tripDetails?.orderAccepted ? 'active' : ''}`}>
+                                {tripDetails?.orderAcceptedTimeTaken && (
+                                    <span className="orderTimetaken">{tripDetails?.orderAcceptedTimeTaken || ' '}</span>
+                                )}
+                                <span>{tripDetails?.orderAcceptedDateTime || ' '}</span>
+                                <div className="multistep-item">Accepted</div>
+                             </li>
+                        )}
+                        {(!tripDetails?.orderAccepted && orderDetails.orderStatus !== 'Cancelled') && (
+                            <li className={`multistep-list  ${tripDetails?.orderAccepted ? 'active' : ''}`}>
+                                {tripDetails?.orderAcceptedTimeTaken && (
+                                    <span className="orderTimetaken">{tripDetails?.orderAcceptedTimeTaken || ' '}</span>
+                                )}
+                                <span>{tripDetails?.orderAcceptedDateTime || ' '}</span>
+                                <div className="multistep-item">Accepted</div>
+                            </li>
+                        )}
+                        {tripDetails?.orderInTransit === true && (
+                            <li className={`multistep-list ${tripDetails?.orderInTransit ? 'active' : ''}`}>
+                                {tripDetails?.orderInTransitTimeTaken && (
+                                    <span className="orderTimetaken">{tripDetails?.orderInTransitTimeTaken || ' '}</span>
+                                )}
+                                <span>{tripDetails?.orderInTransitDateTime || ' '}</span>
+                                <div className="multistep-item" onClick={() => {
+                                    if (!tripDetails?.orderInTransit) {
+                                        openPickupModal();
                                     }
-                                }}
-                            > Delivered
-                            </div>
-                            {isDeliveryModal && (
-                                <Modal
-                                    activeModal={isDeliveryModal}
-                                    uncontrol
-                                    className="max-w-md"
-                                    title=""
-                                    centered
-                                    onClose={() => setisdeliveryModal(false)}
-                                >
-                                    <div className="">
-                                        <h5 className="text-center">Delivery Service</h5>
-                                        <p className="text-center my-3">Confirm Delivery Order</p>
-                                        <div className="d-flex gap-2 justify-content-center mt-4">
-                                            <Button className="btn btn-dark" type="button" onClick={() => setisdeliveryModal(false)}>
-                                                No
-                                            </Button>
-                                            <Button className="btn btn-outline-light" type="button"
-                                                onClick={() => handleDeliveryConfirm({
-                                                    orderId: orderId,
-                                                    orderType: "CITYWIDE",
-                                                    otp: "0000"
-                                                })}
-                                            >
-                                                Yes
-                                            </Button>
+                                }}> Pickup 
+                                </div>
+                                {isPickupModal && (
+                                    <Modal
+                                        activeModal={isPickupModal}
+                                        uncontrol
+                                        className="max-w-md"
+                                        title=""
+                                        centered
+                                        onClose={() => setisPickupModal(false)}
+                                    >
+                                        <div className="">
+                                            <h5 className="text-center">Pickup Service</h5>
+                                            <p className="text-center my-3">Confirm Pickup Order</p>
+                                            <div className="d-flex gap-2 justify-content-center mt-4">
+                                                <Button className="btn btn-dark" type="button" onClick={() => setisPickupModal(false)}>
+                                                    No
+                                                </Button>
+                                                <Button className="btn btn-outline-light" type="button"
+                                                    onClick={() => handlePickupConfirm({
+                                                        orderId: orderId,
+                                                        orderType: "CITYWIDE",
+                                                        otp: "0000"
+                                                    })}
+                                                >
+                                                    Yes
+                                                </Button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </Modal>
-                            )}
-                        </li>
+                                    </Modal>
+                                )}
+                            </li>
+                        )}
+                        {(!tripDetails?.orderInTransit && orderDetails.orderStatus !== 'Cancelled')  && (
+                            <li className={`multistep-list ${tripDetails?.orderInTransit ? 'active' : ''}`}>
+                                {tripDetails?.orderInTransitTimeTaken && (
+                                    <span className="orderTimetaken">{tripDetails?.orderInTransitTimeTaken || ' '}</span>
+                                )}
+                                <span>{tripDetails?.orderInTransitDateTime || ' '}</span>
+                                <div className="multistep-item" onClick={() => {
+                                    if (!tripDetails?.orderInTransit) {
+                                        openPickupModal();
+                                    }
+                                }}> Pickup 
+                                </div>
+                                {isPickupModal && (
+                                    <Modal
+                                        activeModal={isPickupModal}
+                                        uncontrol
+                                        className="max-w-md"
+                                        title=""
+                                        centered
+                                        onClose={() => setisPickupModal(false)}
+                                    >
+                                        <div className="">
+                                            <h5 className="text-center">Pickup Service</h5>
+                                            <p className="text-center my-3">Confirm Pickup Order</p>
+                                            <div className="d-flex gap-2 justify-content-center mt-4">
+                                                <Button className="btn btn-dark" type="button" onClick={() => setisPickupModal(false)}>
+                                                    No
+                                                </Button>
+                                                <Button className="btn btn-outline-light" type="button"
+                                                    onClick={() => handlePickupConfirm({
+                                                        orderId: orderId,
+                                                        orderType: "CITYWIDE",
+                                                        otp: "0000"
+                                                    })}
+                                                >
+                                                    Yes
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </Modal>
+                                )}
+                            </li>
+                        )}
+                        {tripDetails?.orderDelivered && (
+                           <li className={`multistep-list ${tripDetails?.orderDelivered ? 'active' : ''}`}>
+                                {tripDetails?.orderDeliveredTimeTaken && (
+                                   <span className="orderTimetaken">{tripDetails?.orderDeliveredTimeTaken || ' '}</span>
+                                )}
+                                <span>{tripDetails?.orderDeliveredDateTime || ' '}</span>
+                                <div className="multistep-item"
+                                    onClick={() => {
+                                        if (!tripDetails?.orderDelivered) {
+                                            openDeliveryModal();
+                                        }
+                                    }}
+                                > Delivered
+                                </div>
+                                {isDeliveryModal && (
+                                    <Modal
+                                        activeModal={isDeliveryModal}
+                                        uncontrol
+                                        className="max-w-md"
+                                        title=""
+                                        centered
+                                        onClose={() => setisdeliveryModal(false)}
+                                    >
+                                        <div className="">
+                                            <h5 className="text-center">Delivery Service</h5>
+                                            <p className="text-center my-3">Confirm Delivery Order</p>
+                                            <div className="d-flex gap-2 justify-content-center mt-4">
+                                                <Button className="btn btn-dark" type="button" onClick={() => setisdeliveryModal(false)}>
+                                                    No
+                                                </Button>
+                                                <Button className="btn btn-outline-light" type="button"
+                                                    onClick={() => handleDeliveryConfirm({
+                                                        orderId: orderId,
+                                                        orderType: "CITYWIDE",
+                                                        otp: "0000"
+                                                    })}
+                                                >
+                                                    Yes
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </Modal>
+                                )}
+                            </li>
+                        )}
+                        {(!tripDetails?.orderDelivered && orderDetails.orderStatus !== 'Cancelled') && (
+                           <li className={`multistep-list ${tripDetails?.orderDelivered ? 'active' : ''}`}>
+                                {tripDetails?.orderDeliveredTimeTaken && (
+                                   <span className="orderTimetaken">{tripDetails?.orderDeliveredTimeTaken || ' '}</span>
+                                )}
+                                <span>{tripDetails?.orderDeliveredDateTime || ' '}</span>
+                                <div className="multistep-item"
+                                    onClick={() => {
+                                        if (!tripDetails?.orderDelivered) {
+                                            openDeliveryModal();
+                                        }
+                                    }}
+                                > Delivered
+                                </div>
+                                {isDeliveryModal && (
+                                    <Modal
+                                        activeModal={isDeliveryModal}
+                                        uncontrol
+                                        className="max-w-md"
+                                        title=""
+                                        centered
+                                        onClose={() => setisdeliveryModal(false)}
+                                    >
+                                        <div className="">
+                                            <h5 className="text-center">Delivery Service</h5>
+                                            <p className="text-center my-3">Confirm Delivery Order</p>
+                                            <div className="d-flex gap-2 justify-content-center mt-4">
+                                                <Button className="btn btn-dark" type="button" onClick={() => setisdeliveryModal(false)}>
+                                                    No
+                                                </Button>
+                                                <Button className="btn btn-outline-light" type="button"
+                                                    onClick={() => handleDeliveryConfirm({
+                                                        orderId: orderId,
+                                                        orderType: "CITYWIDE",
+                                                        otp: "0000"
+                                                    })}
+                                                >
+                                                    Yes
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </Modal>
+                                )}
+                            </li>
+                        )}
+                       
+                        {orderDetails.orderStatus === 'Cancelled' && (
+                            <li className={`multistep-list ${orderDetails.orderStatus === 'Cancelled'? 'active' : ''}`}>
+                                <span>{orderDetails.orderDateTime}</span>
+                                <div className="multistep-item">Cancel</div>
+                            </li>
+                        )}
+                        
                     </ul>
                 </div>
             </div>
@@ -367,10 +482,31 @@ const OrderDetail = () => {
                                     <td className="px-6 py-2">Payment Mode</td>
                                     <td className="text-end px-6 py-2">{orderDetails.paymentMode}</td>
                                 </tr>
-                                <tr className="border-b border-slate-100 dark:border-slate-700">
-                                    <td className="px-6 py-2">Payment Status</td>
-                                    <td className="text-end px-6 py-2">{orderDetails.paymentStatus}</td>
-                                </tr>
+                                {(orderDetails.orderStatus === 'Delivered' && orderDetails.paymentMode !== 'PREPAID')  && (
+                                    <tr className="border-b border-slate-100 dark:border-slate-700">
+                                        <td className="px-6 py-2">Payment Status</td>
+                                        <td className="text-end px-6 py-2">COMPLETED</td>
+                                    </tr>
+                                )}
+                                {(orderDetails.orderStatus !== 'Delivered' && orderDetails.paymentMode !== 'PREPAID') && (
+                                    <tr className="border-b border-slate-100 dark:border-slate-700">
+                                        <td className="px-6 py-2">Payment Status</td>
+                                        <td className="text-end px-6 py-2">PENDING</td>
+                                    </tr>
+                                )}
+                                {orderDetails.paymentMode === 'PREPAID' && (
+                                    <tr className="border-b border-slate-100 dark:border-slate-700">
+                                        <td className="px-6 py-2">Refund Message</td>
+                                        <td className="text-end px-6 py-2">{orderDetails.refundStatus}</td>
+                                    </tr>
+                                )}
+                                
+                                {orderDetails.paymentMode === 'PREPAID' && (
+                                    <tr className="border-b border-slate-100 dark:border-slate-700">
+                                        <td className="px-6 py-2">Payment Status</td>
+                                        <td className="text-end px-6 py-2">{orderDetails.paymentStatus}</td>
+                                    </tr>
+                                )}
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">MRP</td>
                                     <td className="text-end px-6 py-2">{orderDetails.orderAmount.mrp}</td>
@@ -380,8 +516,16 @@ const OrderDetail = () => {
                                     <td className="text-end px-6 py-2">{orderDetails.orderAmount.discount}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                                    <td className="px-6 py-2">Taxes</td>
-                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.taxes}</td>
+                                    <td className="px-6 py-2">MCD Tax</td>
+                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.mcdTax.toFixed(3)}</td>
+                                </tr>
+                                <tr className="border-b border-slate-100 dark:border-slate-700">
+                                    <td className="px-6 py-2">State Tax</td>
+                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.tollTax.toFixed(3)}</td>
+                                </tr>
+                                <tr className="border-b border-slate-100 dark:border-slate-700">
+                                    <td className="px-6 py-2">Toll Tax</td>
+                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.stateTax.toFixed(3)}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Applied Promocode</td>

@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Icon from "@/components/ui/Icon";
-import axios from "axios";
 import {useTable, useRowSelect, useSortBy, usePagination,} from "react-table";
 import Card from "../../components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
@@ -10,6 +9,7 @@ import Loading from "../../components/Loading";
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@/components/ui/Tooltip";
 import { toast } from "react-toastify";
+import axiosInstance from "../../api";
 
 const COLUMNS = [
   
@@ -154,7 +154,7 @@ const COLUMNS = [
        const toggleActive = async (id) => {
         try {
           const newState = !isActive;
-          await axios.post(`${BASE_URL}/user/active/${id}`,{active: newState});
+          await axiosInstance.post(`${BASE_URL}/user/active/${id}`,{active: newState});
           setIsActive(newState);
           toast.success()
           
@@ -215,7 +215,7 @@ const UserList = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      axios
+      axiosInstance
         .get(`${BASE_URL}/user/get-all?page=${currentPage}&size=${pagesizedata}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -243,7 +243,7 @@ const UserList = () => {
   
         if (search) {
           // Search by mobile number if `search` is not empty
-          const response = await axios.post(
+          const response = await axiosInstance.post(
             `${BASE_URL}/user/search-by-mobile-number`,
             {},
             {
@@ -254,7 +254,7 @@ const UserList = () => {
           setUserData(response.data);
         } else {
           // Fetch all users if `search` is empty
-          const response = await axios.get(`${BASE_URL}/user/get-all`, {
+          const response = await axiosInstance.get(`${BASE_URL}/user/get-all`, {
             headers: { Authorization: `Bearer ${token}` },
             params: { page: currentPage, size: 100 },
           });

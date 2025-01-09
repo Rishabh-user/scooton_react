@@ -5,9 +5,9 @@ import RadialsChart from "@/components/partials/widget/chart/radials";
 import SelectMonth from "@/components/partials/SelectMonth";
 import RecentCompletedOrders from "@/components/partials/Table/recent-completed-orders";
 import HomeBredCurbs from "./HomeBredCurbs";
-import axios from "axios";
 import { BASE_URL } from "../../api";
 import OnRoleRiders from "../riders/on-role-riders";
+import axiosInstance from "../../api";
 
 const Dashboard = () => {
   const[orderData, setOrderData] = useState([]);
@@ -16,12 +16,12 @@ const Dashboard = () => {
     const fetchOrderData = async () => {
       const token = localStorage.getItem("jwtToken");
       try {
-        const responseCompleted = await axios.post(`${BASE_URL}/order-history/orders/count-total/${serviceAreaId}`,{ type: "COMPLETED" }, {
+        const responseCompleted = await axiosInstance.post(`${BASE_URL}/order-history/orders/count-total/${serviceAreaId}`,{ type: "COMPLETED" }, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        const responseIncoming = await axios.post(`${BASE_URL}/order-history/orders/count-total/${serviceAreaId}`,{ type: "INCOMING" }, {
+        const responseIncoming = await axiosInstance.post(`${BASE_URL}/order-history/orders/count-total/${serviceAreaId}`,{ type: "INCOMING" }, {
           headers: {
             Authorization: `Bearer ${token}`
           }

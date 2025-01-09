@@ -9,7 +9,8 @@ import { format, parseISO } from "date-fns";
 import Swicth from "../../components/ui/Switch";
 import { toast,ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AddPromoImg from "../../assets/images/Promo-code-img.png"
+import AddPromoImg from "../../assets/images/Promo-code-img.png";
+import axiosInstance from "../../api";
 
 
 const promocodeType = ["FIXED", "PERCENTAGE"];
@@ -65,7 +66,7 @@ const AddPromocode = () => {
         expireDate: format(parseISO(formData.expireDate), "dd-MM-yyyy HH:mm:ss")
       };
       
-      const response = await axios.post(`${BASE_URL}/promo-code/add`, formattedData, {
+      const response = await axiosInstance.post(`${BASE_URL}/promo-code/add`, formattedData, {
         headers: {
           Authorization: `Bearer ${token}`
         }

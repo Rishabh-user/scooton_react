@@ -22,6 +22,8 @@ import Loading from "../../components/Loading";
 import Tooltip from "@/components/ui/Tooltip";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../api";
+
 const COLUMNS = (openIsDeleteOrder,ordersType) => [
   {
     Header: "Sr. No.",
@@ -210,7 +212,7 @@ const OfflineOrders = () => {
   const fetchOrders = (orderType) => {
     setLoading(true);
     SetOrderType(orderType)
-    axios
+    axiosInstance
       .post(
         `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/true?page=${currentPage}&size=${pagesizedata}`,
         { "orderType": orderType, "searchType": "NONE" },
@@ -236,7 +238,7 @@ const OfflineOrders = () => {
   }
 
   const replaceOrder = () => {
-    axios.post(`${BASE_URL}/order/accepted-order-reorder/${orderid}`).then((response)=>{
+    axiosInstance.post(`${BASE_URL}/order/accepted-order-reorder/${orderid}`).then((response)=>{
       toast.success(response)
     }).catch((error) => {
       console.error(error);
@@ -244,7 +246,7 @@ const OfflineOrders = () => {
   }
 
   const cancelOrder = () => {
-    axios.post(`${BASE_URL}/order/cancel-order/${orderid}`).then((response)=>{
+    axiosInstance.post(`${BASE_URL}/order/cancel-order/${orderid}`).then((response)=>{
       toast.success(response)
     }).catch((error) => {
       console.error(error);
@@ -315,7 +317,7 @@ const OfflineOrders = () => {
 
   const FilterOrder = () => {
     setLoading(true);
-    axios
+    axiosInstance
       .post(
         `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/true?page=${currentPage}&size=100`,
         { "number": search, "orderType": ordersType, "searchType": filterby },
@@ -340,7 +342,7 @@ const OfflineOrders = () => {
   useEffect(() => {
     const fetchServiceAreas = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/service-area/get-all`);
+        const response = await axiosInstance.get(`${BASE_URL}/service-area/get-all`);
         setServiceArea(response.data);
       } catch (error) {
         console.error('Error fetching service areas:', error);
@@ -353,7 +355,7 @@ const OfflineOrders = () => {
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     try {
-      axios
+      axiosInstance
         .post(
           `${BASE_URL}/order-history/search-city-wide-orders/${serviceAreaStatus}?page=${currentPage}&size=100`,
           {
@@ -399,15 +401,41 @@ const OfflineOrders = () => {
           <div className="mb-4">
             <div className="md:flex justify-between items-center mb-2">
               <h4 className="card-title mb-0">Offline Orders</h4>
-              <div className="rider-filter">            
+              <div className="">
+                <FormControl fullWidth>
+                  <label className="text-sm">Filter By</label>
+                    <div className="filterbyRider"> 
+                      <Select
+                        id="demo-simple-select"
+                        value={filterby}
+                        //label="Filter By"
+                        onChange={handleChange}
+                        displayEmpty
+                        inputProps={{ 'aria-label': 'Without label' }}
+                      >
+                        <MenuItem value="NONE">NONE</MenuItem>
+                        <MenuItem value="ORDERID">ORDER ID</MenuItem>
+                        <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                      </Select>           
+                      <TextField
+                        id="search"
+                        type="text"
+                        name="search"
+                        value={search}
+                        onChange={handleSearchChange}
+                      />
+                    </div>
+                  </FormControl>
+              </div>
+              {/* <div className="rider-filter">            
                 <div className="d-flex justify-content-end">              
                   <Button className="btn btn-dark desktop-view-filter" onClick={handleShow}>
                     <Icon icon="heroicons:adjustments-horizontal" className="text-[20px]"></Icon>
                   </Button>
                 </div>
-              </div>
+              </div> */}
             </div>
-            {isVisible && (
+            {/* {isVisible && (
               <div className="filter-show">
                 <div className="flex gap-2">
                   <div className="flex-1">
@@ -455,7 +483,7 @@ const OfflineOrders = () => {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
             
           </div>
           <div className="filter-orderlist">

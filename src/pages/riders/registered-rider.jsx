@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Icon from "@/components/ui/Icon";
-import axios from "axios";
 import {useTable, useRowSelect, useSortBy, usePagination,} from "react-table";
 import Card from "../../components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
@@ -20,6 +19,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from "@mui/material/TextField";
 import Button from "../../components/ui/Button";
+import axiosInstance from "../../api";
 
 const COLUMNS = [
   {
@@ -192,7 +192,7 @@ const RegisteredRiders = () => {
   const fetchRegisterOrder = () =>{
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      axios
+      axiosInstance
         .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -214,7 +214,7 @@ const RegisteredRiders = () => {
   // Get Rider Count
   useEffect(() => {
     try {
-      axios.get(`${BASE_URL}/login/get-online-offline-rider/0/REGISTERED`).then((response) => {
+      axiosInstance.get(`${BASE_URL}/login/get-online-offline-rider/0/REGISTERED`).then((response) => {
         setActiveRiderCount(response.data)
       })
     } catch {
@@ -225,7 +225,7 @@ const RegisteredRiders = () => {
   const filterRiders = () => {
     const token = localStorage.getItem("jwtToken");
     try {
-      axios
+      axiosInstance
         .get(
           `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/${riderstatus}/0?page=${currentPage}&size=100`, {
             headers: {
@@ -321,7 +321,7 @@ const RegisteredRiders = () => {
 
   const FilterRiders = () =>{
     const token = localStorage.getItem("jwtToken");
-    axios.get(`${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=30`, {
+    axiosInstance.get(`${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=30`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

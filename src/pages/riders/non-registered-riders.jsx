@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Icon from "@/components/ui/Icon";
-import axios from "axios";
 import {useTable, useRowSelect, useSortBy, usePagination,} from "react-table";
 import Card from "../../components/ui/Card";
 import { BASE_URL } from "../../api";
@@ -16,6 +15,7 @@ import tataace from '../../assets/images/icon/Tata_Ace.png'
 import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@/components/ui/Tooltip";
+import axiosInstance from "../../api";
 
 const COLUMNS = [
   {
@@ -190,7 +190,7 @@ const NonRegisteredRiders = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      axios
+      axiosInstance
         .get(`${BASE_URL}/register/rider/get-all-service-area-by-non-registration-status?page=${currentPage}&size=100`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -213,7 +213,7 @@ const NonRegisteredRiders = () => {
 
   useEffect(() => {
     try {
-      axios.get(`${BASE_URL}/login/get-online-offline-rider/0/ALL`).then((response) => {
+      axiosInstance.get(`${BASE_URL}/login/get-online-offline-rider/0/ALL`).then((response) => {
         setActiveRiderCount(response.data)
       })
     } catch {
@@ -238,7 +238,7 @@ const NonRegisteredRiders = () => {
   
   const filterRiders = () => {
     try {
-      axios
+      axiosInstance
         .get(
           `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/${documentstatus}/${currentPage}/${riderstatus}/${vehicleid}?page=${currentPage}&size=100`
         )
@@ -282,7 +282,7 @@ const NonRegisteredRiders = () => {
         ? `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=${pagesizedata}`
         : `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=${pagesizedata}`;
     
-    axios
+    axiosInstance
       .get(endpoint)
       .then((response) => {
         setRiderData(response.data); 
@@ -353,7 +353,7 @@ const NonRegisteredRiders = () => {
   useEffect(() => {
     const fetchServiceAreas = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/service-area/get-all`);
+        const response = await axiosInstance.get(`${BASE_URL}/service-area/get-all`);
         setServiceArea(response.data);
       } catch (error) {
         console.error('Error fetching service areas:', error);
@@ -365,7 +365,7 @@ const NonRegisteredRiders = () => {
   const filterOrders = () => {
     const token = localStorage.getItem("jwtToken");
     try {
-      axios
+      axiosInstance
         .post(
           `${BASE_URL}/order-history/search-city-wide-orders/${serviceAreaStatus}?page=${currentPage}&size=100`,
           {

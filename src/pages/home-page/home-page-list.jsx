@@ -3,10 +3,10 @@ import 'react-tabs/style/react-tabs.css';
 import { Link } from "react-router-dom";
 import Card from "../../components/ui/Card";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import axios from "axios";
 import { BASE_URL } from "../../api";
 import Loading from "../../components/Loading";
 import Button from "../../components/ui/Button";
+import axiosInstance from "../../api";
 
 
 const HomepageList = () => {
@@ -17,7 +17,7 @@ const HomepageList = () => {
         try {
           const token = localStorage.getItem('jwtToken');
           if (token) {
-            const response = await axios.get(`${BASE_URL}/home/get-all-homepage-details`, {
+            const response = await axiosInstance.get(`${BASE_URL}/home/get-all-homepage-details`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },

@@ -13,6 +13,7 @@ import Switch from "@/components/ui/Switch";
 import { toast,ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
+import axiosInstance from "../../api";
 
 
 const promocodeType = ["FIXED", "PERCENTAGE"];
@@ -62,7 +63,7 @@ const COLUMNS = (deletePromocode, openEditModal) => [
        const toggleActive = async (id) => {
         try {
           const newState = !isActive;
-          await axios.post(`${BASE_URL}/promo-code/active/${id}`,{active: newState},
+          await axiosInstance.post(`${BASE_URL}/promo-code/active/${id}`,{active: newState},
             { headers: { Authorization: `Bearer ${token}` } },
           ).then((response) => {
             toast.success("Promocode status change successfully!");
@@ -123,7 +124,7 @@ const PromocodeList = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {      
-      axios.get(`${BASE_URL}/promo-code/get-all?page=${currentPage}&size=${pagesizedata}`,
+      axiosInstance.get(`${BASE_URL}/promo-code/get-all?page=${currentPage}&size=${pagesizedata}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -144,7 +145,7 @@ const PromocodeList = () => {
   const deletePromocode = async (id) => {
     const token = localStorage.getItem("jwtToken");
     try {
-      await axios.delete(`${BASE_URL}/promo-code/delete/${id}`,
+      await axiosInstance.delete(`${BASE_URL}/promo-code/delete/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -210,7 +211,7 @@ const PromocodeList = () => {
       const formattedStartDate = formatDate(selectedPromoCode?.startDate);
       const formattedExpireDate = formatDate(selectedPromoCode?.expireDate);
 
-      await axios.post(`${BASE_URL}/promo-code/update/${id}`, 
+      await axiosInstance.post(`${BASE_URL}/promo-code/update/${id}`, 
         {
           active: promoCodeData?.active,
           amount: promoCodeData?.amount,

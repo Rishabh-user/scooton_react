@@ -5,10 +5,10 @@ import Button from "@/components/ui/Button";
 import Select from "@/components/ui/Select";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 import { BASE_URL } from "../../api";
 import { useNavigate } from "react-router-dom";
-import AddRoleImg from "../../assets/images/Add-Role.png"
+import AddRoleImg from "../../assets/images/Add-Role.png";
+import axiosInstance from "../../api";
 
 const AddRole = () => {
   const serviceAreaId = localStorage.getItem("serviceAreaId");
@@ -26,7 +26,7 @@ const AddRole = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      axios
+      axiosInstance
         .get(`${BASE_URL}/register/get-all-roles`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -79,7 +79,7 @@ const AddRole = () => {
     
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      axios
+      axiosInstance
         .post(`${BASE_URL}/register/admin/add`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
