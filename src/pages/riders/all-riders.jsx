@@ -400,9 +400,9 @@ const AllRiders = () => {
     }
   };
   
-  useEffect(() => {
-    filterOrders();
-  }, [serviceAreaStatus, currentPage]);
+  // useEffect(() => {
+  //   filterOrders();
+  // }, [serviceAreaStatus, currentPage]);
 
   const serviceAreaStatusFilter = (event) => {
     console.log("Rider status:", event.target.value);
@@ -454,7 +454,7 @@ const AllRiders = () => {
             <div>
               <div className="filter-show">
                 <div className="">
-                  <div className="flex-1">
+                  {/* <div className="flex-1">
                     <FormControl fullWidth className="">
                       <label className="text-sm">Service Area</label>
                       <Select
@@ -470,7 +470,7 @@ const AllRiders = () => {
                         ))}                        
                       </Select>
                     </FormControl>
-                  </div>
+                  </div> */}
                   <div className="flex-1">
                     <FormControl fullWidth className="">
                       <label className="text-sm mb-1">Rider Status</label>

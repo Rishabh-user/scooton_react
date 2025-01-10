@@ -31,7 +31,7 @@ const RiderDetail = () => {
     const [vehicleDetails, setVehicleDetails] = useState(null);
     const [documentRejectDetails, setDocumentRejectDetails] = useState(null)
     const [driverDetails, setDriverDetails] = useState(null);
-    const [language, setLanguage] = useState();
+    const [language, setLanguage] = useState(null);
     const [isDriverActive, setIsDriverActive] = useState(false);
     const [isRechargeModal, setRechargeModel] = useState(false)
     const [updateWallet, setUpdateWallet] = useState([]);
@@ -40,6 +40,7 @@ const RiderDetail = () => {
     const [approved, setApproved] = useState(true);
     const [rechageAmount, setRechageAmount] = useState({ amount: "" });
     const [documentModel, setIsDocumentModel] = useState(false)
+    const [updateerrormsg, setUpdateErrorMsg]= useState(false)
     const [walletAmount , setWalletAmount] = useState([]);
     const [viewDocumentModelDetail, setDocumentModelDetail] = useState({
         id:'',
@@ -87,6 +88,7 @@ const RiderDetail = () => {
             setDriverDetails(documentResponse.data.jsonData.driverDetails)
             setDocumentRejectDetails(documentResponse.data.jsonData.rejectDetails)
             setLanguage(documentResponse.data.jsonData)
+            console.log("jhjgf",documentResponse.data.jsonData)
             const fetchedDriverDetails = documentResponse.data.jsonData.driverDetails;
             setIsDriverActive(fetchedDriverDetails?.active || false);
             setDriverRegistrationFee(fetchedDriverDetails?.isRegistrationFeesPaid || false);
@@ -123,13 +125,16 @@ const RiderDetail = () => {
         setDeviceDetails((prev) => ({ ...prev, [name]: value }));
     };
     const handleLanguage = (e) => {
+        
+        console.log("e",e)
         const { name, value } = e.target;
         console.log('e',e)
         setLanguage((prev) => ({ ...prev, [name]: value }));
+        console.log("l",language)
+        
     };
     const handleDocumentRejectionReason = (e) => {
         const { name, value } = e.target;
-        console.log('e',e)
         setDocumentRejectDetails((prev) => ({ ...prev, [name]: value }));
     };
 
@@ -152,7 +157,12 @@ const RiderDetail = () => {
                 }
             }
             ).then((response) => {
-                toast.success("Rider status change successfully!");
+                if(response.data.active){
+                    toast.success("Rider status enabled!");
+                }else{
+                    toast.success("Rider status disabled!");
+                }
+                
             })
             setIsDriverActive(newState)
         }catch{
@@ -171,7 +181,11 @@ const RiderDetail = () => {
                     Authorization: `Bearer ${token}`
                 }
             }).then((response) => {
-                toast.success("Registration fee paid status is updated successfully!");
+                if(response.data.registrationFeesPaid){
+                    toast.success("Rider status enabled"); 
+                }else{
+                    toast.success("Rider status disabled!");
+                }
             })
             setDriverRegistrationFee(newState)
         }catch{
@@ -190,7 +204,11 @@ const RiderDetail = () => {
                     Authorization: `Bearer ${token}`
                 }
             }).then((response) => {
-                toast.success("Rider role updated successfully!");
+                if(response.data.onRoleRider){
+                    toast.success("Rider status enabled"); 
+                }else{
+                    toast.success("Rider status disabled!");
+                }
             })
             setDriverRole(newState)
         }catch{
@@ -231,34 +249,73 @@ const RiderDetail = () => {
     
 
     const updateRiderRegistration = () =>{
-        try{
-            axiosInstance.post(`${BASE_URL}/login/rider-registration`,{
-                vehicleNumber: vehicleDetails?.vehicleNumber,
-                ownerName: vehicleDetails?.ownerName,
-                ownerMobileNumber: vehicleDetails?.ownerMobileNumber,
-                vehicleType: vehicleDetails?.vehicleType,
-                driverName: driverDetails?.driverName,
-                city: driverDetails?.driverCity,
-                state: driverDetails?.driverState,
-                driverMobileNumber:driverDetails?.driverMobileNumber,
-                riderReferralCode: driverDetails?.riderReferralCode,
-                fcmId: driverDetails?.fcmId,
-                documentDetails: documentDetail,
-                rejectedReason: documentRejectDetails?.rejectedReason,
-                accountHolderName: "",
-                accountsNumber: "",
-                accountsIFSC: "",
-                language: language,
-                rejectedType: documentRejectDetails?.rejectedType,
-                approved: approved
-            })
-            toast.success("Rider information updated successfully!");
-            setTimeout(() => {
-                window.location.reload()
-            }, 500);
-        }catch{
-            toast.error("Rider information not updated successfully!");
+        debugger
+        if(approved && documentRejectDetails.rejectedReason != ''){
+            try{
+                axiosInstance.post(`${BASE_URL}/login/rider-registration`,{
+                    vehicleNumber: vehicleDetails?.vehicleNumber,
+                    ownerName: vehicleDetails?.ownerName,
+                    ownerMobileNumber: vehicleDetails?.ownerMobileNumber,
+                    vehicleType: vehicleDetails?.vehicleType,
+                    driverName: driverDetails?.driverName,
+                    city: driverDetails?.driverCity,
+                    state: driverDetails?.driverState,
+                    driverMobileNumber:driverDetails?.driverMobileNumber,
+                    riderReferralCode: driverDetails?.riderReferralCode,
+                    fcmId: driverDetails?.fcmId,
+                    documentDetails: documentDetail,
+                    rejectedReason: documentRejectDetails?.rejectedReason,
+                    accountHolderName: "",
+                    accountsNumber: "",
+                    accountsIFSC: "",
+                    language: language.language,
+                    rejectedType: documentRejectDetails?.rejectedType,
+                    approved: approved
+                })
+                toast.success("Rider information updated successfully!");
+                setTimeout(() => {
+                    window.location.reload()
+                }, 500);
+            }catch{
+                toast.error("Rider information not updated successfully!");
+            }
+        } else if(!approved && documentRejectDetails.rejectedReason!= ''){
+            try{
+                axiosInstance.post(`${BASE_URL}/login/rider-registration`,{
+                    vehicleNumber: vehicleDetails?.vehicleNumber,
+                    ownerName: vehicleDetails?.ownerName,
+                    ownerMobileNumber: vehicleDetails?.ownerMobileNumber,
+                    vehicleType: vehicleDetails?.vehicleType,
+                    driverName: driverDetails?.driverName,
+                    city: driverDetails?.driverCity,
+                    state: driverDetails?.driverState,
+                    driverMobileNumber:driverDetails?.driverMobileNumber,
+                    riderReferralCode: driverDetails?.riderReferralCode,
+                    fcmId: driverDetails?.fcmId,
+                    documentDetails: documentDetail,
+                    rejectedReason: documentRejectDetails?.rejectedReason,
+                    accountHolderName: "",
+                    accountsNumber: "",
+                    accountsIFSC: "",
+                    language: language.language,
+                    rejectedType: documentRejectDetails?.rejectedType,
+                    approved: approved
+                })
+                toast.success("Rider information updated successfully!");
+                setTimeout(() => {
+                    window.location.reload()
+                }, 500);
+            }catch{
+                toast.error("Rider information not updated successfully!");
+            }
+
         }
+        else{
+            setUpdateErrorMsg(true)
+           toast.error("Not Updated")
+        }
+        debugger
+        
     }
 
     const rechargeWallet = () => {
@@ -364,6 +421,10 @@ const RiderDetail = () => {
       );
       if (response.status === 200) {
         toast.success("Rider deleted successfully!");
+        setTimeout(() => {
+            navigate('/non-registered-riders');
+        }, 500);
+        
          
       } else {
         toast.error("Failed to delete rider. Please try again.");
@@ -719,7 +780,10 @@ const RiderDetail = () => {
                             </div>
                         </div>
                         <div className="text-end">
-                            <Button type="button" className="btn-dark" onClick={() => updateRiderRegistration()}>Update</Button>
+                            <Button type="button" className="btn-dark"  onClick={() => updateRiderRegistration()}>Update</Button>
+                            {updateerrormsg && (
+                               <p className="mt-1 error-msg">Note: State Reason for Rejection</p>
+                            )}
                         </div>
                     </TabPanel>
                     <TabPanel>

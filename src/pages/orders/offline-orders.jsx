@@ -378,9 +378,9 @@ const OfflineOrders = () => {
     }
   };
 
-  useEffect(() => {
-    filterOrders();
-  }, [serviceAreaStatus, currentPage]);
+  // useEffect(() => {
+  //   filterOrders();
+  // }, [serviceAreaStatus, currentPage]);
 
   const serviceAreaStatusFilter = (event) => {
     console.log("Rider status:", event.target.value);
