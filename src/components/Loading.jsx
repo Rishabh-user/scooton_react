@@ -40,7 +40,7 @@ const Loading = () => {
       {isAuth && (
         <span className=" inline-block mt-3 font-medium  text-sm">
           {" "}
-          Loading ...
+          Please wait while Loading ...
         </span>
       )}
     </div>

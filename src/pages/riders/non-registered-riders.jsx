@@ -222,17 +222,14 @@ const NonRegisteredRiders = () => {
   }, [])
 
   const riderStatusFilter = (event) => {
-    console.log("Rider status:", event.target.value);
     setRiderStatus(event.target.value);
   };
   
   const documentStatusFilter = (event) => {
-    console.log("Document status:", event.target.value);
     setDocumentStatus(event.target.value);
   };
   
   const vehicleIdFilter = (event) => {
-    console.log("Vehicle ID:", event.target.value);
     setVehicleId(event.target.value);
   };
   
@@ -262,7 +259,6 @@ const NonRegisteredRiders = () => {
 
   const handleChange = (event) => {
     const value = event.target.value;
-    console.log("Filter By:", value);
     setFilterBy(value);
 
     // Reset search if "NONE" is selected
@@ -393,7 +389,6 @@ const NonRegisteredRiders = () => {
   // }, [serviceAreaStatus, currentPage]);
 
   const serviceAreaStatusFilter = (event) => {
-    console.log("Rider status:", event.target.value);
     setServiceAreaStatus(event.target.value);
   };
    // Clear the search input field
@@ -590,25 +585,33 @@ const NonRegisteredRiders = () => {
                   ))}
                 </thead>
                 <tbody
-                  className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
-                  {...getTableBodyProps()}
-                >
-                  {page.map((row) => {
-                    prepareRow(row);
-                    return (
-                      <tr {...row.getRowProps()}>
-                        {row.cells.map((cell) => {
-                          return (
-                            <td {...cell.getCellProps()} className="table-td">
-                              {cell.render("Cell")}
-                            
-                            </td>
-                          );
-                        })}
+                    className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
+                    {...getTableBodyProps()}
+                  >
+                        {page.length > 0 ? (
+                          page.map((row) => {
+                        prepareRow(row);
+                        return (
+                          <tr {...row.getRowProps()} key={row.id}>
+                            {row.cells.map((cell) => (
+                              <td {...cell.getCellProps()} className="table-td" key={cell.column.id}>
+                                {cell.render("Cell")}
+                              </td>
+                            ))}
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={headerGroups[0]?.headers.length || 1}
+                          className="text-center py-4 text-gray-500"
+                        >
+                          No record found
+                        </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
+                    )}
+                  </tbody>
               </table>
               )}
             </div>

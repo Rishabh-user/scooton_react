@@ -37,7 +37,6 @@ const Settings = () => {
                 Authorization: `Bearer ${token}`,
               },
             });
-            console.log("response.data",response.data)
             const validLogoutList = response.data.filter(item => !item.isExpired);
 
             setLogoutAllList(validLogoutList);
@@ -155,7 +154,9 @@ const Settings = () => {
                     "Vehicle Type": riderDetails?.vehicleType || "N/A",
                     "Rider Payout": riderDetails?.riderPayout || "N/A",
                 };
-            });    
+                
+            });   
+
             const workbook = XLSX.utils.book_new();
             const worksheet = XLSX.utils.json_to_sheet(csvData);
     
@@ -165,6 +166,8 @@ const Settings = () => {
                 workbook,
                 `orders_${formattedFromDate}_to_${formattedToDate}.xlsx`
             );
+            setStartDate(null);
+            setEndDate(null)
         } catch (error) {
             console.error("Error exporting data:", error);
         }finally {

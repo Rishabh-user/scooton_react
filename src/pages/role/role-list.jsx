@@ -102,8 +102,7 @@ const RoleList = () => {
           debugger
           setRoleList(response.data); 
           setTotalCount(Number(response.headers["x-total-count"])); 
-          setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
-          console.log("response",response)
+          setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize));
           debugger
         })
         .catch((error) => {
@@ -148,7 +147,6 @@ const RoleList = () => {
   // const columns = useMemo(() => COLUMNS, []);
 
   const openEditRole = async (userdetails) => {
-    console.log("userdetails", userdetails)
     setSelectedUserDetails(userdetails);
     setIsModalOpen(true);
   };
@@ -159,7 +157,6 @@ const RoleList = () => {
   };
 
   const deleteUser = async (userdetails) => {
-    console.log("delete", userdetails)
     setSelectedDeleteUserDetails(userdetails);
     setIsDeleteModal(true);
   };
@@ -170,12 +167,10 @@ const RoleList = () => {
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log("ejh", e)
     setSelectedUserDetails((prev) => ({ ...prev, [name]: value }));
   };
   const handleInputChangerole = (e) => {
     const { value } = e.target;
-    console.log("e", e)
     setSelectedUserDetails(prevDetails => ({
       ...prevDetails,
       role: value
@@ -310,20 +305,29 @@ const RoleList = () => {
                     className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
                     {...getTableBodyProps()}
                   >
-                    {page.map((row) => {
-                      prepareRow(row);
-                      return (
-                        <tr {...row.getRowProps()}>
-                          {row.cells.map((cell) => {
-                            return (
-                              <td {...cell.getCellProps()} className="table-td">
+                        {page.length > 0 ? (
+                          page.map((row) => {
+                        prepareRow(row);
+                        return (
+                          <tr {...row.getRowProps()} key={row.id}>
+                            {row.cells.map((cell) => (
+                              <td {...cell.getCellProps()} className="table-td" key={cell.column.id}>
                                 {cell.render("Cell")}
                               </td>
-                            );
-                          })}
-                        </tr>
-                      );
-                    })}
+                            ))}
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={headerGroups[0]?.headers.length || 1}
+                          className="text-center py-4 text-gray-500"
+                        >
+                          No record found
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               )}

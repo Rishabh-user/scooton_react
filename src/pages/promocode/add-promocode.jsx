@@ -48,7 +48,6 @@ const AddPromocode = () => {
   };
   const handleInputChangepublicShown = (e) => {
     const { value,checked } = e.target;
-    console.log("e",e)
     setFormData(prevDetails => ({
         ...prevDetails,
         publicShown: checked
@@ -72,7 +71,6 @@ const AddPromocode = () => {
         }
       }).then((response) => {
         toast.success("Promocode added successfully!");
-        console.log(response.data);
         // setTimeout(() => {
         //   window.location.reload()
         // }, 500);

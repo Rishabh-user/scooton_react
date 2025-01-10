@@ -163,7 +163,6 @@ const PromocodeList = () => {
 
   
   const openEditModal =  async (promoCode) => {
-    console.log("promoCode",promoCode)
     setSelectedPromoCode(promoCode);
     setIsModalOpen(true);
   };
@@ -174,12 +173,10 @@ const PromocodeList = () => {
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log('e',e)
     setSelectedPromoCode((prev) => ({ ...prev, [name]: value }));
   };
   const handleInputChangepublicShown = (e) => {
     const { value,checked } = e.target;
-    console.log("e",e)
     setSelectedPromoCode(prevDetails => ({
         ...prevDetails,
         publicShown: checked

@@ -225,7 +225,6 @@ const UserList = () => {
           setUserData(response.data);
           setTotalCount(Number(response.headers["x-total-count"])); 
           setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pagesizedata)); 
-          console.log("response",response)
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
@@ -366,27 +365,33 @@ const UserList = () => {
                   ))}
                 </thead>
                 <tbody
-                  className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
-                  {...getTableBodyProps()}
-                >
-                  
-                  {page.map((row) => {
-                    prepareRow(row);
-                    return (
-                      <tr {...row.getRowProps()}>
-                        
-                        {row.cells.map((cell) => {
-                          return (
-                            <td {...cell.getCellProps()} className="table-td">
-                              {cell.render("Cell")}
-                            
-                            </td>
-                          );
-                        })}
+                    className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
+                    {...getTableBodyProps()}
+                  >
+                        {page.length > 0 ? (
+                          page.map((row) => {
+                        prepareRow(row);
+                        return (
+                          <tr {...row.getRowProps()} key={row.id}>
+                            {row.cells.map((cell) => (
+                              <td {...cell.getCellProps()} className="table-td" key={cell.column.id}>
+                                {cell.render("Cell")}
+                              </td>
+                            ))}
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={headerGroups[0]?.headers.length || 1}
+                          className="text-center py-4 text-gray-500"
+                        >
+                          No record found
+                        </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
+                    )}
+                  </tbody>
               </table>
               )}
             </div>

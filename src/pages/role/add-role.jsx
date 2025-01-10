@@ -96,7 +96,6 @@ const AddRole = () => {
             email: "",
             service_id: null,
           })
-          console.log("Role added successfully:", response.data);
         })
         .catch((error) => {
           //toast.error("Error adding role. Please try again.");

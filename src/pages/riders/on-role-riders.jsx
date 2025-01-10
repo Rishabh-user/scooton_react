@@ -70,13 +70,15 @@ const COLUMNS = [
       const formattedDate = date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
-        day: "2-digit"
+        day: "2-digit",
+        timeZone: "UTC"
       });
       const formattedTime = date.toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
-        hour12: true
+        hour12: true,
+        timeZone: "UTC"
       });
       return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
@@ -184,7 +186,6 @@ const OnRoleRiders = () => {
         })
         .then((response) => {
           setRiderData(response.data);
-          console.log(response.data);
           setPageCount(response.data.totalPages);
         })
         .catch((error) => {
@@ -296,25 +297,33 @@ const OnRoleRiders = () => {
                   ))}
                 </thead>
                 <tbody
-                  className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
-                  {...getTableBodyProps()}
-                >
-                  {page.map((row) => {
-                    prepareRow(row);
-                    return (
-                      <tr {...row.getRowProps()}>
-                        {row.cells.map((cell) => {
-                          return (
-                            <td {...cell.getCellProps()} className="table-td">
-                              {cell.render("Cell")}
-                            
-                            </td>
-                          );
-                        })}
+                    className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
+                    {...getTableBodyProps()}
+                  >
+                        {page.length > 0 ? (
+                          page.map((row) => {
+                        prepareRow(row);
+                        return (
+                          <tr {...row.getRowProps()} key={row.id}>
+                            {row.cells.map((cell) => (
+                              <td {...cell.getCellProps()} className="table-td" key={cell.column.id}>
+                                {cell.render("Cell")}
+                              </td>
+                            ))}
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={headerGroups[0]?.headers.length || 1}
+                          className="text-center py-4 text-gray-500"
+                        >
+                          No record found
+                        </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
+                    )}
+                  </tbody>
               </table>
               )}
             </div>

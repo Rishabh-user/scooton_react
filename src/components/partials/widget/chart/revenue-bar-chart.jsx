@@ -21,7 +21,6 @@ const RevenueBarChart = ({ height = 400 }) => {
           }
         );
         const orders = response.data;
-        console.log("orders", orders);
 
         // Get the first date of the last month
         // const today = new Date();
@@ -50,16 +49,11 @@ const RevenueBarChart = ({ height = 400 }) => {
           {}
         );
 
-        console.log("ordersByDay", ordersByDay);
-
         const categories = Object.keys(ordersByDay);
         const acceptedOrders = categories.map(day => ordersByDay[day].ACCEPTED);
         const cancelledOrders = categories.map(day => ordersByDay[day].CANCEL);
         const completedOrders = categories.map(day => ordersByDay[day].COMPLETED);
 
-        console.log("acceptedOrders", acceptedOrders);
-        console.log("cancelledOrders", cancelledOrders);
-        console.log("completedOrders", completedOrders);
 
         setCategories(categories);
         setSeries([

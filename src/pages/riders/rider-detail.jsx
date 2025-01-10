@@ -88,7 +88,6 @@ const RiderDetail = () => {
             setDriverDetails(documentResponse.data.jsonData.driverDetails)
             setDocumentRejectDetails(documentResponse.data.jsonData.rejectDetails)
             setLanguage(documentResponse.data.jsonData)
-            console.log("jhjgf",documentResponse.data.jsonData)
             const fetchedDriverDetails = documentResponse.data.jsonData.driverDetails;
             setIsDriverActive(fetchedDriverDetails?.active || false);
             setDriverRegistrationFee(fetchedDriverDetails?.isRegistrationFeesPaid || false);
@@ -109,28 +108,21 @@ const RiderDetail = () => {
 
     const handlevehicleDetails = (e) => {
         const { name, value } = e.target;
-        console.log('e',e)
         setVehicleDetails((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleDriverDetails = (e) => {
         const { name, value } = e.target;
-        console.log('e',e)
         setDriverDetails((prev) => ({ ...prev, [name]: value }));
     };
 
     const handledeviceDetails = (e) => {
         const { name, value } = e.target;
-        console.log('e',e)
         setDeviceDetails((prev) => ({ ...prev, [name]: value }));
     };
     const handleLanguage = (e) => {
-        
-        console.log("e",e)
         const { name, value } = e.target;
-        console.log('e',e)
         setLanguage((prev) => ({ ...prev, [name]: value }));
-        console.log("l",language)
         
     };
     const handleDocumentRejectionReason = (e) => {
@@ -140,7 +132,6 @@ const RiderDetail = () => {
 
     const handleRechargeRiderWallet = (e) => {
         const { name, value } = e.target;
-        console.log('e',e)
         setRechageAmount((prev) => ({ ...prev, [name]: value }));
     };
 
@@ -227,12 +218,13 @@ const RiderDetail = () => {
             }
             return updatedDetails;
         });
+        const allApproved = documentDetail.every(order => order.status !== "Reject");
+        setApproved(allApproved);
     };
 
     useEffect(() => {
-        const allApproved = documentDetail.every(order => order.status === "Approve");
+        const allApproved = documentDetail.every(order => order.status !== "Reject");
         setApproved(allApproved);
-        console.log("allApproved",allApproved)
     }, [documentDetail]);
     
     
@@ -240,75 +232,70 @@ const RiderDetail = () => {
 
     const handleDocumentRejection= (e) => {
         const { value } = e.target;
-        console.log("e",e)
         setDocumentRejectDetails(prevDetails => ({
             ...prevDetails,
             rejectedType: value
         }));
+       
     };
     
 
     const updateRiderRegistration = () =>{
+        
+        const payload ={
+            vehicleNumber: vehicleDetails?.vehicleNumber,
+            ownerName: vehicleDetails?.ownerName,
+            ownerMobileNumber: vehicleDetails?.ownerMobileNumber,
+            vehicleType: vehicleDetails?.vehicleType,
+            driverName: driverDetails?.driverName,
+            city: driverDetails?.driverCity,
+            state: driverDetails?.driverState,
+            driverMobileNumber:driverDetails?.driverMobileNumber,
+            riderReferralCode: driverDetails?.riderReferralCode,
+            fcmId: driverDetails?.fcmId,
+            documentDetails: documentDetail,
+            rejectedReason: documentRejectDetails?.rejectedReason,
+            accountHolderName: "",
+            accountsNumber: "",
+            accountsIFSC: "",
+            language: language.language,
+            rejectedType: documentRejectDetails?.rejectedType,
+            approved: approved
+        }
         debugger
-        if(approved && documentRejectDetails.rejectedReason != ''){
+        if(approved && documentRejectDetails.rejectedReason != '' && documentRejectDetails.rejectedReason != undefined){
             try{
-                axiosInstance.post(`${BASE_URL}/login/rider-registration`,{
-                    vehicleNumber: vehicleDetails?.vehicleNumber,
-                    ownerName: vehicleDetails?.ownerName,
-                    ownerMobileNumber: vehicleDetails?.ownerMobileNumber,
-                    vehicleType: vehicleDetails?.vehicleType,
-                    driverName: driverDetails?.driverName,
-                    city: driverDetails?.driverCity,
-                    state: driverDetails?.driverState,
-                    driverMobileNumber:driverDetails?.driverMobileNumber,
-                    riderReferralCode: driverDetails?.riderReferralCode,
-                    fcmId: driverDetails?.fcmId,
-                    documentDetails: documentDetail,
-                    rejectedReason: documentRejectDetails?.rejectedReason,
-                    accountHolderName: "",
-                    accountsNumber: "",
-                    accountsIFSC: "",
-                    language: language.language,
-                    rejectedType: documentRejectDetails?.rejectedType,
-                    approved: approved
-                })
+                axiosInstance.post(`${BASE_URL}/login/rider-registration`,payload)
                 toast.success("Rider information updated successfully!");
-                setTimeout(() => {
-                    window.location.reload()
-                }, 500);
+                setUpdateErrorMsg(false);
+                // setTimeout(() => {
+                //     window.location.reload()
+                // }, 500);
             }catch{
                 toast.error("Rider information not updated successfully!");
             }
-        } else if(!approved && documentRejectDetails.rejectedReason!= ''){
+        } else if(!approved && documentRejectDetails.rejectedReason!= '' && documentRejectDetails.rejectedReason != undefined){
             try{
-                axiosInstance.post(`${BASE_URL}/login/rider-registration`,{
-                    vehicleNumber: vehicleDetails?.vehicleNumber,
-                    ownerName: vehicleDetails?.ownerName,
-                    ownerMobileNumber: vehicleDetails?.ownerMobileNumber,
-                    vehicleType: vehicleDetails?.vehicleType,
-                    driverName: driverDetails?.driverName,
-                    city: driverDetails?.driverCity,
-                    state: driverDetails?.driverState,
-                    driverMobileNumber:driverDetails?.driverMobileNumber,
-                    riderReferralCode: driverDetails?.riderReferralCode,
-                    fcmId: driverDetails?.fcmId,
-                    documentDetails: documentDetail,
-                    rejectedReason: documentRejectDetails?.rejectedReason,
-                    accountHolderName: "",
-                    accountsNumber: "",
-                    accountsIFSC: "",
-                    language: language.language,
-                    rejectedType: documentRejectDetails?.rejectedType,
-                    approved: approved
-                })
+                axiosInstance.post(`${BASE_URL}/login/rider-registration`,payload)
                 toast.success("Rider information updated successfully!");
-                setTimeout(() => {
-                    window.location.reload()
-                }, 500);
+                setUpdateErrorMsg(false);
+                // setTimeout(() => {
+                //     window.location.reload()
+                // }, 500);
             }catch{
                 toast.error("Rider information not updated successfully!");
             }
-
+        }else if(approved && documentRejectDetails.rejectedReason == ''){
+            try{
+                axiosInstance.post(`${BASE_URL}/login/rider-registration`,payload)
+                toast.success("Rider information updated successfully!");
+                setUpdateErrorMsg(false);
+                // setTimeout(() => {
+                //     window.location.reload()
+                // }, 500);
+            }catch{
+                toast.error("Rider information not updated successfully!");
+            }
         }
         else{
             setUpdateErrorMsg(true)

@@ -40,7 +40,6 @@ const OrderDetail = () => {
                         },
                     });
                     setOrderDetail(response.data.jsonData);
-                    console.log(response.data.jsonData);
                 }
             } catch (error) {
                 console.error('Error fetching order detail:', error);

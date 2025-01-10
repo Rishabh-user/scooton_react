@@ -222,7 +222,6 @@ const OfflineOrders = () => {
         setOrderData(response.data);
         setTotalCount(Number(response.headers["x-total-count"])); 
         setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pagesizedata)); 
-        console.log("response",response)
       })
       .catch((error) => {
         console.error("Error fetching order data:", error);
@@ -300,7 +299,6 @@ const OfflineOrders = () => {
   };
 
   const handleChange = (event) => {
-    console.log("qwerty", event.target.value)
     setFilterBy(event.target.value);
     if (event.target.value === 'NONE') {
       setSearch("");
@@ -383,7 +381,6 @@ const OfflineOrders = () => {
   // }, [serviceAreaStatus, currentPage]);
 
   const serviceAreaStatusFilter = (event) => {
-    console.log("Rider status:", event.target.value);
     setServiceAreaStatus(event.target.value);
   };
   // show hide
@@ -402,7 +399,7 @@ const OfflineOrders = () => {
             <div className="md:flex justify-between items-center mb-2">
               <h4 className="card-title mb-0">Offline Orders</h4>
               <div className="">
-                <FormControl fullWidth>
+                {/* <FormControl fullWidth>
                   <label className="text-sm">Filter By</label>
                     <div className="filterbyRider"> 
                       <Select
@@ -413,8 +410,8 @@ const OfflineOrders = () => {
                         displayEmpty
                         inputProps={{ 'aria-label': 'Without label' }}
                       >
-                        <MenuItem value="NONE">NONE</MenuItem>
-                        <MenuItem value="ORDERID">ORDER ID</MenuItem>
+                        <MenuItem value="NONE">Select</MenuItem>
+                        <MenuItem value="ORDERID">Order ID</MenuItem>
                         <MenuItem value="MOBILE">Mobile Number</MenuItem>
                       </Select>           
                       <TextField
@@ -425,7 +422,7 @@ const OfflineOrders = () => {
                         onChange={handleSearchChange}
                       />
                     </div>
-                  </FormControl>
+                  </FormControl> */}
               </div>
               {/* <div className="rider-filter">            
                 <div className="d-flex justify-content-end">              
@@ -487,22 +484,50 @@ const OfflineOrders = () => {
             
           </div>
           <div className="filter-orderlist">
-            <FormControl>
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                onChange={(e) => fetchOrders(e.target.value)}
-                defaultValue="ALL ORDERS"
-              >
-                <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
-                <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
-                <FormControlLabel value="PICKED" control={<Radio />} label="PICKED" />
-                <FormControlLabel value="DELIVERED" control={<Radio />} label="DELIVERED" />
-                <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
-                <FormControlLabel value="ALL ORDERS" control={<Radio />} label="ALL ORDERS" />
-              </RadioGroup>
-            </FormControl>
+            <div>
+              <FormControl>
+                <RadioGroup
+                  row
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                  name="row-radio-buttons-group"
+                  onChange={(e) => fetchOrders(e.target.value)}
+                  defaultValue="ALL ORDERS"
+                >
+                  <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
+                  <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
+                  <FormControlLabel value="PICKED" control={<Radio />} label="PICKED" />
+                  <FormControlLabel value="DELIVERED" control={<Radio />} label="DELIVERED" />
+                  <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
+                  <FormControlLabel value="ALL ORDERS" control={<Radio />} label="ALL ORDERS" />
+                </RadioGroup>
+              </FormControl>
+            </div>
+            <div>
+              <FormControl >
+                <label className="text-sm mb-1">Filter By</label>
+                  <div className="filterbyRider"> 
+                    <Select
+                      id="demo-simple-select"
+                      value={filterby}
+                      //label="Filter By"
+                      onChange={handleChange}
+                      displayEmpty
+                      inputProps={{ 'aria-label': 'Without label' }}
+                    >
+                      <MenuItem value="NONE">Select</MenuItem>
+                      <MenuItem value="ORDERID">Order ID</MenuItem>
+                      <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                    </Select>           
+                    <TextField
+                      id="search"
+                      type="text"
+                      name="search"
+                      value={search}
+                      onChange={handleSearchChange}
+                    />
+                  </div>
+              </FormControl>
+            </div>
           </div>
         </div>
         <div className="overflow-x-auto -mx-6 my-4">
@@ -542,25 +567,34 @@ const OfflineOrders = () => {
                   ))}
                 </thead>
                 <tbody
-                  className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
-                  {...getTableBodyProps()}
-                >
-                  {page.map((row) => {
-                    prepareRow(row);
-                    return (
-                      <tr {...row.getRowProps()}>
-                        {row.cells.map((cell) => {
-                          return (
-                            <td {...cell.getCellProps()} className="table-td">
-                              {cell.render("Cell")}
-                            
-                            </td>
-                          );
-                        })}
+                    className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
+                    {...getTableBodyProps()}
+                  >
+                        {page.length > 0 ? (
+                          page.map((row) => {
+                        prepareRow(row);
+                        return (
+                          <tr {...row.getRowProps()} key={row.id}>
+                            {row.cells.map((cell) => (
+                              <td {...cell.getCellProps()} className="table-td" key={cell.column.id}>
+                                {cell.render("Cell")}
+                              </td>
+                            ))}
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={headerGroups[0]?.headers.length || 1}
+                          className="text-center py-4 text-gray-500"
+                        >
+                          No record found
+                        </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
+                    )}
+                  </tbody>
+                
               </table>
                 )}
             </div>
@@ -573,7 +607,7 @@ const OfflineOrders = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[10, 25, 50].map((pageSize) => (
+              {[100, 300, 500].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
@@ -589,7 +623,6 @@ const OfflineOrders = () => {
           <ul className="flex items-center space-x-3 rtl:space-x-reverse">
             {totalCount > pagesizedata && (
               <>
-                {/* First Page Button */}
                 <li>
                   <button
                     onClick={() => gotoPage(0)}
@@ -599,8 +632,6 @@ const OfflineOrders = () => {
                     <Icon icon="heroicons:chevron-double-left-solid" />
                   </button>
                 </li>
-
-                {/* Previous Page Button */}
                 <li>
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
@@ -610,17 +641,14 @@ const OfflineOrders = () => {
                     Prev
                   </button>
                 </li>
-
-                {/* Page Numbers */}
                 {(() => {
-                  const totalPages = pageCount; // Total number of pages
-                  const currentGroup = Math.floor(currentPage / maxPagesToShow); // Current group of pages
-                  const startPage = currentGroup * maxPagesToShow; // Starting page of the current group
-                  const endPage = Math.min(startPage + maxPagesToShow, totalPages); // Ending page of the current group
+                  const totalPages = pageCount; 
+                  const currentGroup = Math.floor(currentPage / maxPagesToShow); 
+                  const startPage = currentGroup * maxPagesToShow; 
+                  const endPage = Math.min(startPage + maxPagesToShow, totalPages); 
 
                   return (
                     <>
-                      {/* Previous dots */}
                       {startPage > 0 && (
                         <li>
                           <button onClick={() => setCurrentPage(startPage - 1)}>
@@ -628,18 +656,15 @@ const OfflineOrders = () => {
                           </button>
                         </li>
                       )}
-
-                      {/* Render page numbers */}
                       {Array.from({ length: endPage - startPage }).map((_, idx) => {
                         const pageNumber = startPage + idx;
                         return (
                           <li key={pageNumber}>
                             <button
-                              className={
-                                pageNumber === currentPage
-                                  ? "bg-scooton-900 text-white"
-                                  : ""
-                              }
+                              className={` ${pageNumber === currentPage
+                                ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium"
+                                : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal"
+                              } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150 `}
                               onClick={() => setCurrentPage(pageNumber)}
                             >
                               {pageNumber + 1}
@@ -647,8 +672,6 @@ const OfflineOrders = () => {
                           </li>
                         );
                       })}
-
-                      {/* Next dots */}
                       {endPage < totalPages && (
                         <li>
                           <button onClick={() => setCurrentPage(endPage)}>
@@ -659,8 +682,6 @@ const OfflineOrders = () => {
                     </>
                   );
                 })()}
-
-                {/* Next Page Button */}
                 <li>
                   <button
                     onClick={() => setCurrentPage(currentPage + 1)}

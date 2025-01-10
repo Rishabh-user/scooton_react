@@ -12,12 +12,9 @@ const CreateOrder = () => {
 
     // Handle File Selection
     const handleFileChange = (e) => {
-       console.log("E",e)
         if (e.target.files && e.target.files.length > 0) {
             setFile(e.target.files[0]);
         }
-        console.log("e.target.files[0]",e.target.files[0].name)
-        console.log("e.target.files",e.target.files)
         
     };
 
@@ -27,12 +24,8 @@ const CreateOrder = () => {
                 return;
             }
             try {
-                console.log("file",file)
-                console.log("name",file.name)
                 const formData = new FormData();
                 formData.append('file', file, file.name); 
-
-               console.log('Uploading File:', file);
           
                 
                 await axiosInstance.post(
@@ -42,7 +35,6 @@ const CreateOrder = () => {
                          }
                         }).then((response) => {
                              toast.success("File uploaded Successfully");
-                             console.log("done")
                         });
                   
                  

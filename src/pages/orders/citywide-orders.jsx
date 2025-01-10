@@ -242,17 +242,14 @@ const CityWideOrders = () => {
 
 
   const openIsNotificationModel = async (id) => {
-    console.log("id", id);
     setNotifictionId(id)
     setNotificationModel(true);
   }
   const handleMobileNumber = (event) => {
-    console.log("setMobile", event.target.value)
     setMobile(event.target.value);
   };
 
   const handlenotification = (event) => {
-    console.log("qwerty", event.target.value)
     setNotification(event.target.value);
   };
 
@@ -287,7 +284,6 @@ const CityWideOrders = () => {
   }
 
   const handleChange = (event) => {
-    console.log("qwerty", event.target.value)
     setFilterBy(event.target.value);
     if (event.target.value === 'NONE') {
       setSearch("");
@@ -320,8 +316,7 @@ const CityWideOrders = () => {
         setOrderData(response.data);
         setLoading(true);
         setTotalCount(Number(response.headers["x-total-count"])); 
-        setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pagesizedata)); 
-        console.log("response",response)
+        setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pagesizedata));
       })
       .catch((error) => {
         console.error("Error fetching order data:", error);
@@ -495,19 +490,17 @@ const CityWideOrders = () => {
                 </div>
               </div> */}
                 <div className="">
-                    <FormControl >
-                      {/* <label className="text-sm">Filter By</label> */}
+                    {/* <FormControl >
                         <div className="filterbyRider"> 
                           <Select
                             id="demo-simple-select"
                             value={filterby}
-                            //label="Filter By"
                             onChange={handleChange}
                             displayEmpty
                             inputProps={{ 'aria-label': 'Without label' }}
                           >
-                            <MenuItem value="NONE">NONE</MenuItem>
-                            <MenuItem value="ORDERID">ORDER ID</MenuItem>
+                            <MenuItem value="NONE">Select</MenuItem>
+                            <MenuItem value="ORDERID">Order ID</MenuItem>
                             <MenuItem value="MOBILE">Mobile Number</MenuItem>
                           </Select>           
                           <TextField
@@ -518,8 +511,8 @@ const CityWideOrders = () => {
                             onChange={handleSearchChange}
                           />
                         </div>
-                      </FormControl>
-                </div>
+                      </FormControl> */}
+              </div>
             </div>
             {/* {isVisible && (
               <div className="filter-show">
@@ -573,22 +566,50 @@ const CityWideOrders = () => {
              */}
           </div>
           <div className="filter-orderlist">
-            <FormControl>
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                onChange={(e) => fetchOrders(e.target.value)}
-                defaultValue="ALL ORDERS"
-              >
-                <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
-                <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
-                <FormControlLabel value="PICKED" control={<Radio />} label="PICKED" />
-                <FormControlLabel value="DELIVERED" control={<Radio />} label="DELIVERED" />
-                <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
-                <FormControlLabel value="ALL ORDERS" control={<Radio />} label="ALL ORDERS" />
-              </RadioGroup>
-            </FormControl>
+            <div>
+              <FormControl>
+                <RadioGroup
+                  row
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                  name="row-radio-buttons-group"
+                  onChange={(e) => fetchOrders(e.target.value)}
+                  defaultValue="ALL ORDERS"
+                >
+                  <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
+                  <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
+                  <FormControlLabel value="PICKED" control={<Radio />} label="PICKED" />
+                  <FormControlLabel value="DELIVERED" control={<Radio />} label="DELIVERED" />
+                  <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
+                  <FormControlLabel value="ALL ORDERS" control={<Radio />} label="ALL ORDERS" />
+                </RadioGroup>
+              </FormControl>
+            </div>
+            <div>
+               <FormControl >
+                    <label className="text-sm mb-1">Filter By</label>
+                      <div className="filterbyRider"> 
+                        <Select
+                          id="demo-simple-select"
+                          value={filterby}
+                          //label="Filter By"
+                          onChange={handleChange}
+                          displayEmpty
+                          inputProps={{ 'aria-label': 'Without label' }}
+                        >
+                          <MenuItem value="NONE">Select</MenuItem>
+                          <MenuItem value="ORDERID">Order ID</MenuItem>
+                          <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                        </Select>           
+                        <TextField
+                          id="search"
+                          type="text"
+                          name="search"
+                          value={search}
+                          onChange={handleSearchChange}
+                        />
+                      </div>
+                </FormControl>
+            </div>
           </div>
         </div>
         <div className="overflow-x-auto -mx-6 my-4">
@@ -628,25 +649,33 @@ const CityWideOrders = () => {
                   ))}
                 </thead>                       
                 <tbody
-                  className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
-                  {...getTableBodyProps()}
-                >
-                  {page.map((row) => {
-                    prepareRow(row);
-                    return (
-                      <tr {...row.getRowProps()}>
-                        {row.cells.map((cell) => {
-                          return (
-                            <td {...cell.getCellProps()} className="table-td">
-                              {cell.render("Cell")}
-                            
-                            </td>
-                          );
-                        })}
+                    className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
+                    {...getTableBodyProps()}
+                  >
+                        {page.length > 0 ? (
+                          page.map((row) => {
+                        prepareRow(row);
+                        return (
+                          <tr {...row.getRowProps()} key={row.id}>
+                            {row.cells.map((cell) => (
+                              <td {...cell.getCellProps()} className="table-td" key={cell.column.id}>
+                                {cell.render("Cell")}
+                              </td>
+                            ))}
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={headerGroups[0]?.headers.length || 1}
+                          className="text-center py-4 text-gray-500"
+                        >
+                          No record found
+                        </td>
                       </tr>
-                    );
-                  })}
-                </tbody>                
+                    )}
+                  </tbody>              
               </table>
                )}
             </div>
