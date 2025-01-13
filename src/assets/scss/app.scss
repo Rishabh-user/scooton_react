@@ -219,14 +219,16 @@ table thead th:first-child {width: 90px;}
   display: flex;
   // justify-content: center;
   justify-content: space-between;
-  align-items: center;
+  align-items: center;gap:20px
 }
+.filter-orderlist .MuiFormControl-root.css-1iw3t7y-MuiFormControl-root .css-cis11t-MuiFormGroup-root{flex-wrap: nowrap !important;overflow-x: auto;}
 .filter-orderlist .css-13lvt8g-MuiButtonBase-root-MuiRadio-root + .MuiTypography-root{
-  padding: .5rem 1rem;border-radius: .5rem;
+  padding: .5rem .5rem;border-radius: .5rem;
 }
+.filter-orderlist .css-13lvt8g-MuiButtonBase-root-MuiRadio-root{font-size: .875rem;}
 .filter-orderlist .css-13lvt8g-MuiButtonBase-root-MuiRadio-root.Mui-checked + .MuiTypography-root {
   background-color: #e31e24;
-  color: #fff;
+  color: #fff;font-size: .875rem;
 }
 .filter-orderlist .css-13lvt8g-MuiButtonBase-root-MuiRadio-root {
   display: none;
@@ -234,9 +236,9 @@ table thead th:first-child {width: 90px;}
 .filter-orderlist .css-19opgx6-MuiFormControlLabel-root+.css-19opgx6-MuiFormControlLabel-root { 
   margin-right: .5rem; margin-left: .5rem;
 }
-.filter-orderlist .css-19opgx6-MuiFormControlLabel-root{margin-left: 0;}
+.filter-orderlist .css-19opgx6-MuiFormControlLabel-root{margin-left: 0;margin-right: 0;}
 .filter-orderlist .MuiFormControl-root.css-1iw3t7y-MuiFormControl-root {
-  box-shadow: 0px 0px 18px #ccc; padding: .5rem 1rem;border-radius: .5rem;
+  box-shadow: 0px 0px 18px #ccc; padding: .5rem .5rem;border-radius: .5rem;
 }
 .change-rider-status>div>div>label {flex: 1;}
 .change-rider-status>div>div {font-size: .875rem;  margin-bottom: .5em;}
