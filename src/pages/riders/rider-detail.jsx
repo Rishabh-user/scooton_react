@@ -538,8 +538,9 @@ const RiderDetail = () => {
                                     id="ownerMobileNumber"
                                     type="text"
                                     name="ownerMobileNumber"
+                                    readonly='readonly'
                                     value={vehicleDetails?.ownerMobileNumber || ""}
-                                    onChange={handlevehicleDetails}
+                                    //onChange={handlevehicleDetails}
                                 />
                                 <TextField
                                     label="Vehicle Type"

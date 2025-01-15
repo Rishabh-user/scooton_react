@@ -72,8 +72,8 @@ const AddRole = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.role) {
-      toast.error("Role can't be empty");
+    if (!formData.firstName && !formData.lastName && !formData.role && !formData.email && !formData.mobileNumber && !formData.password) {
+      toast.error("All fields are required");
       return;
     }
     
@@ -87,6 +87,9 @@ const AddRole = () => {
         })
         .then((response) => {
           toast.success("Role added successfully!");
+          setTimeout(() => {
+            navigate('/role-list')
+          }, 500);
           setFormData({
             firstName: "",
             lastName: "",
@@ -103,7 +106,8 @@ const AddRole = () => {
             navigate("/");
             toast.error("Unauthorized. Please log in again.");
           } else {
-            toast.error("Error adding role. Please try again.");
+           // toast.error("Error adding role. Please try again.");
+            toast.error(error.response.data.error);
           }
         });
     } else {

@@ -235,6 +235,10 @@ const CityWideOrders = () => {
   const [pagesizedata, setpagesizedata]=useState(50);
   const [totalCount, setTotalCount] = useState(0);
   const maxPagesToShow = 5;
+  const [messages, setMessages] = useState([]);
+  const [ws, setWs] = useState(null);
+  const [message, setMessage] = useState('');
+  const [clientId, setClientId] = useState('');
   
   useEffect(() => {
     fetchOrders("ALL ORDERS");
@@ -325,6 +329,33 @@ const CityWideOrders = () => {
         setLoading(false);
       });
   };
+
+
+  // useEffect(() => {
+  //   const websocket = new WebSocket('wss://echo.websocket.org');
+
+  //   websocket.onopen = () => {
+  //       console.log('WebSocket is connected');
+  //   };
+
+  //   websocket.onmessage = (evt) => {
+  //       const message = (evt.data);
+  //       setMessages((prevMessages) =>
+  //           [...prevMessages, message]);
+  //   };
+
+  //   console.log("message",messages)
+
+  //   websocket.onclose = () => {
+  //       console.log('WebSocket is closed');
+  //   };
+
+  //   setWs(websocket);
+
+  //   return () => {
+  //       websocket.close();
+  //   };
+  // }, []);
 
   useEffect(() => {
     if(filterby && search){

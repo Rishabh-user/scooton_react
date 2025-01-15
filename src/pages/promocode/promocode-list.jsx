@@ -18,7 +18,7 @@ import axiosInstance from "../../api";
 
 const promocodeType = ["FIXED", "PERCENTAGE"];
 
-const COLUMNS = (deletePromocode, openEditModal) => [
+const COLUMNS = (deleteUser, openEditModal) => [
   {
     Header: "Sr. No.",
     accessor: (row, i) => i + 1,
@@ -66,7 +66,10 @@ const COLUMNS = (deletePromocode, openEditModal) => [
           await axiosInstance.post(`${BASE_URL}/promo-code/active/${id}`,{active: newState},
             { headers: { Authorization: `Bearer ${token}` } },
           ).then((response) => {
-            toast.success("Promocode status change successfully!");
+            if(response.data.active)
+              toast.success("Promocode activated successfully!");
+            else
+              toast.success("Promocode deactivated successfully!");
           });
           setIsActive(newState);
         } catch (error) {
@@ -100,7 +103,7 @@ const COLUMNS = (deletePromocode, openEditModal) => [
           <button
             className="action-btn"
             type="button"
-            onClick={() => deletePromocode(row.original.promocodeId)}
+            onClick={() => deleteUser(row.original)}
           >
             <Icon icon="heroicons:trash" />
           </button>
@@ -111,6 +114,7 @@ const COLUMNS = (deletePromocode, openEditModal) => [
 ];
 
 const PromocodeList = () => {
+  const [loading, setLoading] = useState(true);
   const [procodeList, setprocodeList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
@@ -119,11 +123,13 @@ const PromocodeList = () => {
   const { deleted, ...promoCodeData } = selectedPromoCode || {};
   const [pagesizedata, setpagesizedata]=useState(10);
   const [totalCount, setTotalCount] = useState(0);
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
   const maxPagesToShow = 5;
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {      
+      setLoading(true);
       axiosInstance.get(`${BASE_URL}/promo-code/get-all?page=${currentPage}&size=${pagesizedata}`,
           {
             headers: {
@@ -138,6 +144,9 @@ const PromocodeList = () => {
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
+        })
+        .finally(() => {
+          setLoading(false); 
         });
     }
   }, [currentPage,pagesizedata]);
@@ -159,6 +168,12 @@ const PromocodeList = () => {
       toast.error("Promocode not delted successfully!");
       console.error("Error deleting promocode:", error);
     }
+  };
+
+  
+  const deleteUser = async (promocode) => {
+    setSelectedPromoCode(promocode);
+    setIsDeleteModal(true);
   };
 
   
@@ -240,7 +255,7 @@ const PromocodeList = () => {
   
 
   //const columns = useMemo(() => COLUMNS(deletePromocode), []);
-  const columns = useMemo(() => COLUMNS(deletePromocode, openEditModal), []);
+  const columns = useMemo(() => COLUMNS(deleteUser, openEditModal), []);
 
   const data = useMemo(() => procodeList, [procodeList]);
 
@@ -285,7 +300,12 @@ const PromocodeList = () => {
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden">
-              <table
+              {loading ? (
+                <div className="flex justify-center items-center w-100">
+                <Loading />
+              </div>
+              ): (
+                <table
                 className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700"
                 {...getTableProps()}
               >
@@ -325,7 +345,9 @@ const PromocodeList = () => {
                     );
                   })}
                 </tbody>
-              </table>
+                </table>
+              )}
+              
             </div>
           </div>
         </div>
@@ -549,6 +571,29 @@ const PromocodeList = () => {
           </form>
         </Modal>
       
+      )}
+      {isDeleteModal && (
+        <Modal
+          activeModal={isDeleteModal}
+          uncontrol
+          className="max-w-md"
+          title=""
+          centered
+          onClose={() => setIsDeleteModal(false)}
+        >
+          <div className="">
+            <h5 className="text-center">Are you sure to delete</h5>
+            <div className="d-flex gap-2 justify-content-center mt-4">
+              <Button className="btn btn-dark" type="button" onClick={() => setIsDeleteModal(false)}>
+                No
+              </Button>
+              <Button className="btn btn-outline-light" type="button" onClick={() => { deletePromocode(selectedPromoCode?.promocodeId); setIsDeleteModal(false) }}>
+                Yes
+              </Button>
+            </div>
+          </div>
+        </Modal>
+
       )}
     </>
   );

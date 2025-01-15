@@ -88,7 +88,7 @@ const RoleList = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      setLoading(true); // Ensure loading state is toggled
+      setLoading(true);
       axiosInstance
         .get(
           `${BASE_URL}/register/admins/get-all?page=${currentPage}&size=${pagesizedata}`,

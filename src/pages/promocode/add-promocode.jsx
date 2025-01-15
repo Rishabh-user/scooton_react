@@ -11,11 +11,14 @@ import { toast,ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AddPromoImg from "../../assets/images/Promo-code-img.png";
 import axiosInstance from "../../api";
+import { useNavigate } from "react-router-dom";
 
 
 const promocodeType = ["FIXED", "PERCENTAGE"];
 
 const AddPromocode = () => {
+
+  const navigate = useNavigate(); 
   const [formData, setFormData] = useState({
     promoCode: "",
     amount: "",
@@ -57,8 +60,13 @@ const AddPromocode = () => {
   const handleSubmit = async (e) => {
     debugger
     e.preventDefault();
-    try {
+    if (!formData.promoCode && !formData.amount  && !formData.startDate && !formData.expireDate) {
+          toast.error("All fields are required");
+          return;
+    }
+
       const token = localStorage.getItem("jwtToken");
+      if(token){
       const formattedData = {
         ...formData,
         startDate: format(parseISO(formData.startDate), "dd-MM-yyyy HH:mm:ss"),
@@ -70,25 +78,31 @@ const AddPromocode = () => {
           Authorization: `Bearer ${token}`
         }
       }).then((response) => {
-        toast.success("Promocode added successfully!");
-        // setTimeout(() => {
-        //   window.location.reload()
-        // }, 500);
-        setFormData({
-          promoCode: '',
-          amount: '',
-          promoCodeType: promocodeType[0],  
-          publicShown: false,
-          startDate: '',
-          expireDate: ''
-        });
-      });
+          toast.success("Promocode added successfully!");
+          setTimeout(() => {
+            navigate('/promocode-list')
+          }, 500);
+          setFormData({
+            promoCode: '',
+            amount: '',
+            promoCodeType: promocodeType[0],  
+            publicShown: false,
+            startDate: '',
+            expireDate: ''
+          })
+        })
+        .catch((error) => {
+          const errorMessage = error.response.data.error.match(/\[(.*?)\]/);
+          console.log(error)
+             toast.error(errorMessage[1]);
+        })
       
+    } else((error) => {
+      console.error("No token found");
+    })
       
-    } catch (error) {
-      toast.error("Fill all fields")
-      console.error("Error adding promocode:", error);
-    }
+  
+    debugger
   };
 
   return (
@@ -100,7 +114,7 @@ const AddPromocode = () => {
               <div className="m-auto">
                 <div className="row">
                   <div className="col-md-6 mb-4">
-                    <label className="form-label mb-1">Promo Code</label>
+                    <label className="form-label mb-1">Promo Code*</label>
                     <input
                       id="promoCode"
                       type="text"
