@@ -72,43 +72,46 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
       return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },
-  {
-    Header: "Status",
-    accessor: "orderHistory.orderStatus",
-    Cell: (row) => {
-      return (
-        <span className="block w-full">
-          <span
-            className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 
-            ${row?.cell?.value === "COMPLETED"
-              ? "text-success-500 bg-success-500"
-              : ""
-              } 
-            ${row?.cell?.value === "PLACED"
-                ? "text-warning bg-warning-700"
+  ...(ordersType === "ALL ORDERS" ? [
+    {
+      Header: "Status",
+      accessor: "orderHistory.orderStatus",
+      Cell: (row) => {
+        return (
+          <span className="block w-full">
+            <span
+              className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 
+              ${row?.cell?.value === "COMPLETED"
+                ? "text-success-500 bg-success-500"
                 : ""
-              }
-            ${row?.cell?.value === "CANCEL"
-                ? "text-danger-500 bg-danger-500"
-                : ""
-              }
-            ${row?.cell?.value === "DISPATCHED"
-                ? "text-warning-500 bg-warning-400"
-                : ""
-              }
-              ${row?.cell?.value === "ACCEPTED"
-                ? "text-info-500 bg-info-400"
-                : ""
-              }
-            
-             `}
-          >
-            {row?.cell?.value}
+                } 
+              ${row?.cell?.value === "PLACED"
+                  ? "text-warning bg-warning-700"
+                  : ""
+                }
+              ${row?.cell?.value === "CANCEL"
+                  ? "text-danger-500 bg-danger-500"
+                  : ""
+                }
+              ${row?.cell?.value === "DISPATCHED"
+                  ? "text-warning-500 bg-warning-400"
+                  : ""
+                }
+                ${row?.cell?.value === "ACCEPTED"
+                  ? "text-info-500 bg-info-400"
+                  : ""
+                }
+              
+               `}
+            >
+              {row?.cell?.value}
+            </span>
           </span>
-        </span>
-      );
+        );
+      },
     },
-  },
+  ]: [] ),
+  
   {
     Header: "Pick Up Address",
     accessor: "orderHistory.pickupAddressDetails.addressLine1",
@@ -672,7 +675,7 @@ const AllOrders = () => {
             
           </div>
           <div className="filter-orderlist">
-            <div>
+            <div className={loading ? "tabs":""}>
               <FormControl>
                 <RadioGroup
                   row
@@ -912,22 +915,25 @@ const AllOrders = () => {
             <div className="mb-3">
               <label className="form-label mb-1">Select Role</label>
               <select className="form-select" onChange={handlenotification}>
-                <option selected>Notification</option>
-                <option value="ALL">All</option>
+               {/* <option selected>Notification</option> */}
+                <option selected value="ALL">All</option>
                 <option value="INDIVIDUAL">Individual</option>
               </select>
-            </div>           
-            <div className="mb-3">
-              <label className="form-label mb-1">Mobile Number</label>
-              <input                
-                id="mobile"
-                type="number"
-                name="mobile"
-                value={mobile}
-                onChange={handleMobileNumber}
-                className="form-control"
-              />
-            </div>
+            </div>   
+            {notification === 'INDIVIDUAL' && (
+              <div className="mb-3">
+                <label className="form-label mb-1">Mobile Number</label>
+                <input                
+                  id="mobile"
+                  type="number"
+                  name="mobile"
+                  value={mobile}
+                  onChange={handleMobileNumber}
+                  className="form-control"
+                />
+              </div>
+            )}        
+            
             <div className="d-flex gap-2 justify-content-center mt-4">
               <Button className="btn btn-outline-light" type="button" onClick={() => { setNotificationModel(false) }}>
                 Cancel
