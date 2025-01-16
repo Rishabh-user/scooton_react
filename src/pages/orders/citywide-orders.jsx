@@ -597,7 +597,7 @@ const CityWideOrders = () => {
              */}
           </div>
           <div className="filter-orderlist">
-            <div>
+            <div className={loading ? "tabs":""}>
               <FormControl>
                 <RadioGroup
                   row
