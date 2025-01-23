@@ -277,7 +277,7 @@ const AllOrders = () => {
 
   const deletePlaceOrder = () => {
     const token = localStorage.getItem('jwtToken');
-    axiosInstance.post(`${BASE_URL}/order/cancel-order/${orderdeleteid}`,{
+    axiosInstance.post(`${BASE_URL}/order/v2/cancel-order/${orderdeleteid}`,{
         type: "CITYWIDE"
       },
       {

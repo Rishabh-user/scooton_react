@@ -245,7 +245,7 @@ const OfflineOrders = () => {
   }
 
   const cancelOrder = () => {
-    axiosInstance.post(`${BASE_URL}/order/cancel-order/${orderid}`).then((response)=>{
+    axiosInstance.post(`${BASE_URL}/order/v2/cancel-order/${orderid}`).then((response)=>{
       toast.success(response)
     }).catch((error) => {
       console.error(error);
