@@ -365,7 +365,7 @@ const OrderDetail = () => {
                        
                         {orderDetails.orderStatus === 'Cancelled' && (
                             <li className={`multistep-list ${orderDetails.orderStatus === 'Cancelled'? 'active' : ''}`}>
-                                <span>{orderDetails.orderDateTime}</span>
+                                <span>{cancelDetails.orderCancelledDateTime}</span>
                                 <div className="multistep-item">Cancel</div>
                             </li>
                         )}

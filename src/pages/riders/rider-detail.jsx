@@ -493,14 +493,6 @@ const RiderDetail = () => {
                 </div>
 
 
-{/*  */}
-<LoadScript googleMapsApiKey="AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg">
-    <GoogleMap mapContainerStyle={mapStyles} zoom={13} center={defaultCenter}>
-    <Marker position={defaultCenter} />
-    </GoogleMap>
-</LoadScript>
-{/*  */}
-
                 <div className="flex gap-2">
                     {/* <button type="button" className="btn btn-dark"><img src={} /></button> */}
                     <button type="button" className="btn btn-dark p-2"><Icon icon="heroicons:bell-alert" className="text-[20px]"></Icon></button>
@@ -553,6 +545,7 @@ const RiderDetail = () => {
                                 <h5 className="text-center">Map</h5>
                                 
                                 <LoadScript googleMapsApiKey="AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg">
+                                    
                                     <GoogleMap
                                         mapContainerStyle={mapContainerStyle}
                                         center={center}
