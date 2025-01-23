@@ -520,11 +520,11 @@ const OrderDetail = () => {
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">State Tax</td>
-                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.tollTax.toFixed(3)}</td>
+                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.stateTax.toFixed(3)}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Toll Tax</td>
-                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.stateTax.toFixed(3)}</td>
+                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.tollTax.toFixed(3)}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Applied Promocode</td>
