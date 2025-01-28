@@ -104,21 +104,24 @@ const OrderDetail = () => {
         }
     };
     const downloadInvoice = async () => {
+        debugger
         setisLoadingInvoice(true);
         try {
             
             const response = await axiosInstance.post(
                 `${BASE_URL}/order/orders/admin/getInvoice/${orderId}`,
-                {}
+                {} ,
+                { responseType: 'blob' }
             );
             if (response.data) {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const url = window.URL.createObjectURL(new Blob([response.data], {type: 'application/pdf'}));
                 const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', `Invoice_${orderId}.pdf`);
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
                 toast.success('Invoice Download successfully!');
                 
             } else {
@@ -128,7 +131,9 @@ const OrderDetail = () => {
             toast.error('An error occurred while downloading invoice. Please try again.');
         } finally {
             setLoading(false);
-          };
+            setisLoadingInvoice(false);
+        };
+        debugger
     };
 
     return (
