@@ -104,7 +104,7 @@ const OrderDetail = () => {
         }
     };
     const downloadInvoice = async () => {
-        debugger
+        
         setisLoadingInvoice(true);
         try {
             
@@ -133,7 +133,7 @@ const OrderDetail = () => {
             setLoading(false);
             setisLoadingInvoice(false);
         };
-        debugger
+        
     };
 
     return (

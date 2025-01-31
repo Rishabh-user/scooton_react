@@ -58,7 +58,7 @@ const AddPromocode = () => {
   };
 
   const handleSubmit = async (e) => {
-    debugger
+    
     e.preventDefault();
     if (!formData.promoCode && !formData.amount  && !formData.startDate && !formData.expireDate) {
           toast.error("All fields are required");
@@ -112,8 +112,7 @@ const AddPromocode = () => {
       console.error("No token found");
     })
       
-  
-    debugger
+
   };
 
   return (

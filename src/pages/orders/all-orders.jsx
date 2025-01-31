@@ -420,13 +420,20 @@ const AllOrders = () => {
   }, [filterby, search,currentPage]);
 
   const fetchOrders = (orderType) => {
+    const dataToSend ={
+      "orderType": orderType, "searchType": filterby
+    }
+    if (filterby && search) {
+      dataToSend.number = search; 
+    }
+ 
     setLoading(true);
     SetOrderType(orderType)
     const token = localStorage.getItem("jwtToken");
       axiosInstance
         .post(
           `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
-          { "orderType": orderType, "searchType": "NONE" },
+          dataToSend ,
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((response) => {

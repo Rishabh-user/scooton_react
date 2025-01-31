@@ -279,7 +279,7 @@ const RiderDetail = () => {
     const mapLocation = async () => {
         try {
             await axiosInstance.get(`${BASE_URL}/login/get-rider-location/${riderId}`).then((response)=> {
-                console.log("Rider location retrieved successfully:", response.data);
+              
                 setRiderAddress(response.data.riderAddress);
                 setRiderLatitude(response.data.latitude);
                 setRiderLongitude(response.data.longitude)
@@ -316,7 +316,6 @@ const RiderDetail = () => {
             rejectedType: documentRejectDetails?.rejectedType,
             approved: approved
         }
-        debugger
         if(approved && documentRejectDetails.rejectedReason != '' && documentRejectDetails.rejectedReason != undefined){
             try{
                 axiosInstance.post(`${BASE_URL}/login/rider-registration`,payload)
@@ -355,7 +354,7 @@ const RiderDetail = () => {
             setUpdateErrorMsg(true)
            toast.error("Not Updated")
         }
-        debugger
+        
         
     }
 

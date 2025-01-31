@@ -111,8 +111,7 @@ const Settings = () => {
         try{
             setLoadingCSV(true);
             await axiosInstance.get(`${BASE_URL}/order/admin/registered-rider-details`).then((response)=> {
-                debugger
-                console.log("response",response.data)
+             
 
                 if(response.data.length == 0){
                     toast.error("No data found");
@@ -121,7 +120,6 @@ const Settings = () => {
                 }
 
                 const riderDetails = response.data.jsonData;
-                console.log("riderDetails",riderDetails)
                 const csvData = riderDetails.map((item) => {
                     return {
                         "Rider ID": item?.riderId || "N/A",
@@ -148,7 +146,7 @@ const Settings = () => {
                     workbook,
                     `Rider_Detail.xlsx`
                 );
-                debugger
+                
             })
         } catch (error) {
             console.error("Error exporting CSV:", error);
@@ -183,7 +181,6 @@ const Settings = () => {
                 setLoadingCSV(false); 
                 return;
             }
-            console.log(response)
             const csvData = response.data.map((item) => {
                 const { orderDetails = {}, customerDetails = {}, riderDetails = {} } = item.jsonData || {};
                 return {

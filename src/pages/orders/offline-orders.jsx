@@ -218,11 +218,17 @@ const OfflineOrders = () => {
 
   const fetchOrders = (orderType) => {
     setLoading(true);
-    SetOrderType(orderType)
+    SetOrderType(orderType);
+    const dataToSend ={
+      "orderType": orderType, "searchType": filterby
+    }
+    if (filterby && search) {
+      dataToSend.number = search; 
+    }
     axiosInstance
       .post(
         `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/true?page=${currentPage}&size=${pagesizedata}`,
-        { "orderType": orderType, "searchType": "NONE" },
+        dataToSend,
 
       )
       .then((response) => {

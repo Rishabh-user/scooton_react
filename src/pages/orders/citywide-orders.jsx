@@ -325,10 +325,16 @@ const CityWideOrders = () => {
   const fetchOrders = (orderType) => {
     setLoading(true);
     SetOrderType(orderType)
+    const dataToSend ={
+      "orderType": orderType, "searchType": filterby
+    }
+    if (filterby && search) {
+      dataToSend.number = search; 
+    }
     axiosInstance
       .post(
         `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/false?page=${currentPage}&size=${pagesizedata}`,
-        { "orderType": orderType, "searchType": "NONE" },
+        dataToSend
 
       )
       .then((response) => {
@@ -420,6 +426,37 @@ const CityWideOrders = () => {
       }
     )
   }
+
+  const timeDiffClass = (acceptedDate, orderDate, orderStatus) => {
+   
+    if(orderStatus == 'PLACED' || orderStatus == 'ACCEPTED'){
+      
+      const currentTime = new Date().getTime();
+      console.log("currentTime:", currentTime);
+      
+      let baseDateTime = acceptedDate ? new Date(acceptedDate).getTime() : new Date(orderDate).getTime();
+      
+      if (isNaN(baseDateTime)) {
+        console.warn("Invalid date provided. Falling back to current time.");
+        return "recentActivity"; 
+      }
+    
+      const differenceInMin = (currentTime - baseDateTime) / (1000 * 60);
+    
+      if (differenceInMin >= 20) {
+        return "tenMinAgo";
+      } else if (differenceInMin >= 10) {
+        return "lightGrey";
+      } else {
+        return "recentActivity";
+      }
+  
+    }
+  };
+  
+  
+  
+  
   
   
 
@@ -702,12 +739,14 @@ const CityWideOrders = () => {
                           page.map((row) => {
                         prepareRow(row);
                         return (
-                          <tr {...row.getRowProps()} key={row.id}>
+                          <tr className={timeDiffClass(row.original.acceptedDate, row.original.orderHistory.orderDate,  row.original.orderHistory.orderStatus)} {...row.getRowProps()} key={row.id}>
                             {row.cells.map((cell) => (
                               <td {...cell.getCellProps()} className="table-td" key={cell.column.id}>
                                 {cell.render("Cell")}
                               </td>
                             ))}
+                           
+                          
                           </tr>
                         );
                       })
@@ -723,9 +762,18 @@ const CityWideOrders = () => {
                     )}
                   </tbody>              
               </table>
+              
                )}
             </div>
           </div>
+        </div>
+        <div>
+          <strong>Note*</strong>
+            <i>After 10 minutes, if an order is not accepted/Picked, it turns yellow.</i>
+        </div>
+        <div>
+            <strong>Note*</strong>
+            <i>After 20 minutes, if an order is still not accepted/Picked up, it turns red.</i>
         </div>
         <div className="md:flex md:space-y-0 space-y-5 justify-between mt-6 items-center">
           <div className=" flex items-center space-x-3 rtl:space-x-reverse">
