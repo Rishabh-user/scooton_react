@@ -188,6 +188,7 @@ const NonRegisteredRiders = () => {
 
 
   useEffect(() => {
+    setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
       axiosInstance
@@ -212,6 +213,7 @@ const NonRegisteredRiders = () => {
 
 
   useEffect(() => {
+    
     try {
       axiosInstance.get(`${BASE_URL}/login/get-online-offline-rider/0/ALL`).then((response) => {
         setActiveRiderCount(response.data)
@@ -234,10 +236,12 @@ const NonRegisteredRiders = () => {
   };
   
   const filterRiders = () => {
+    if (riderstatus === "All" && documentstatus === "All" && vehicleid === "0") return;
+    setLoading(true);
     try {
       axiosInstance
         .get(
-          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/${documentstatus}/${currentPage}/${riderstatus}/${vehicleid}?page=${currentPage}&size=100`
+          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/${documentstatus}/0/${riderstatus}/${vehicleid}?page=${currentPage}&size=100`
         )
         .then((response) => {
           setRiderData(response.data);
@@ -253,7 +257,8 @@ const NonRegisteredRiders = () => {
   };
   
   useEffect(() => {
-    filterRiders();
+      filterRiders();
+    
   }, [riderstatus, documentstatus, vehicleid, currentPage]);
 
 
@@ -273,10 +278,9 @@ const NonRegisteredRiders = () => {
   };
 
   const FilterOrder = () => {
+    setLoading(true);
     const endpoint =
-      filterby === "NONE"
-        ? `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=${pagesizedata}`
-        : `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=${pagesizedata}`;
+        `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=${pagesizedata}`;
     
     axiosInstance
       .get(endpoint)

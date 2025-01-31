@@ -173,6 +173,7 @@ const OrderDetail = () => {
                             <span>{orderDetails.orderDateTime}</span>
                             <div className="multistep-item">Order Placed</div>
                         </li>
+                        
                         {tripDetails?.orderAccepted && (
                              <li className={`multistep-list  ${tripDetails?.orderAccepted ? 'active' : ''}`}>
                                 {tripDetails?.orderAcceptedTimeTaken && (
@@ -370,6 +371,9 @@ const OrderDetail = () => {
                        
                         {orderDetails.orderStatus === 'Cancelled' && (
                             <li className={`multistep-list ${orderDetails.orderStatus === 'Cancelled'? 'active' : ''}`}>
+                                 {cancelDetails?.orderCancelledTimeTaken && (
+                                    <span className="orderTimetaken">{cancelDetails?.orderCancelledTimeTaken || ' '}</span>
+                                )}
                                 <span>{cancelDetails.orderCancelledDateTime}</span>
                                 <div className="multistep-item">Cancel</div>
                             </li>

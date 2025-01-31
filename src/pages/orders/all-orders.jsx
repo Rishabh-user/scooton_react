@@ -102,9 +102,14 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
                   : ""
                 }
               
-               `}
-            >
-              {row?.cell?.value}
+              `}
+            >{row?.cell?.value === 'CANCEL' ? 'CANCELLED' :
+              row?.cell?.value === 'PLACED' ? 'PLACED' :
+              row?.cell?.value === 'COMPLETED' ? 'DELIVERED' :
+              row?.cell?.value === 'ACCEPTED' ? 'ACCEPTED' :
+               'PICKED' 
+              }  
+             
             </span>
           </span>
         );
@@ -369,6 +374,11 @@ const AllOrders = () => {
     }
   };
 
+  useEffect(() =>{
+  
+   
+  })
+
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
     // if (search === '') {
@@ -392,11 +402,20 @@ const AllOrders = () => {
   //   fetchOrders("PLACED");
   // }, []);
 
+  // useEffect(() => {
+  //   if (filterby && search) {
+  //     FilterOrder();
+  //   } else {
+  //     fetchOrders(ordersType); 
+  //   }
+  // }, [filterby, search, currentPage, ordersType]);
+
 
   useEffect(() => {
     if(filterby && search){
       FilterOrder();
     }
+   
       
   }, [filterby, search,currentPage]);
 
@@ -404,23 +423,23 @@ const AllOrders = () => {
     setLoading(true);
     SetOrderType(orderType)
     const token = localStorage.getItem("jwtToken");
-    axiosInstance
-      .post(
-        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
-        { "orderType": orderType, "searchType": "NONE" },
-        { headers: { Authorization: `Bearer ${token}` } },
-      )
-      .then((response) => {
-        setOrderData(response.data);
-        setTotalCount(Number(response.headers["x-total-count"])); 
-        setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pagesizedata)); 
-      })
-      .catch((error) => {
-        console.error("Error fetching order data:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      axiosInstance
+        .post(
+          `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
+          { "orderType": orderType, "searchType": "NONE" },
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .then((response) => {
+          setOrderData(response.data);
+          setTotalCount(Number(response.headers["x-total-count"])); 
+          setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pagesizedata)); 
+        })
+        .catch((error) => {
+          console.error("Error fetching order data:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
       
   };
   const FilterOrder = () => {
@@ -686,7 +705,7 @@ const AllOrders = () => {
                 >
                   <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
                   <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
-                  <FormControlLabel value="PICKED" control={<Radio />} label="PICKED" />
+                  <FormControlLabel value="DISPATCHED" control={<Radio />} label="PICKED" />
                   <FormControlLabel value="DELIVERED" control={<Radio />} label="DELIVERED" />
                   <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
                   <FormControlLabel value="ALL ORDERS" control={<Radio />} label="ALL ORDERS" />

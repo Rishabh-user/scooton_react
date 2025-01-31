@@ -64,46 +64,53 @@ const COLUMNS = (openIsDeleteOrder,ordersType) => [
       return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },  
-  {
-    Header: "Status",
-    accessor: "orderHistory.orderStatus",
-    Cell: (row) => {       
-        return (
-            <span className="block w-full">
-            <span
-              className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
-                row?.cell?.value === "COMPLETED"
-                  ? "text-success-500 bg-success-500"
+  ...(ordersType === "ALL ORDERS" ? [ 
+    {
+      Header: "Status",
+      accessor: "orderHistory.orderStatus",
+      Cell: (row) => {       
+          return (
+              <span className="block w-full">
+              <span
+                className={` inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 ${
+                  row?.cell?.value === "COMPLETED"
+                    ? "text-success-500 bg-success-500"
+                    : ""
+                } 
+              ${
+                row?.cell?.value === "PLACED"
+                  ? "text-warning bg-warning-700"
                   : ""
-              } 
-            ${
-              row?.cell?.value === "PLACED"
-                ? "text-warning bg-warning-700"
-                : ""
-            }
-            ${
-              row?.cell?.value === "CANCEL"
-                ? "text-danger-500 bg-danger-500"
-                : ""
-            }
-            ${
-                row?.cell?.value === "DISPATCHED"
-                  ? "text-warning-500 bg-warning-400"
+              }
+              ${
+                row?.cell?.value === "CANCEL"
+                  ? "text-danger-500 bg-danger-500"
                   : ""
-            }
-            ${row?.cell?.value === "ACCEPTED"
-              ? "text-info-500 bg-info-400"
-              : ""
-            }
-            
-             `}
-            >
-              {row?.cell?.value}
+              }
+              ${
+                  row?.cell?.value === "DISPATCHED"
+                    ? "text-warning-500 bg-warning-400"
+                    : ""
+              }
+              ${row?.cell?.value === "ACCEPTED"
+                ? "text-info-500 bg-info-400"
+                : ""
+              }
+              
+              `}
+              >
+                {row?.cell?.value === 'CANCEL' ? 'CANCELLED' :
+                row?.cell?.value === 'PLACED' ? 'PLACED' :
+                row?.cell?.value === 'COMPLETED' ? 'DELIVERED' :
+                row?.cell?.value === 'ACCEPTED' ? 'ACCEPTED' :
+                'PICKED' 
+                } 
+              </span>
             </span>
-          </span>
-        );
+          );
+      },
     },
-  },
+  ]: [] ),
   {
     Header: "Pick Up Address",
     accessor: "orderHistory.pickupAddressDetails.addressLine1"

@@ -45,6 +45,14 @@ const COLUMNS = (openIsNotificationModel,openIsDeleteOrder,ordersType) => [
     accessor: "orderHistory.userInfo.mobileNumber",
   },
   {
+    Header: "Pickup Address",
+    accessor: "orderHistory.pickupAddressDetails.addressLine1",
+  },
+  {
+    Header: "Delivery Address",
+    accessor: "orderHistory.deliveryAddressDetails.addressLine1",
+  },
+  {
     Header: "City",
     accessor: "City",
     Cell: () => {
@@ -75,7 +83,8 @@ const COLUMNS = (openIsNotificationModel,openIsDeleteOrder,ordersType) => [
       });
       return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
-  },  
+  }, 
+  ...(ordersType === "ALL ORDERS" ? [ 
   {
     Header: "Status",
     accessor: "orderHistory.orderStatus",
@@ -110,12 +119,18 @@ const COLUMNS = (openIsNotificationModel,openIsDeleteOrder,ordersType) => [
             
              `}
             >
-              {row?.cell?.value}
+              {row?.cell?.value === 'CANCEL' ? 'CANCELLED' :
+              row?.cell?.value === 'PLACED' ? 'PLACED' :
+              row?.cell?.value === 'COMPLETED' ? 'DELIVERED' :
+              row?.cell?.value === 'ACCEPTED' ? 'ACCEPTED' :
+               'PICKED' 
+              } 
             </span>
           </span>
         );
     },
   },
+]: [] ),
   ...(ordersType === "PLACED" 
     ? [
       {
@@ -608,7 +623,7 @@ const CityWideOrders = () => {
                 >
                   <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
                   <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
-                  <FormControlLabel value="PICKED" control={<Radio />} label="PICKED" />
+                  <FormControlLabel value="DISPATCHED" control={<Radio />} label="PICKED" />
                   <FormControlLabel value="DELIVERED" control={<Radio />} label="DELIVERED" />
                   <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
                   <FormControlLabel value="ALL ORDERS" control={<Radio />} label="ALL ORDERS" />

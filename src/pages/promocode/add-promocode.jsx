@@ -65,6 +65,14 @@ const AddPromocode = () => {
           return;
     }
 
+    if(formData.amount == ''){
+      toast.error("Discount is required" );
+    } else if(formData.startDate == ''){
+      toast.error("Start Date is required");
+    } else if(formData.expireDate == ''){
+      toast.error("Expiry Date is required");
+    } 
+
       const token = localStorage.getItem("jwtToken");
       if(token){
       const formattedData = {
@@ -94,7 +102,10 @@ const AddPromocode = () => {
         .catch((error) => {
           const errorMessage = error.response.data.error.match(/\[(.*?)\]/);
           console.log(error)
-             toast.error(errorMessage[1]);
+          if(errorMessage[1] == "Promo Code can't be empty"){
+            toast.error("Promocode is required");
+          }
+             
         })
       
     } else((error) => {

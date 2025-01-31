@@ -183,9 +183,9 @@ const Settings = () => {
                 setLoadingCSV(false); 
                 return;
             }
-    
+            console.log(response)
             const csvData = response.data.map((item) => {
-                const { orderDetails, customerDetails, riderDetails } = item.jsonData;
+                const { orderDetails = {}, customerDetails = {}, riderDetails = {} } = item.jsonData || {};
                 return {
                     "Order ID": orderDetails?.orderId || "N/A",
                     "Order Date": orderDetails?.orderDateTime || "N/A",
@@ -207,7 +207,7 @@ const Settings = () => {
                 };
                 
             });   
-
+            
             const workbook = XLSX.utils.book_new();
             const worksheet = XLSX.utils.json_to_sheet(csvData);
     

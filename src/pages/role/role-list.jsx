@@ -99,11 +99,11 @@ const RoleList = () => {
           }
         )
         .then((response) => {
-          debugger
+          
           setRoleList(response.data); 
           setTotalCount(Number(response.headers["x-total-count"])); 
           setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize));
-          debugger
+          
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
