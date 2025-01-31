@@ -432,7 +432,6 @@ const CityWideOrders = () => {
     if(orderStatus == 'PLACED' || orderStatus == 'ACCEPTED'){
       
       const currentTime = new Date().getTime();
-      console.log("currentTime:", currentTime);
       
       let baseDateTime = acceptedDate ? new Date(acceptedDate).getTime() : new Date(orderDate).getTime();
       
