@@ -114,8 +114,9 @@ const AddRole = () => {
             toast.error('Role is required');
            } else if(formData.mobileNumber ==''){
             toast.error('Phone number is required');
-           }
-           else if(error.response.data.error == "Wrong phone number"){
+           } else if(error.response.data.error == "Mobile number already registered"){
+            toast.error('Mobile number already registered');
+           } else if(error.response.data.error == "Wrong phone number"){
             toast.error('Phone number must be 10 digit');
            }
             

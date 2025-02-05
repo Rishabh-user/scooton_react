@@ -192,23 +192,25 @@ const RegisteredRiders = () => {
   const fetchRegisterOrder = () =>{
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      axiosInstance
-        .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setRiderData(response.data);
-          setTotalCount(Number(response.headers["x-total-count"])); 
-          setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-        })
-        .finally(() => {
-          setLoading(false); 
-        });
+      if (riderstatus === "All" && filterby == "NONE"){
+        axiosInstance
+          .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            setRiderData(response.data);
+            setTotalCount(Number(response.headers["x-total-count"])); 
+            setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+          })
+          .catch((error) => {
+            console.error("Error fetching user data:", error);
+          })
+          .finally(() => {
+            setLoading(false); 
+          });
+      }
     }
   }
   // Get Rider Count
@@ -227,13 +229,15 @@ const RegisteredRiders = () => {
     try {
       axiosInstance
         .get(
-          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/${riderstatus}/0?page=${currentPage}&size=100`, {
+          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/${riderstatus}/0?page=${currentPage}&size=${pagesizedata}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         )
         .then((response) => {
+          setFilterBy("NONE");
+          setSearch("");
           setRiderData(response.data);
         })
         .catch((error) => {
@@ -248,7 +252,7 @@ const RegisteredRiders = () => {
   
   useEffect(() => {
     filterRiders();
-  }, [riderstatus, currentPage]);
+  }, [riderstatus, currentPage,pagesizedata]);
 
   const riderStatusFilter = (event) => {
     setRiderStatus(event.target.value);

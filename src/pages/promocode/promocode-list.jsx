@@ -225,7 +225,7 @@ const PromocodeList = () => {
       const formattedExpireDate = formatDate(selectedPromoCode?.expireDate);
       
       if( promoCodeData?.amount == '' || promoCodeData?.amount == undefined){
-        toast.error("Promocode not updated successfully!, Discount is required");
+        toast.error("The promo code cannot be updated without a discount amount!");
         return
       }
        

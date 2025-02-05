@@ -194,7 +194,7 @@ const NonRegisteredRiders = () => {
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      if(riderstatus === "All" && documentstatus === "All" && vehicleid === "0"){
+      if(riderstatus === "All" && documentstatus === "All" && vehicleid === "0" && filterby == "NONE"){
         axiosInstance
           .get(`${BASE_URL}/register/rider/get-all-service-area-by-non-registration-status?page=${currentPage}&size=${pagesizedata}`, {
             headers: {
@@ -249,6 +249,8 @@ const NonRegisteredRiders = () => {
           `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/${documentstatus}/0/${riderstatus}/${vehicleid}?page=${currentPage}&size=${pagesizedata}`
         )
         .then((response) => {
+          setFilterBy("NONE");
+          setSearch("")
           setRiderData(response.data);
         })
         .catch((error) => {
@@ -303,7 +305,7 @@ const NonRegisteredRiders = () => {
   useEffect(() => {
       FilterOrder();
     
-  }, [filterby, search, currentPage]);  
+  }, [filterby, search, currentPage,pagesizedata]);  
   
 
   const columns = useMemo(() => COLUMNS, []);

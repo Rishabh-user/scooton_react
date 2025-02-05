@@ -420,6 +420,7 @@ const AllOrders = () => {
   }, [filterby, search,currentPage]);
 
   const fetchOrders = (orderType) => {
+    console.log("this")
     const dataToSend ={
       "orderType": orderType, "searchType": filterby
     }

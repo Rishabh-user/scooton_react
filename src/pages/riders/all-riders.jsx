@@ -191,23 +191,25 @@ const AllRiders = () => {
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      axiosInstance
-        .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setRiderData(response.data);
-          setTotalCount(Number(response.headers["x-total-count"])); 
-          setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      if (riderstatus == "All" && documentstatus === "All" && vehicleid === "0" && filterby == "NONE"){
+        axiosInstance
+          .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            setRiderData(response.data);
+            setTotalCount(Number(response.headers["x-total-count"])); 
+            setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+          })
+          .catch((error) => {
+            console.error("Error fetching user data:", error);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
     }
   }, [currentPage,pagesizedata]); 
 
@@ -238,7 +240,7 @@ const AllRiders = () => {
     try {
       axiosInstance
         .get(
-          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/${documentstatus}/${currentPage}/${riderstatus}/${vehicleid}?page=${currentPage}&size=100`,
+          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/${documentstatus}/${currentPage}/${riderstatus}/${vehicleid}?page=${currentPage}&size=${pagesizedata}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -246,6 +248,8 @@ const AllRiders = () => {
           })
         
         .then((response) => {
+          setFilterBy("NONE");
+          setSearch("");
           setRiderData(response.data);
         })
         .catch((error) => {
@@ -260,7 +264,7 @@ const AllRiders = () => {
   
   useEffect(() => {
     filterRiders();
-  }, [riderstatus, documentstatus, vehicleid, currentPage]);
+  }, [riderstatus, documentstatus, vehicleid, currentPage,pagesizedata]);
 
 
   const handleChange = (event) => {
@@ -282,7 +286,7 @@ const AllRiders = () => {
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     const endpoint =
-      filterby === "NONE"
+      filterby === "NONE" && riderstatus == "All" && documentstatus === "All" && vehicleid === "0"
         ? `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=0&size=${pagesizedata}`
         : `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=0&size=${pagesizedata}`;
     
@@ -306,7 +310,7 @@ const AllRiders = () => {
   useEffect(() => {
       FilterOrder();
     
-  }, [filterby, search, currentPage]);
+  }, [filterby, search, currentPage,pagesizedata]);
 
 
   const columns = useMemo(() => COLUMNS, []);
@@ -374,7 +378,7 @@ const AllRiders = () => {
     try {
       axiosInstance
         .post(
-          `${BASE_URL}/order-history/search-city-wide-orders/${serviceAreaStatus}?page=${currentPage}&size=100`,
+          `${BASE_URL}/order-history/search-city-wide-orders/${serviceAreaStatus}?page=${currentPage}&size=${pagesizedata}`,
           {
             orderType: "PLACED",
             searchType: "NONE", 
