@@ -202,7 +202,7 @@ const OfflineOrders = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  const [ordersType, SetOrderType] = useState("ALL ORDERS");
+  const [ordersType, SetOrderType] = useState("PLACED");
   const [filterby, setFilterBy] = React.useState('NONE');
   const [pagesizedata, setpagesizedata]=useState(10);
   const [totalCount, setTotalCount] = useState(0);
@@ -213,7 +213,7 @@ const OfflineOrders = () => {
   const maxPagesToShow = 5;
   useEffect(() => {
     setLoading(true);
-    fetchOrders("ALL ORDERS");
+    fetchOrders("PLACED");
   }, [currentPage,pagesizedata]);
 
   const fetchOrders = (orderType) => {
@@ -504,7 +504,7 @@ const OfflineOrders = () => {
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="row-radio-buttons-group"
                   onChange={(e) => fetchOrders(e.target.value)}
-                  defaultValue="ALL ORDERS"
+                  defaultValue="PLACED"
                 >
                   <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
                   <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />

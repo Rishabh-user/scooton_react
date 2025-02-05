@@ -237,7 +237,7 @@ const CityWideOrders = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  const [ordersType, SetOrderType] = useState("ALL ORDERS");
+  const [ordersType, SetOrderType] = useState("PLACED");
   const [filterby, setFilterBy] = React.useState('NONE');
   const [deleteordermodel, setDeleteOrderModel] = useState(false);
   const [orderdeleteid, setOrderDeleteId] = useState();
@@ -256,7 +256,7 @@ const CityWideOrders = () => {
   const [clientId, setClientId] = useState('');
   
   useEffect(() => {
-    fetchOrders("ALL ORDERS");
+    fetchOrders("PLACED");
   }, [currentPage,pagesizedata]);
 
 
@@ -282,8 +282,9 @@ const CityWideOrders = () => {
         },
         })
         .then((response) => {
-          toast.success("Notification Sended Successfully")
           setNotification(false);
+          toast.success("Notification Sended Successfully")
+         
         })
       } else {
         axiosInstance.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}`,{
@@ -655,7 +656,7 @@ const CityWideOrders = () => {
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="row-radio-buttons-group"
                   onChange={(e) => fetchOrders(e.target.value)}
-                  defaultValue="ALL ORDERS"
+                  defaultValue="PLACED"
                 >
                   <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
                   <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
@@ -925,7 +926,7 @@ const CityWideOrders = () => {
               />
             </div> */}
             <div className="d-flex gap-2 justify-content-center mt-4">
-              <Button className="btn btn-dark" type="button" onClick={sendNotification} >
+              <Button className="btn btn-dark" type="button" onClick={() => { sendNotification(); setNotificationModel(false) }} >
                 Send Notification
               </Button>
               <Button className="btn btn-outline-light" type="button" onClick={() => { setNotificationModel(false) }}>

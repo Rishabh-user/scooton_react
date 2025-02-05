@@ -252,7 +252,7 @@ const AllOrders = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  const [ordersType, SetOrderType] = useState("ALL ORDERS")
+  const [ordersType, SetOrderType] = useState("PLACED")
   const [filterby, setFilterBy] = React.useState('NONE');
   const [notificationModel, setNotificationModel] = useState(false);
   const [deleteordermodel, setDeleteOrderModel] = useState(false);
@@ -605,7 +605,7 @@ const AllOrders = () => {
     } else {
       console.log("Fetching default orders...");
       setLoading(true);
-      fetchOrders("ALL ORDERS");
+      fetchOrders("PLACED");
     }
   }, [id?.ordertype, currentPage,pagesizedata]);
 
@@ -708,7 +708,7 @@ const AllOrders = () => {
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="row-radio-buttons-group"
                   onChange={(e) => fetchOrders(e.target.value)}
-                  defaultValue="ALL ORDERS"
+                  value={ordersType}
                 >
                   <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
                   <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
