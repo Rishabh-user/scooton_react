@@ -67,10 +67,13 @@ const AddPromocode = () => {
 
     if(formData.amount == ''){
       toast.error("Discount is required" );
+      return
     } else if(formData.startDate == ''){
       toast.error("Start Date is required");
+      return
     } else if(formData.expireDate == ''){
       toast.error("Expiry Date is required");
+      return
     } 
 
       const token = localStorage.getItem("jwtToken");

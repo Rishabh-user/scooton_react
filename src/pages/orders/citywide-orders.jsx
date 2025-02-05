@@ -896,13 +896,25 @@ const CityWideOrders = () => {
             <div className="mb-3">
               <label className="form-label">Select Role</label>
               <select className="form-select" onChange={handlenotification}>
-                <option selected>Notification</option>
-                <option value="ALL">All</option>
+                <option value="ALL" selected>All</option>
                 <option value="INDIVIDUAL">Individual</option>
               </select>
             </div>
+            {notification === 'INDIVIDUAL' && (
+              <div className="mb-3">
+                <label className="form-label mb-1">Mobile Number</label>
+                <input                
+                  id="mobile"
+                  type="number"
+                  name="mobile"
+                  value={mobile}
+                  onChange={handleMobileNumber}
+                  className="form-control"
+                />
+              </div>
+            )} 
              
-            <div>
+            {/* <div>
               <TextField
                 label="Mobile Number"
                 id="mobile"
@@ -911,7 +923,7 @@ const CityWideOrders = () => {
                 value={mobile}
                 onChange={handleMobileNumber}
               />
-            </div>
+            </div> */}
             <div className="d-flex gap-2 justify-content-center mt-4">
               <Button className="btn btn-dark" type="button" onClick={sendNotification} >
                 Send Notification
