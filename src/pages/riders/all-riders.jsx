@@ -271,13 +271,11 @@ const AllRiders = () => {
     const value = event.target.value;
     setFilterBy(value);
 
-    // Reset search if "NONE" is selected
     if (value === "NONE") {
       setSearch("");
     }
   };
 
-  // Handle input change for search field
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
   };

@@ -256,7 +256,9 @@ const CityWideOrders = () => {
   const [clientId, setClientId] = useState('');
   
   useEffect(() => {
-    fetchOrders("PLACED");
+    if(filterby == 'NONE'){
+      fetchOrders("PLACED");
+    }
   }, [currentPage,pagesizedata]);
 
 

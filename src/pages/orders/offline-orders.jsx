@@ -31,7 +31,7 @@ const COLUMNS = (openIsDeleteOrder,ordersType) => [
   },            
   {
     Header: "Order ID",
-    accessor: "orderHistory.orderId",
+    accessor: "order_Id",
   },
   {
     Header: "Mobile Number",
@@ -212,8 +212,10 @@ const OfflineOrders = () => {
   const [serviceAreaStatus, setServiceAreaStatus] = useState('All');
   const maxPagesToShow = 5;
   useEffect(() => {
-    setLoading(true);
-    fetchOrders("PLACED");
+    if(filterby == 'NONE'){
+      setLoading(true);
+      fetchOrders("PLACED");
+    }
   }, [currentPage,pagesizedata]);
 
   const fetchOrders = (orderType) => {

@@ -374,11 +374,7 @@ const AllOrders = () => {
     }
   };
 
-  useEffect(() =>{
   
-   
-  })
-
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
     // if (search === '') {
@@ -417,7 +413,7 @@ const AllOrders = () => {
     }
    
       
-  }, [filterby, search,currentPage]);
+  }, [filterby, search,currentPage,pagesizedata]);
 
   const fetchOrders = (orderType) => {
     console.log("this")
@@ -455,7 +451,7 @@ const AllOrders = () => {
     const token = localStorage.getItem("jwtToken");
     axiosInstance
       .post(
-        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,
+        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
         { "number": search, "orderType": ordersType, "searchType": filterby },
         { headers: { Authorization: `Bearer ${token}` } },
       )
@@ -578,7 +574,7 @@ const AllOrders = () => {
   };
 
   useEffect(() => {
-   
+    console.log("id?.ordertype",id?.ordertype)
     if (id?.ordertype) { 
   
       SetOrderType(id.ordertype);
@@ -606,7 +602,9 @@ const AllOrders = () => {
     } else {
       console.log("Fetching default orders...");
       setLoading(true);
+      if(filterby == 'NONE'){
       fetchOrders("PLACED");
+      }
     }
   }, [id?.ordertype, currentPage,pagesizedata]);
 
