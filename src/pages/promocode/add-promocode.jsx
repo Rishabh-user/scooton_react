@@ -140,7 +140,7 @@ const AddPromocode = () => {
                     <label className="form-label mb-1">Discount</label>
                     <input
                       id="amount"
-                      type="text"
+                      type="number"
                       className="form-control"
                       value={formData.amount}
                       onChange={handleChange}
