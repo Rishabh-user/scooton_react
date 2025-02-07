@@ -225,6 +225,8 @@ const RegisteredRiders = () => {
   }, [])
   // End
   const filterRiders = () => {
+    
+    if(riderstatus == "All") return;
     const token = localStorage.getItem("jwtToken");
     try {
       axiosInstance
@@ -236,6 +238,7 @@ const RegisteredRiders = () => {
           }
         )
         .then((response) => {
+          console.log("w")
           setFilterBy("NONE");
           setSearch("");
           setRiderData(response.data);
@@ -303,7 +306,7 @@ const RegisteredRiders = () => {
   };
 
   useEffect(() => {
-    if(filterby && search){
+    if(filterby){
       FilterRiders();
     }
       
@@ -322,6 +325,10 @@ const RegisteredRiders = () => {
   };
 
   const FilterRiders = () =>{
+    if(filterby !== "NONE"){
+      setRiderStatus('All');
+    }
+    
     const token = localStorage.getItem("jwtToken");
     axiosInstance.get(`${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=30`, {
       headers: {
@@ -329,6 +336,7 @@ const RegisteredRiders = () => {
       },
     }
     ).then((response) => {
+    
       setRiderData(response.data);
     })
     .catch((error) => {

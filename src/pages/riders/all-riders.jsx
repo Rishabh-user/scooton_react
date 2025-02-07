@@ -188,6 +188,7 @@ const AllRiders = () => {
 
 
   useEffect(() => {
+    
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
@@ -235,7 +236,9 @@ const AllRiders = () => {
   };
   
   const filterRiders = () => {
+    
     setLoading(true);
+    if(riderstatus == "All" && documentstatus === "All" && vehicleid === "0") return;
     const token = localStorage.getItem("jwtToken");
     try {
       axiosInstance
@@ -282,6 +285,12 @@ const AllRiders = () => {
 
   const FilterOrder = () => {
     setLoading(true);
+    if(filterby !== "NONE"){
+      setVehicleId('0');
+      setDocumentStatus('All');
+      setRiderStatus('All');
+    }
+   
     const token = localStorage.getItem("jwtToken");
     const endpoint =
       filterby === "NONE" && riderstatus == "All" && documentstatus === "All" && vehicleid === "0"
@@ -307,7 +316,6 @@ const AllRiders = () => {
 
   useEffect(() => {
       FilterOrder();
-    
   }, [filterby, search, currentPage,pagesizedata]);
 
 
@@ -438,6 +446,29 @@ const AllRiders = () => {
                 </span>
               </div>
             </div>
+            <div className="filterbyRider me-3">                    
+              <Select
+                id="demo-simple-select"
+                value={filterby}
+                onChange={handleChange}
+                displayEmpty
+                inputProps={{ 'aria-label': 'Without label' }}
+              >
+                <MenuItem value="NONE">NONE</MenuItem>
+                <MenuItem value="RIDERID">Rider ID</MenuItem>
+                <MenuItem value="MOBILE">Mobile Number</MenuItem>
+                <MenuItem value="RIDERNAME">Rider Name</MenuItem>
+              </Select>
+              <TextField
+                id="search"
+                type="text"
+                name="search"
+                className=""
+                placeholder="Filter By"
+                value={search}
+                onChange={handleSearchChange}
+              />
+            </div>
             <div className="rider-filter">            
               <div className="d-flex justify-content-end">              
                 <Button className="btn btn-dark desktop-view-filter" onClick={handleShow}>
@@ -445,6 +476,7 @@ const AllRiders = () => {
                 </Button>
               </div>
             </div>
+            
           </div>
           {isVisible && (
             <div>
@@ -522,7 +554,7 @@ const AllRiders = () => {
                       </Select>
                     </FormControl>
                   </div>
-                  <div className="flex-1">
+                  {/* <div className="flex-1">
                     <FormControl fullWidth className="">
                       <label className="text-sm mb-1">Filter By</label>
                       <div className="filterbyRider">                    
@@ -549,7 +581,7 @@ const AllRiders = () => {
                         />
                       </div>
                     </FormControl>
-                  </div>
+                  </div> */}
                   <div className="d-flex gap-2 justify-content-end">
                     <div className="h-100">
                       <button className="btn btn-dark h-100 text-xl" onClick={resetFilters}><Icon icon="heroicons:arrow-path" /></button>

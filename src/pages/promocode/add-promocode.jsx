@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 const promocodeType = ["FIXED", "PERCENTAGE"];
 
 const AddPromocode = () => {
-
+ 
   const navigate = useNavigate(); 
   const [formData, setFormData] = useState({
     promoCode: "",
