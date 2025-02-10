@@ -25,13 +25,12 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor for Global Error Handling
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {     
       
-      logoutAndRedirect(); // Call the logout function
+      logoutAndRedirect(); 
     }
     return Promise.reject(error);
   }
