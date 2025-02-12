@@ -7,10 +7,13 @@ import { useDispatch } from "react-redux";
 import useMobileMenu from "@/hooks/useMobileMenu";
 import Submenu from "./Submenu";
 import getRole from "../../../store/utility";
+import axiosInstance from "../../../api";
+import { BASE_URL } from "../../../api";
 
 const Navmenu = ({ menus }) => {
   const [activeSubmenu, setActiveSubmenu] = useState(null);
   const [filteredMenus, setFilteredMenus] = useState([]);
+  const [vendorUsername, setVendorUsername] = useState([]);
   const[role, setRole] = useState("");
   // useEffect(() => {
   //   const role = getRole();
@@ -55,6 +58,39 @@ const Navmenu = ({ menus }) => {
   //   }
   // }, [location]);
   useEffect(() => {
+    
+    try{
+      axiosInstance.get(`${BASE_URL}/thirdParty/get-all-thirdParty-client`).then((resp) => {
+      console.log("sidebar", resp.data.jsonData);
+      setVendorUsername(resp.data.jsonData);
+      
+      setFilteredMenus((prevMenu) =>
+        prevMenu.map((item) =>
+          item.title === "Orders"
+            ? {
+                ...item,
+                child: [
+                  ...(item.child || []),
+                  {
+                    childtitle: "Vendor",
+                    icon: "heroicons-outline:clipboard-document-list",
+                    child: resp.data.jsonData.map((user) => ({
+                      childtitle: user.userName,
+                      childlink: user.userName,
+                      childicon: "heroicons:presentation-chart-line"
+                    }))
+                  }
+                ]
+              }
+            : item
+          )
+      );
+      
+      
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
     const role = getRole();
     let submenuIndex = null;
     const filteredMenus = menus.filter((item) => {
@@ -88,7 +124,7 @@ const Navmenu = ({ menus }) => {
     if (mobileMenu) {
       setMobileMenu(false);
     }
-  }, [location, role, menus]);
+  }, [ role, menus]);
   return (
     <>
       <ul>

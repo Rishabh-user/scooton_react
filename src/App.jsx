@@ -40,6 +40,7 @@ import RiderDetail from "./pages/riders/rider-detail";
 import HomepageList from "./pages/home-page/home-page-list";
 import Settings from "./pages/configuration/setting";
 import AddHomePage from "./pages/home-page/add-homepage";
+import Vendor from "./pages/orders/vendor-order";
 import ProtectedRoute from "./layout/ProtectedRoute";
 function App() {
 
@@ -97,8 +98,10 @@ function App() {
           <Route path="offline-orders" element={<OfflineOrders />} />
           <Route path="create-orders" element={<CreateOrder />} />
           <Route path="order-detail/:orderId" element={<OrderDetail />} />
+          <Route path="order-detail/:thirdPartyUsername/:orderId" element={<OrderDetail />} />
           <Route path="add-homepage" element={<AddHomePage />} />
           <Route path="homepage-list" element={<HomepageList />} />
+          <Route path = ":vendor" element={<Vendor />} />
           <Route element={<ProtectedRoute isAuthRoute={"ROLE_SUPER_ADMIN"} />}>
             <Route path="setting" element={<Settings />} />
             <Route path="role-list" element={<RoleList />} />
