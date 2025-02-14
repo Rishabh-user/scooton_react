@@ -72,7 +72,7 @@ const Navmenu = ({ menus }) => {
                 child: [
                   ...(item.child || []),
                   {
-                    childtitle: "Vendor",
+                    childtitle: "Vendor Orders",
                     icon: "heroicons-outline:clipboard-document-list",
                     child: resp.data.jsonData.map((user) => ({
                       childtitle: user.userName,

@@ -504,16 +504,16 @@ const OrderDetail = () => {
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2"> Rider Name </td>
                                     <td className="text-end px-6 py-2">
-                                        {/* {riderDetails.riderName} */}
+                                        {riderDetails?.riderName || ""}
                                     </td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Rider Number</td>
-                                    {/* <td className="text-end px-6 py-4"> {riderDetails.riderContact}</td> */}
+                                    <td className="text-end px-6 py-4"> {riderDetails?.riderContact || ""}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Rider Vehicle Number</td>
-                                    {/* <td className="text-end px-6 py-4"> {riderDetails.riderVehicleNumber}</td> */}
+                                    <td className="text-end px-6 py-4"> {riderDetails?.riderVehicleNumber || ""}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Vehicle Type</td>
