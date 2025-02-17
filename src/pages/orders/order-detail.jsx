@@ -518,7 +518,7 @@ const OrderDetail = () => {
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Vehicle Type</td>
                                     <td className="text-end px-6 py-2"> 
-                                        {thirdPartyUsername ? orderDetails?.vehicleType : vehiceDetails?.vehicleType}
+                                        {thirdPartyUsername ? vehiceDetails?.vehicleType : vehiceDetails?.vehicleType}
                                     </td>
                                 </tr>
                             </tbody>

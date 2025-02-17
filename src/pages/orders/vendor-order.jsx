@@ -51,7 +51,7 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
   },
   {
     Header: "Amount",
-    accessor: "thirdPartyOrders.paymentDetails.totalAmount",
+    accessor: "finalPrice",
   },
   {
     Header: "Order Date",
