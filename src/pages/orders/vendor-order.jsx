@@ -39,7 +39,7 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
   },
   {
     Header: "Mobile Number",
-    accessor: "thirdPartyOrders.userInfo.mobileNumber",
+    accessor: "thirdPartyOrders.pickupAddressDetails.mobileNumber",
   },
   {
     Header: "City",
@@ -434,15 +434,15 @@ const Vendor = () => {
   const deletePlaceOrder = () => {
     const token = localStorage.getItem('jwtToken');
     const isOtherReason = selectedCancelReason === "OTHERS";
-    const cancelReason = isOtherReason ? "OTHERS" : selectedCancelReason;
+  
+    const cancelOrderReason = isOtherReason ? "OTHERS" : selectedCancelReason;
+    const cancelReasons = isOtherReason ? cancelReason : selectedCancelReason; // Send the entered reason if OTHERS, else selected reason
 
     const payload = {
       userType: "admin",
+      cancelReasons: cancelReasons || "", 
     };
-    if (isOtherReason) {
-      payload.cancelReasons = cancelReason || "";
-    }
-    axiosInstance.post(`${BASE_URL}/thirdParty/cancel-order/${orderdeleteid}?orderCancelReason=${cancelReason}`,payload,
+    axiosInstance.post(`${BASE_URL}/thirdParty/cancel-order/${orderdeleteid}?orderCancelReason=${cancelOrderReason}`,payload,
       ).then((response) => {
         toast.success("Order cancel successfully");
         setOrderData((prevList) => prevList.filter((item) => item.order_Id !== orderdeleteid));

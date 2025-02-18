@@ -441,6 +441,14 @@ const OrderDetail = () => {
                                         { thirdPartyUsername ? "THIRD PARTY" :orderDetails.orderType}
                                     </td>
                                 </tr>
+                                {cancelDetails.orderCancelled === true && (
+                                    <tr className="border-b border-slate-100 dark:border-slate-700">
+                                    <td className=" px-6 py-2"> Order Cancel Reason </td>
+                                    <td className=" px-6 py-2 text-end">
+                                        { cancelDetails.cancelReason}
+                                    </td>
+                                </tr>
+                                )}                                
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Pickup Address </td>
                                     <td className=" px-6 py-2 text-end">{customerDetails.pickupAddress}</td>
@@ -509,11 +517,11 @@ const OrderDetail = () => {
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Rider Number</td>
-                                    <td className="text-end px-6 py-4"> {riderDetails?.riderContact || ""}</td>
+                                    <td className="text-end px-6 py-2"> {riderDetails?.riderContact || ""}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Rider Vehicle Number</td>
-                                    <td className="text-end px-6 py-4"> {riderDetails?.riderVehicleNumber || ""}</td>
+                                    <td className="text-end px-6 py-2"> {riderDetails?.riderVehicleNumber || ""}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Vehicle Type</td>
@@ -544,12 +552,12 @@ const OrderDetail = () => {
                                         <td className="text-end px-6 py-2">PENDING</td>
                                     </tr>
                                 )}
-                                {orderDetails.paymentMode === 'PREPAID' && (
+                                {/* {orderDetails.paymentMode === 'PREPAID' && (
                                     <tr className="border-b border-slate-100 dark:border-slate-700">
                                         <td className="px-6 py-2">Refund Message</td>
                                         <td className="text-end px-6 py-2">{orderDetails.refundStatus}</td>
                                     </tr>
-                                )}
+                                )} */}
                                 
                                 {orderDetails.paymentMode === 'PREPAID' && (
                                     <tr className="border-b border-slate-100 dark:border-slate-700">
