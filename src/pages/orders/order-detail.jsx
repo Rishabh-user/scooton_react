@@ -79,28 +79,44 @@ const OrderDetail = () => {
 
     const handlePickupConfirm = async (payload) => {
         try {
-            const response = await axiosInstance.post(
-                `${BASE_URL}/rider/pickup-delivery-otp-verification-admin/`,
-                payload
-            );
-            if (response.data.message === "Success") {
+            let response;      
+            if (thirdPartyUsername) {
+                response = await axiosInstance.post(
+                    `${BASE_URL}/thirdParty/pickup-delivery-otp-verification-admin/`,
+                    payload
+                );
+            } else {
+                response = await axiosInstance.post(
+                    `${BASE_URL}/rider/pickup-delivery-otp-verification-admin/`,
+                    payload
+                );
+            }    
+            if (response?.data?.message === "Success") {
                 setisPickupModal(false);
                 setPickup(true);
                 toast.success('Pickup confirmed successfully!');
             } else {
-                toast.error('Failed to confirm pickup: ' + response.data.message);
+                toast.error('Failed to confirm pickup: ' + (response?.data?.message || "Unknown error"));
             }
         } catch (error) {
             toast.error('An error occurred while confirming pickup. Please try again.');
         }
-    };
+    };    
     const handleDeliveryConfirm = async (payload) => {
         try {
-            const response = await axiosInstance.post(
-                `${BASE_URL}/rider/pickup-delivery-otp-verification-admin/`,
-                payload
-            );
-            if (response.data.message === "Success") {
+            let response;      
+            if (thirdPartyUsername) {
+                response = await axiosInstance.post(
+                    `${BASE_URL}/thirdParty/pickup-delivery-otp-verification-admin/`,
+                    payload
+                );
+            } else {
+                response = await axiosInstance.post(
+                    `${BASE_URL}/rider/pickup-delivery-otp-verification-admin/`,
+                    payload
+                );
+            } 
+            if (response?.data?.message === "Success") {
                 toast.success('Delivery confirmed successfully!');
                 setDelivered(true);
                 setisdeliveryModal(false);
@@ -443,11 +459,11 @@ const OrderDetail = () => {
                                 </tr>
                                 {cancelDetails?.orderCancelled === true && (
                                     <tr className="border-b border-slate-100 dark:border-slate-700">
-                                    <td className=" px-6 py-2"> Order Cancel Reason </td>
-                                    <td className=" px-6 py-2 text-end">
-                                    {cancelDetails?.cancelReasonType?.trim() || cancelDetails?.cancelReasonSelected}
-                                    </td>
-                                </tr>
+                                        <td className=" px-6 py-2"> Order Cancel Reason </td>
+                                        <td className=" px-6 py-2 text-end">
+                                        {cancelDetails?.cancelReasonType?.trim() || cancelDetails?.cancelReasonSelected}
+                                        </td>
+                                    </tr>
                                 )}                                
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Pickup Address </td>
@@ -552,6 +568,12 @@ const OrderDetail = () => {
                                         <td className="text-end px-6 py-2">PENDING</td>
                                     </tr>
                                 )}
+                                {(orderDetails.orderStatus === 'Cancelled' && orderDetails.paymentMode === 'PREPAID') && (
+                                    <tr className="border-b border-slate-100 dark:border-slate-700">
+                                        <td className="px-6 py-2">Payment Status</td>
+                                        <td className="text-end px-6 py-2">Cancelled</td>
+                                    </tr>
+                                )}
                                 {/* {orderDetails.paymentMode === 'PREPAID' && (
                                     <tr className="border-b border-slate-100 dark:border-slate-700">
                                         <td className="px-6 py-2">Refund Message</td>
@@ -559,12 +581,12 @@ const OrderDetail = () => {
                                     </tr>
                                 )} */}
                                 
-                                {orderDetails.paymentMode === 'PREPAID' && (
+                                {/* {orderDetails.paymentMode === 'PREPAID' && (
                                     <tr className="border-b border-slate-100 dark:border-slate-700">
                                         <td className="px-6 py-2">Payment Status</td>
-                                        <td className="text-end px-6 py-2">{orderDetails.paymentStatus}</td>
+                                        <td className="text-end px-6 py-2">Completed</td>
                                     </tr>
-                                )}
+                                )} */}
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">MRP</td>
                                     <td className="text-end px-6 py-2">
