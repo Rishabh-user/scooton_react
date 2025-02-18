@@ -819,7 +819,7 @@ const Vendor = () => {
                 <select className="form-control py-2 form-select h-50" onChange={handleReasonChange}>
                   <option value="" selected>Select cancel reason</option>
                   {CancelOrderReason.map((reason, index) => (
-                    <option key={index} value={reason.value}>{reason.name}</option>
+                    <option key={index} value={reason.name}>{reason.name}</option>
                   ))}
                 </select>
               </div>

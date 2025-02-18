@@ -441,11 +441,11 @@ const OrderDetail = () => {
                                         { thirdPartyUsername ? "THIRD PARTY" :orderDetails.orderType}
                                     </td>
                                 </tr>
-                                {cancelDetails.orderCancelled === true && (
+                                {cancelDetails?.orderCancelled === true && (
                                     <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Order Cancel Reason </td>
                                     <td className=" px-6 py-2 text-end">
-                                        { cancelDetails.cancelReason}
+                                    {cancelDetails?.cancelReasonType?.trim() || cancelDetails?.cancelReasonSelected}
                                     </td>
                                 </tr>
                                 )}                                
