@@ -485,6 +485,14 @@ const OrderDetail = () => {
                                     <td className=" px-6 py-2"> Distance (KM) </td>
                                     <td className=" px-6 py-2 text-end">{orderDetails.distance}</td>
                                 </tr>
+                                <tr className="border-b border-slate-100 dark:border-slate-700">
+                                    <td className=" px-6 py-2"> Pickup OTP </td>
+                                    <td className=" px-6 py-2 text-end">{orderDetails.pickupOtp}</td>
+                                </tr>
+                                <tr className="border-b border-slate-100 dark:border-slate-700">
+                                    <td className=" px-6 py-2"> Delivery OTP </td>
+                                    <td className=" px-6 py-2 text-end">{orderDetails.deliveryOtp}</td>
+                                </tr>
                                 {!thirdPartyUsername && (
                                     <>
                                         <tr className="border-b border-slate-100 dark:border-slate-700">

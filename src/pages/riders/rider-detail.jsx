@@ -20,7 +20,7 @@ import axiosInstance from "../../api";
 import { GoogleMap, LoadScript,useLoadScript, Marker } from '@react-google-maps/api';
  
 const RejectionType = ["Information Rejected", "Document Issue"];
-const DocumentStatus =["Approve","Reject"]
+const DocumentStatus =["Approve","Reject", "VERIFICATION_PENDING"]
 
 
 const mapContainerStyle = {
