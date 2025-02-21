@@ -467,31 +467,31 @@ const OrderDetail = () => {
                                 )}                                
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Pickup Address </td>
-                                    <td className=" px-6 py-2 text-end">{customerDetails.pickupAddress}</td>
+                                    <td className=" px-6 py-2 text-end">{customerDetails?.pickupAddress}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Pickup Contact </td>
-                                    <td className=" px-6 py-2 text-end">{customerDetails.pickupContact}</td>
+                                    <td className=" px-6 py-2 text-end">{customerDetails?.pickupContact}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Delivery Address </td>
-                                    <td className=" px-6 py-2 text-end">{customerDetails.deliveryAddress},{customerDetails.deliveryAddress1},{customerDetails.deliveryPinCode}</td>
+                                    <td className=" px-6 py-2 text-end">{customerDetails?.deliveryAddress},{customerDetails.deliveryAddress1},{customerDetails.deliveryPinCode}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Delivery Contact </td>
-                                    <td className=" px-6 py-2 text-end">{customerDetails.deliveryContact}</td>
+                                    <td className=" px-6 py-2 text-end">{customerDetails?.deliveryContact}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Distance (KM) </td>
-                                    <td className=" px-6 py-2 text-end">{orderDetails.distance}</td>
+                                    <td className=" px-6 py-2 text-end">{orderDetails?.distance}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Pickup OTP </td>
-                                    <td className=" px-6 py-2 text-end">{orderDetails.pickupOtp}</td>
+                                    <td className=" px-6 py-2 text-end">{orderDetails?.pickupOtp}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Delivery OTP </td>
-                                    <td className=" px-6 py-2 text-end">{orderDetails.deliveryOtp}</td>
+                                    <td className=" px-6 py-2 text-end">{orderDetails?.deiveryOtp}</td>
                                 </tr>
                                 {!thirdPartyUsername && (
                                     <>
