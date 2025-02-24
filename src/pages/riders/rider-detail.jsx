@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api";
 import { GoogleMap, LoadScript,useLoadScript, Marker } from '@react-google-maps/api';
  
-const RejectionType = ["Information Rejected", "Document Issue"];
+const RejectionType = ["Information Rejected", "Document Rejected"];
 const DocumentStatus =["Approve","Reject", "VERIFICATION_PENDING"]
 
 
@@ -389,7 +389,6 @@ const RiderDetail = () => {
             approved: approved
         };
     
-        // If rejecting (approved is false), ensure rejectedReason is provided
         if (!approved && (!documentRejectDetails?.rejectedReason || documentRejectDetails.rejectedReason.trim() === '')) {
             setUpdateErrorMsg(true);
             toast.error("Note: State Reason for Rejection");
