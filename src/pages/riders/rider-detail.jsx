@@ -107,7 +107,17 @@ const RiderDetail = () => {
             setRiderWalletDetail(riderWalletResponse.data.jsonData.walletTxn);
             setWalletAmount(riderWalletResponse.data.jsonData.balance);
             setRiderTripDetail(riderTripResponse.data.jsonData.tripDetails);
-            setDocumentDetail(documentResponse.data.jsonData.documentDetails || []);
+            // setDocumentDetail(documentResponse.data.jsonData.documentDetails || []);
+            setDocumentDetail(
+                (documentResponse.data.jsonData.documentDetails || []).map(order => ({
+                    ...order,
+                    filteredStatus: 
+                        order.status === "Approve" || order.status === "Reject" 
+                            ? DocumentStatus.filter(status => status !== "VERIFICATION_PENDING") 
+                            : DocumentStatus
+                }))
+            );
+            
             setDeviceDetails(documentResponse.data.jsonData.deviceDetails);
             setVehicleDetails(documentResponse.data.jsonData.vehicleDetails);
             setDriverDetails(documentResponse.data.jsonData.driverDetails)
@@ -819,7 +829,7 @@ const RiderDetail = () => {
                                                     <Select
                                                         id="role"
                                                         value={order.status || ""}
-                                                        options={DocumentStatus}
+                                                        options={order.filteredStatus}
                                                         onChange={(event) => handleDocumentStatus(event, index)}
                                                     />
                                                 </td> 
