@@ -707,12 +707,12 @@ const OrderDetail = () => {
                             activeModal={nearRiderMap}
                             uncontrol
                             className="max-w-5xl"
-                            title=""
+                            title="Near By Rider"
                             centered
                             onClose={() => setNearRiderMap(false)}
                             >
                             <div>
-                                <h6 className="text-center mb-2">Near By Rider</h6>
+                                {/* <h6 className="text-center mb-2">Near By Rider</h6> */}
                                 <LoadScript googleMapsApiKey="AIzaSyDTetPmohnWdWT0lsYV9iT-58Z5Gm4jmgA" preventGoogleFonts={true}>
                                 <div className="overflow-hidden">
                                     <GoogleMap

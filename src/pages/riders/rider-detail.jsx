@@ -575,13 +575,21 @@ const RiderDetail = () => {
                             <Modal
                             activeModal={isMapOpen}
                             uncontrol
-                            className="max-w-5xl"
-                            title=""
+                            className="max-w-5xl text-black"
+                            title="Rider Details"
                             centered
                             onClose={() => setIsMapOpen(false)}
                             >
                             <div>
-                                <h6 className="text-center map mb-2">Map Rider Id: {riderId}; Rider Mobile: {driverDetails?.driverMobileNumber || ""}; Device: {deviceDetails?.deviceMake || ""};  Modal: {deviceDetails?.deviceModel || ""}; OS version: {deviceDetails?.deviceOs || ""}-{deviceDetails?.deviceVersion || ""}; App Version: {deviceDetails?.appVersion || ""}</h6>
+                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5px", marginBottom: "10px", }}>
+                                    <div><strong>Map Rider Id:</strong> {riderId}</div>
+                                    <div><strong>Rider Mobile:</strong> {driverDetails?.driverMobileNumber || ""}</div>
+                                    <div><strong>Device:</strong> {deviceDetails?.deviceMake || ""}</div>
+                                    <div><strong>Model:</strong> {deviceDetails?.deviceModel || ""}</div>
+                                    <div><strong>OS version:</strong> {deviceDetails?.deviceOs || ""}-{deviceDetails?.deviceVersion || ""}</div>
+                                    <div><strong>App Version:</strong> {deviceDetails?.appVersion || ""}</div>
+                                </div>
+                                {/* <h6 className="text-center map mb-2">Map Rider Id: {riderId}; Rider Mobile: {driverDetails?.driverMobileNumber || ""}; Device: {deviceDetails?.deviceMake || ""};  Modal: {deviceDetails?.deviceModel || ""}; OS version: {deviceDetails?.deviceOs || ""}-{deviceDetails?.deviceVersion || ""}; App Version: {deviceDetails?.appVersion || ""}</h6> */}
                                 <LoadScript googleMapsApiKey="AIzaSyDTetPmohnWdWT0lsYV9iT-58Z5Gm4jmgA" preventGoogleFonts={true}>
                                     <div className="overflow-hidden">
                                         <GoogleMap
@@ -597,24 +605,27 @@ const RiderDetail = () => {
                                     </div>
                                     
                                 </LoadScript>
-                               
                             </div>
-                            <div className="row mt-3">
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "5px", marginTop: "20px", fontSize: "14px", }}>
+                                <div><strong>Updated:</strong> {riderLastLocation}</div>
+                                <div><strong>Rider Location:</strong> {riderAddress}</div>
+                            </div>
+                            {/* <div className="row mt-3">
                                 <div className="col-md-3 map">
                                    <p>Updated: {riderLastLocation}</p>
                                 </div>
                                 <div className="col-md-9 text-end map">
                                   <p>Rider Location: {riderAddress}</p>
                                 </div>
-                            </div>
-                            <div className="text-end mt-3">
+                            </div> */}
+                            {/* <div className="text-end mt-3">
                                 <button 
                                     className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
                                     onClick={() => setIsMapOpen(false)}
                                 >
                                     Close
                                 </button>
-                            </div>
+                            </div> */}
                             
                         </Modal>
                     )}
