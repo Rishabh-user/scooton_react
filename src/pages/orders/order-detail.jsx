@@ -720,7 +720,7 @@ const OrderDetail = () => {
                                     <GoogleMap
                                         mapContainerStyle={mapContainerStyle}
                                         center={pickupLocation}
-                                        zoom={15}
+                                        zoom={20}
                                         onLoad={(map) => (mapRef.current = map)}
                                     >
                                         {riderNearLocation?.map((marker, index) => (
