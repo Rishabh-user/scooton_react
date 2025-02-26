@@ -13,7 +13,7 @@ import axiosInstance from "../../api";
 import { GoogleMap, LoadScript,useLoadScript, Marker,InfoWindow  } from '@react-google-maps/api';
 
 const mapContainerStyle = {
-    width: '50vw',
+    width: '100%',
     height: '50vh',
   };
   
