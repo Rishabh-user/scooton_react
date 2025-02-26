@@ -41,6 +41,7 @@ const OrderDetail = () => {
     const [nearTotalRider, setNearTotalRider]= useState(null);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [selectedPickupMarker, setSelectedPickupMarker] = useState(null);
+    const [selectedDroppMarker, setSelectedDropMarker] = useState(null);
     const mapRef = useRef(null);
 
     const openPickupModal = async () => {
@@ -221,6 +222,13 @@ const OrderDetail = () => {
         lng: customerDetails?.pickupLocation?.lon,
         address: customerDetails?.pickupAddress,
         name: "Pickup Location"
+    }
+
+    const dropLocation  = {
+        lat: customerDetails?.deliveryLocation?.lat, 
+        lng: customerDetails?.deliveryLocation?.lon,
+        address: customerDetails?.deliveryAddress,
+        name: "Drop Location"
     }
 
     return (
@@ -760,6 +768,26 @@ const OrderDetail = () => {
                                             <div style={{ padding: "5px", fontSize: "14px" }}>
                                                 <strong>{selectedPickupMarker.name}</strong> <br />
                                                 {selectedPickupMarker.address}
+                                            </div>
+                                            </InfoWindow>
+                                        )}
+                                        <Marker 
+                                            position={dropLocation}
+                                            icon={{
+                                                url: "../../../public/Droppoint.png",
+                                            }}
+                                            onClick={() => setSelectedDropMarker(dropLocation)}
+                                        />
+
+                                        {selectedDroppMarker && (
+                                            <InfoWindow 
+                                            position={selectedDroppMarker} 
+                                            
+                                            onCloseClick={() => setSelectedDropMarker(null)}
+                                            >
+                                            <div style={{ padding: "5px", fontSize: "14px" }}>
+                                                <strong>{selectedDroppMarker.name}</strong> <br />
+                                                {selectedDroppMarker.address}
                                             </div>
                                             </InfoWindow>
                                         )}
