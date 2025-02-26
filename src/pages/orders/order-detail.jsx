@@ -20,6 +20,8 @@ const mapContainerStyle = {
   const markers = [
       { lat: '', lng: '' }
   ];
+ 
+
 
 const OrderDetail = () => {
     const navigate = useNavigate();
@@ -725,6 +727,7 @@ const OrderDetail = () => {
                                             <Marker
                                                 key={index}
                                                 position={{ lat: marker.latitude, lng: marker.longitude }} 
+                                                icon={marker.riderActiveForOrders ? '../../../public/rider-icon-green.png' : '../../../public/rider-icon-red.png'}
                                                 onClick={() => setSelectedMarker(marker)}
                                             />
                                         ))}
