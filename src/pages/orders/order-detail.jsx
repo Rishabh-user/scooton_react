@@ -570,10 +570,10 @@ const OrderDetail = () => {
                                             <td className=" px-6 py-2"> Instruction </td>
                                             <td className=" px-6 py-2 text-end">{orderDetails?.instructionText}</td>
                                         </tr>
-                                        <tr className="border-b border-slate-100 dark:border-slate-700">
+                                        {/* <tr className="border-b border-slate-100 dark:border-slate-700">
                                             <td className=" px-6 py-2"> Type Of Package </td>
                                             <td className=" px-6 py-2 text-end">{packageDetails?.packageType}</td>
-                                        </tr>
+                                        </tr> */}
                                     </>
                                 )}
                                 
@@ -605,9 +605,9 @@ const OrderDetail = () => {
                         <table className="w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                             <tbody>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                                    <td className="px-6 py-2"> Rider Name </td>
+                                    <td className="px-6 py-2"> Rider Name</td>
                                     <td className="text-end px-6 py-2">
-                                        {riderDetails?.riderName || ""}
+                                      <Link to={`/rider-detail/${riderDetails.riderId}`} className="hover:underline">  {riderDetails?.riderName || ""} </Link>
                                     </td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">

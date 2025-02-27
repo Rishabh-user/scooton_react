@@ -106,10 +106,10 @@ const RiderDetail = () => {
             });
 
             
-            setRiderOrderDetail(riderOrderResponse.data.jsonData.orderDetails);
-            setRiderWalletDetail(riderWalletResponse.data.jsonData.walletTxn);
-            setWalletAmount(riderWalletResponse.data.jsonData.balance);
-            setRiderTripDetail(riderTripResponse.data.jsonData.tripDetails);
+            setRiderOrderDetail(riderOrderResponse?.data?.jsonData?.orderDetails);
+            setRiderWalletDetail(riderWalletResponse?.data?.jsonData?.walletTxn);
+            setWalletAmount(riderWalletResponse?.data?.jsonData?.balance);
+            setRiderTripDetail(riderTripResponse?.data?.jsonData?.tripDetails);
             // setDocumentDetail(documentResponse.data.jsonData.documentDetails || []);
             setDocumentDetail(
                 (documentResponse.data.jsonData.documentDetails || []).map(order => ({
@@ -965,7 +965,7 @@ const RiderDetail = () => {
                                         <td colSpan="6" className="text-center p-4">No orders found.</td>
                                         </tr>
                                     ) : (
-                                        paginatedOrders.map((order, index) => (
+                                        paginatedOrders?.map((order, index) => (
                                         <tr key={index} onClick={() => handleViewClick(order.order_Id)}>
                                             <td className="table-td">{startIndex + index + 1}</td>
                                             <td className="table-td">{order.order_Id}</td>
@@ -1050,7 +1050,7 @@ const RiderDetail = () => {
                                             <td colSpan="8" className="text-center p-4">No orders found.</td>
                                         </tr>
                                     ) : (
-                                        walletpaginatedOrders.map((order, index) => (
+                                        walletpaginatedOrders?.map((order, index) => (
                                             <tr key={index}>
                                                 <td className="table-td">{index + 1}</td>
                                                 <td className="table-td">{order.tripId}</td>
@@ -1122,7 +1122,7 @@ const RiderDetail = () => {
                                             <td colSpan="4" className="text-center p-4">No orders found.</td>
                                         </tr>
                                     ) : (
-                                        earringpaginatedOrders.map((order, index) => (
+                                        earringpaginatedOrders?.map((order, index) => (
                                             <tr key={index}>
                                                 <td className="table-td">{index + 1}</td>
                                                 <td className="table-td">{order.tripId}</td>
