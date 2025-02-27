@@ -237,7 +237,9 @@ const OrderDetail = () => {
             <div className="order-header">
                 <div className="md:flex justify-between items-center mb-4 border-bottom">
                     <div className="flex items-center mb-2">
-                        <Link to="/all-orders">
+                        {/* //serviceAreaId=0;customRadio=CANCELLED;page=5;searchId=NONE;searchText=undefined */}
+                        {/* ?orderstatus=${orderDetails?.orderStatus};page=${pageno};searchId=${};searchText=${} */}
+                        <Link to={`/all-orders`}>
                             <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                         </Link>
                         <h4 className="card-title ms-2 mb-0">Order Details</h4>
