@@ -607,7 +607,7 @@ const OrderDetail = () => {
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2"> Rider Name</td>
                                     <td className="text-end px-6 py-2">
-                                      <Link to={`/rider-detail/${riderDetails.riderId}`} className="hover:underline">  {riderDetails?.riderName || ""} </Link>
+                                      <Link to={`/rider-detail/${riderDetails?.riderId}`} className="hover:underline">  {riderDetails?.riderName || ""} </Link>
                                     </td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
