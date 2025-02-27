@@ -591,10 +591,10 @@ const OrderDetail = () => {
                                             <td className=" px-6 py-2"> Package Value</td>
                                             <td className=" px-6 py-2 text-end">{packageDetails?.packageValue}</td>
                                         </tr>
-                                        <tr className="border-b border-slate-100 dark:border-slate-700">
+                                        {/* <tr className="border-b border-slate-100 dark:border-slate-700">
                                             <td className=" px-6 py-2"> Package Type</td>
                                             <td className=" px-6 py-2 text-end">{packageDetails?.isFragile}</td>
-                                        </tr>
+                                        </tr> */}
                                     </>
                                 )}
                             </tbody>
