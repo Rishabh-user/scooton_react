@@ -552,7 +552,7 @@ const AllRiders = () => {
                         displayEmpty
                         inputProps={{ 'aria-label': 'Without label' }}
                       >
-                        <MenuItem value="ALL">All</MenuItem>
+                        <MenuItem value="ALL">ALL</MenuItem>
                         <MenuItem value="NEW_USER">New User</MenuItem>
                         <MenuItem value="REGISTERED">Registered</MenuItem>
                         <MenuItem value="DOCUMENT_PENDING">Document Pending</MenuItem>
