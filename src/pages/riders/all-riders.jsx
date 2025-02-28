@@ -208,29 +208,28 @@ const AllRiders = () => {
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      if(paramslength > 0){
-        if (serviceAreaStatus == "ALL" && riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "RIDERID"){
-          axiosInstance
-            .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            })
-            .then((response) => {
-              
-              setRiderData(response.data);
-              setTotalCount(Number(response.headers["x-total-count"])); 
-              setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
-              console.log("this")
-            })
-            .catch((error) => {
-              console.error("Error fetching user data:", error);
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-        }
+      if (serviceAreaStatus == "ALL" && riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "RIDERID"){
+        axiosInstance
+          .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            
+            setRiderData(response.data);
+            setTotalCount(Number(response.headers["x-total-count"])); 
+            setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+            console.log("this")
+          })
+          .catch((error) => {
+            console.error("Error fetching user data:", error);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
       }
+      
     }
     
   }, [riderstatus, documentstatus, vehicleid,currentPage,pagesizedata]); 
@@ -258,9 +257,9 @@ const AllRiders = () => {
   
   const filterRiders = () => {
     setLoading(true);
-    debugger
+    
     if(riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0" && currentPage === 0) return;
-    debugger
+    
     const token = localStorage.getItem("jwtToken");
     try {
       axiosInstance
@@ -315,7 +314,7 @@ const AllRiders = () => {
     }
    
     const token = localStorage.getItem("jwtToken");
-    if(paramslength > 0){
+
       const endpoint =
         filterby === "RIDERID" && riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0"
           ? `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=0&size=${pagesizedata}`
@@ -337,7 +336,7 @@ const AllRiders = () => {
         .finally(() => {
           setLoading(false);
         });
-    }
+    
   };
 
   useEffect(() => {
@@ -613,7 +612,7 @@ const AllRiders = () => {
                       <button className="btn btn-dark h-100 text-xl" onClick={resetFilters}><Icon icon="heroicons:arrow-path" /></button>
                     </div>
                     <div className="h-100">
-                      <button className="btn btn-dark h-100 py-2" onClick={() => setIsVisible(true)}>Submit</button>
+                      <button className="btn btn-dark h-100 py-2" onClick={() => handleShow}>Submit</button>
                     </div>
                   </div>
                 </div>
@@ -698,7 +697,7 @@ const AllRiders = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {['',100, 200, 500].map((pageSize) => (
+              {[50,100, 200, 500].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>

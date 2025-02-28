@@ -179,13 +179,13 @@ const NonRegisteredRiders = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [activeridercount, setActiveRiderCount] = useState([])
-  const [riderstatus, setRiderStatus]= useState('All')
-  const [documentstatus, setDocumentStatus]= useState('All')
+  const [riderstatus, setRiderStatus]= useState('ALL')
+  const [documentstatus, setDocumentStatus]= useState('ALL')
   const [vehicleid, setVehicleId]= useState('0');
-  const [filterby, setFilterBy] = React.useState("NONE");
+  const [filterby, setFilterBy] = React.useState("RIDERID");
   const [pagesizedata, setpagesizedata]=useState(50);
   const [serviceArea, setServiceArea] = useState([]);
-  const [serviceAreaStatus, setServiceAreaStatus] = useState('All');
+  const [serviceAreaStatus, setServiceAreaStatus] = useState('ALL');
   const [totalCount, setTotalCount] = useState(0);
   const maxPagesToShow = 5;
 
@@ -194,7 +194,7 @@ const NonRegisteredRiders = () => {
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      if(riderstatus === "All" && documentstatus === "All" && vehicleid === "0" && filterby == "NONE"){
+      if(riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "RIDERID"){
         axiosInstance
           .get(`${BASE_URL}/register/rider/get-all-service-area-by-non-registration-status?page=${currentPage}&size=${pagesizedata}`, {
             headers: {
@@ -214,7 +214,7 @@ const NonRegisteredRiders = () => {
           });
       }
     }
-  }, [currentPage,pagesizedata]);
+  }, [riderstatus, documentstatus, vehicleid,currentPage,pagesizedata]);
 
 
   useEffect(() => {
@@ -241,7 +241,7 @@ const NonRegisteredRiders = () => {
   };
   
   const filterRiders = () => {
-    if (riderstatus === "All" && documentstatus === "All" && vehicleid === "0") return;
+    if (riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0") return;
     setLoading(true);
     try {
       axiosInstance
@@ -249,7 +249,7 @@ const NonRegisteredRiders = () => {
           `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/${documentstatus}/0/${riderstatus}/${vehicleid}?page=${currentPage}&size=${pagesizedata}`
         )
         .then((response) => {
-          setFilterBy("NONE");
+          setFilterBy("RIDERID");
           setSearch("")
           setRiderData(response.data);
         })
@@ -274,7 +274,7 @@ const NonRegisteredRiders = () => {
     setFilterBy(value);
 
     // Reset search if "NONE" is selected
-    if (value === "NONE") {
+    if (value === "RIDERID") {
       setSearch("");
     }
   };
@@ -286,31 +286,60 @@ const NonRegisteredRiders = () => {
 
   const FilterOrder = () => {
     setLoading(true);
-    if(filterby !== "NONE"){
+    if(filterby !== "RIDERID"){
       setVehicleId('0');
-      setDocumentStatus('All');
-      setRiderStatus('All');
+      setDocumentStatus('ALL');
+      setRiderStatus('ALL');
     }
-    const endpoint =
-        `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=${pagesizedata}`;
-    
-    axiosInstance
-      .get(endpoint)
-      .then((response) => {
-        setRiderData(response.data); 
-      })
-      .catch((error) => {
-        console.error("Error fetching rider data:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      const endpoint =
+          `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=${currentPage}&size=${pagesizedata}`;
+      
+      axiosInstance
+        .get(endpoint)
+        .then((response) => {
+          setRiderData(response.data); 
+        })
+        .catch((error) => {
+          console.error("Error fetching rider data:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
   };
 
   useEffect(() => {
-      FilterOrder();
-    
-  }, [filterby, search, currentPage,pagesizedata]);  
+    if(search !== ''){
+       FilterOrder();
+    }
+  }, [search, currentPage,pagesizedata]);  
+
+  useEffect(() => {
+    if(search == ''){
+      setLoading(true);
+      const token = localStorage.getItem("jwtToken");
+      if (token) {
+        if(riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "RIDERID"){
+          axiosInstance
+            .get(`${BASE_URL}/register/rider/get-all-service-area-by-non-registration-status?page=${currentPage}&size=${pagesizedata}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              setRiderData(response.data);
+              setTotalCount(Number(response.headers["x-total-count"])); 
+              setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }
+      }
+    }
+  }, [search]); 
   
 
   const columns = useMemo(() => COLUMNS, []);
@@ -357,7 +386,7 @@ const NonRegisteredRiders = () => {
     setCurrentPage(0);  
   };
   // show hide
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const handleShow = () => {
     setIsVisible(!isVisible); 
   };
@@ -413,7 +442,7 @@ const NonRegisteredRiders = () => {
     setRiderStatus("ALL");
     setDocumentStatus("ALL");
     setVehicleId("0");
-    setFilterBy("NONE");
+    setFilterBy("RIDERID");
     setSearch(""); 
   }
   return (
@@ -448,7 +477,7 @@ const NonRegisteredRiders = () => {
                 displayEmpty
                 inputProps={{ 'aria-label': 'Without label' }}
               >
-                <MenuItem value="NONE">NONE</MenuItem>
+                {/* <MenuItem value="NONE">NONE</MenuItem> */}
                 <MenuItem value="RIDERID">Rider ID</MenuItem>
                 <MenuItem value="MOBILE">Mobile Number</MenuItem>
                 <MenuItem value="RIDERNAME">Rider Name</MenuItem>
@@ -459,6 +488,7 @@ const NonRegisteredRiders = () => {
                 name="search"
                 className=""
                 placeholder="Filter By"
+                // disabled={filterby === "NONE"}
                 value={search}
                 onChange={handleSearchChange}
               />
@@ -519,7 +549,7 @@ const NonRegisteredRiders = () => {
                       displayEmpty
                       inputProps={{ 'aria-label': 'Without label' }}
                     >
-                      <MenuItem value="ALL">All</MenuItem>
+                      <MenuItem value="ALL">ALL</MenuItem>
                       <MenuItem value="NEW_USER">New User</MenuItem>
                       <MenuItem value="DOCUMENT_PENDING">Document Pending</MenuItem>
                       <MenuItem value="DOCUMENT_REJECTED">Document Rejected</MenuItem>
@@ -580,7 +610,7 @@ const NonRegisteredRiders = () => {
                     <button className="btn btn-dark h-100 text-xl" onClick={resetFilters}><Icon icon="heroicons:arrow-path" /></button>
                   </div>
                   <div className="h-100">
-                    <button className="btn btn-dark h-100 py-2" onClick={() => setIsVisible(false)}>Submit</button>
+                    <button className="btn btn-dark h-100 py-2" onClick={() => handleShow}>Submit</button>
                   </div>
                 </div>
               </div>              
@@ -663,7 +693,7 @@ const NonRegisteredRiders = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {['',100, 200, 500].map((pageSize) => (
+              {[50,100, 200, 500].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>

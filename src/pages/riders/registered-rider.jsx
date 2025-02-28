@@ -353,7 +353,7 @@ const RegisteredRiders = () => {
     });
   }
   // show hide
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const handleShow = () => {
     setIsVisible(!isVisible); 
   };
@@ -446,7 +446,7 @@ const RegisteredRiders = () => {
                         displayEmpty
                         inputProps={{ 'aria-label': 'Without label' }}
                       >
-                        <MenuItem value="ALL">ALL</MenuItem>
+                        <MenuItem value="All">ALL</MenuItem>
                         <MenuItem value="ONLINE">ONLINE</MenuItem>
                         <MenuItem value="OFFLINE">OFFLINE</MenuItem>
                       </Select>
@@ -505,7 +505,7 @@ const RegisteredRiders = () => {
                       <button className="btn btn-dark h-100 text-xl" onClick={resetFilters}><Icon icon="heroicons:arrow-path" /></button>
                     </div>
                     <div className="h-100">
-                      <button className="btn btn-dark h-100 py-2" onClick={() => setIsVisible(false)}>Submit</button>
+                      <button className="btn btn-dark h-100 py-2" onClick={() => handleShow}>Submit</button>
                     </div>
                   </div>
                 </div>
