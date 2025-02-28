@@ -18,10 +18,13 @@ const profileLabel = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (userData) {
-      requestFCMToken(userData.id);
+    if (userData?.id) {
+      const notficationDone = localStorage.getItem("notficationDone");
+      if(!notficationDone){
+        requestFCMToken(userData.id);
+      }
    }
-  }, [userData]);
+  }, [userData?.id]);
   
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");

@@ -26,17 +26,20 @@ const requestFCMToken = async (userId) => {
 // Send the token to your backend
 const sendTokenToServer = async (userId, token) => {
   try {
+    const usertoken = localStorage.getItem("jwtToken");
     await fetch(
       `https://scooton-api-dev.el.r.appspot.com/notification/admin/${userId}/update-fcm`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${usertoken}`,
         },
-        body: JSON.stringify({ cmToken: token }),
+        body: JSON.stringify({ fcmID: token }),
       }
     );
     console.log("FCM Token saved for user:", userId);
+    localStorage.setItem("notficationDone", "true");
   } catch (error) {
     console.error("Error saving FCM Token:", error);
   }
