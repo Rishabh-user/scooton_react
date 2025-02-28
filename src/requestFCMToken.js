@@ -39,7 +39,7 @@ const sendTokenToServer = async (userId, token) => {
       }
     );
     console.log("FCM Token saved for user:", userId);
-    localStorage.setItem("notficationDone", "true");
+    //localStorage.setItem("notficationDone", "true");
   } catch (error) {
     console.error("Error saving FCM Token:", error);
   }

@@ -19,10 +19,10 @@ const profileLabel = () => {
 
   useEffect(() => {
     if (userData?.id) {
-      const notficationDone = localStorage.getItem("notficationDone");
-      if(!notficationDone){
+      //const notficationDone = localStorage.getItem("notficationDone");
+      //if(!notficationDone){
         requestFCMToken(userData.id);
-      }
+     // }
    }
   }, [userData?.id]);
   
