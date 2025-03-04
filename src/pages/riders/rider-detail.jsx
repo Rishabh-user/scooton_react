@@ -68,6 +68,7 @@ const RiderDetail = () => {
     const[riderLatitude, setRiderLatitude]= useState(null);
     const[riderLongitude, setRiderLongitude] = useState(null);
     const mapRef = useRef(null);
+    const [activeTab, setActiveTab] = useState(0);
     console.log("documentStatus",documentStatus)
 
     // useEffect(() => {
@@ -90,32 +91,14 @@ const RiderDetail = () => {
         try {
           const token = localStorage.getItem('jwtToken');
           if (token) {
-            const riderOrderResponse = await axiosInstance.get(`${BASE_URL}/rider/get-rider-orders/${riderId}?endDate=2025-03-31&page=0&size=500&startDate=2022-12-01`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-            const riderWalletResponse = await axiosInstance.get(`${BASE_URL}/rider/v2/get-rider-wallet/${riderId}`, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-            });
-            const riderTripResponse = await axiosInstance.get(`${BASE_URL}/rider/get-rider-earning/${riderId}?endDate=2025-03-31&page=0&size=500&startDate=2022-12-01`, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-            });
+            
             const documentResponse = await axiosInstance.get(`${BASE_URL}/login/get-rider-full-details/${riderId}`, {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
             });
 
-            
-            setRiderOrderDetail(riderOrderResponse?.data?.jsonData?.orderDetails);
-            setRiderWalletDetail(riderWalletResponse?.data?.jsonData?.walletTxn);
-            setWalletAmount(riderWalletResponse?.data?.jsonData?.balance);
-            setRiderTripDetail(riderTripResponse?.data?.jsonData?.tripDetails);
+           
             // setDocumentDetail(documentResponse.data.jsonData.documentDetails || []);
             setDocumentDetail(
                 (documentResponse.data.jsonData.documentDetails || []).map(order => ({
@@ -386,7 +369,7 @@ const RiderDetail = () => {
   
     const paginatedOrders = riderOrderDetail?.slice(startIndex, endIndex);
   
-    const totalPages = Math.ceil(riderOrderDetail?.length / itemsPerPage);
+    const totalPages = Math.ceil(riderOrderDetail?.length / itemsPerPage)  || 0;
   
     const goToPage = (page) => {
       if (page > 0 && page <= totalPages) {
@@ -460,6 +443,28 @@ const RiderDetail = () => {
 
 
   };
+
+    const orderHistory = async () => {
+        const riderOrderResponse = await axiosInstance.get(`${BASE_URL}/rider/get-rider-orders/${riderId}?endDate=2025-03-31&page=0&size=500&startDate=2022-12-01`, {
+    
+        });
+        setRiderOrderDetail(riderOrderResponse?.data?.jsonData?.orderDetails);
+     
+    }
+
+    const orderWallet = async () => {
+        const riderWalletResponse = await axiosInstance.get(`${BASE_URL}/rider/v2/get-rider-wallet/${riderId}`, {
+        });
+        setRiderWalletDetail(riderWalletResponse?.data?.jsonData?.walletTxn);
+        setWalletAmount(riderWalletResponse?.data?.jsonData?.balance);
+    }
+
+    const earning = async () => {
+        const riderTripResponse = await axiosInstance.get(`${BASE_URL}/rider/get-rider-earning/${riderId}?endDate=2025-03-31&page=0&size=500&startDate=2022-12-01`, {
+          
+        });
+        setRiderTripDetail(riderTripResponse?.data?.jsonData?.tripDetails);
+    }
 
 
 
@@ -587,9 +592,9 @@ const RiderDetail = () => {
                     <div className="max-w-[800px] mx-auto">
                         <TabList>
                             <Tab>Rider Details</Tab>
-                            <Tab>Order History</Tab>
-                            <Tab>Wallet</Tab>
-                            <Tab>Earning</Tab>
+                            <Tab onClick={() => orderHistory()}>Order History</Tab>
+                            <Tab onClick={() => orderWallet()}>Wallet</Tab>
+                            <Tab onClick={() => earning()}>Earning</Tab>
                         </TabList>
                     </div>
                     <TabPanel>
@@ -939,7 +944,7 @@ const RiderDetail = () => {
                                 >
                                 Previous
                             </button>
-                            {[...Array(totalPages).keys()].map((page) => (
+                            {[...Array(totalPages)?.keys()]?.map((page) => (
                             <button
                                 key={page}
                                 className={`px-2 py-1 mx-2 rounded ${
@@ -1026,7 +1031,7 @@ const RiderDetail = () => {
                                 Previous
                             </button>
 
-                            {[...Array(wallettotalPages).keys()].map((page) => (
+                            {[...Array(wallettotalPages)?.keys()]?.map((page) => (
                                 <button
                                     key={page}
                                     className={`px-2 py-1 mx-2 rounded ${
@@ -1095,7 +1100,7 @@ const RiderDetail = () => {
                                 Previous
                             </button>
 
-                            {[...Array(earringtotalPages).keys()].map((page) => (
+                            {[...Array(earringtotalPages)?.keys()]?.map((page) => (
                                 <button
                                     key={page}
                                     className={`px-2 py-1 mx-2 rounded ${

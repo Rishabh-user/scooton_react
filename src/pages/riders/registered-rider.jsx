@@ -483,7 +483,7 @@ const RegisteredRiders = () => {
                           displayEmpty
                           inputProps={{ 'aria-label': 'Without label' }}
                         >
-                          <MenuItem value="NONE">NONE</MenuItem>
+                          <MenuItem value="NONE">Select</MenuItem>
                           <MenuItem value="RIDERID">Rider ID</MenuItem>
                           <MenuItem value="MOBILE">Mobile Number</MenuItem>
                           <MenuItem value="RIDERNAME">Rider Name</MenuItem>

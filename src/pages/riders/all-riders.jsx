@@ -269,8 +269,6 @@ const AllRiders = () => {
 
     if (riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0" && currentPage === 0) return;
 
-    
-
     const token = localStorage.getItem("jwtToken");
     try {
       axiosInstance
@@ -356,10 +354,10 @@ const AllRiders = () => {
 
   useEffect(() => {
     if (rapf == true) {
-      
-      FilterOrder();
+      if(filterby !== 'NONE' && search !== "")
+        FilterOrder();
     }
-  }, [search, currentPage, pagesizedata, rapf]);
+  }, [filterby,search, currentPage, pagesizedata, rapf]);
 
   useEffect(() => {
     if (rapf == true) {

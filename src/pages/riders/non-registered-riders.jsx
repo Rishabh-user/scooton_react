@@ -314,6 +314,11 @@ const NonRegisteredRiders = () => {
   }, [search, currentPage,pagesizedata]);  
 
   useEffect(() => {
+    if(filterby !== "RIDERID" && search !== "")
+      FilterOrder();
+  },[filterby,search, currentPage, pagesizedata])
+
+  useEffect(() => {
     if(search == ''){
       setLoading(true);
       const token = localStorage.getItem("jwtToken");
