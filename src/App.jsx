@@ -61,14 +61,26 @@ const messaging = getMessaging(app);
 
 function App() {
 
+  // useEffect(() => {
+  //   // Listen for messages when app is in foreground
+  //   onMessage(messaging, (payload) => {
+  //     console.log("Foreground Notification:", payload);
+  //     alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
+  //     toast.info(`${payload.notification.title}: ${payload.notification.body}`);
+  //   });
+  // }, []);
+
   useEffect(() => {
-    // Listen for messages when app is in foreground
+    const customSoundUrl = 'https://securestaging.net/scooton/notification.mp3';
+    const customSound = new Audio(customSoundUrl);
     onMessage(messaging, (payload) => {
-      console.log("Foreground Notification:", payload);
-      alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
-      toast.info(`${payload.notification.title}: ${payload.notification.body}`);
+        console.log("Foreground Notification:", payload);
+        customSound.play();
+        //alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
+        toast.info(`${payload.notification.title}: ${payload.notification.body}`);
     });
-  }, []);
+}, []);
+
  
   return (
     <main className="App  relative h-100">
