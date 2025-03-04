@@ -18,7 +18,7 @@ import Button from "../../components/ui/Button";
 import axiosInstance from "../../api";
 
 
-const COLUMNS = ({ currentPage, documentstatus, riderstatus,vehicleid }) =>[
+const COLUMNS = ({ currentPage, documentstatus, riderstatus, vehicleid }) => [
   {
     Header: "Sr. No.",
     accessor: (row, i) => i + 1,
@@ -81,7 +81,7 @@ const COLUMNS = ({ currentPage, documentstatus, riderstatus,vehicleid }) =>[
         second: "2-digit",
         hour12: true
       });
-      return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
+      return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br /><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },
   {
@@ -100,7 +100,7 @@ const COLUMNS = ({ currentPage, documentstatus, riderstatus,vehicleid }) =>[
         second: "2-digit",
         hour12: true
       });
-      return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
+      return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br /><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },
   {
@@ -133,9 +133,9 @@ const COLUMNS = ({ currentPage, documentstatus, riderstatus,vehicleid }) =>[
         <div>
           {row.row.original.riderInfo?.vehicleId === 1 ? (
             <img className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
-          ): row.row.original.riderInfo?.vehicleId === 2 ? (
-              <img className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
-          ): row.row.original.riderInfo?.vehicleId === 4 ? (
+          ) : row.row.original.riderInfo?.vehicleId === 2 ? (
+            <img className="object-cover" width={30} alt="twowheeler" class="mr-2 rounded-0" src={twowheeler}></img>
+          ) : row.row.original.riderInfo?.vehicleId === 4 ? (
             <img className="object-cover" width={30} alt="threewheeler" class="mr-2 rounded-0" src={threewheeler}></img>
           ) : row.row.original.riderInfo?.vehicleId === 3 ? (
             <img className=" object-cover" width={30} alt="tataace" class="mr-2 rounded-0" src={tataace}></img>
@@ -176,39 +176,48 @@ const AllRiders = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [activeridercount, setActiveRiderCount] = useState([])
-  const [riderstatus, setRiderStatus]= useState('ALL')
-  const [documentstatus, setDocumentStatus]= useState('ALL')
-  const [vehicleid, setVehicleId]= useState('0');
-  const [filterby, setFilterBy] = React.useState("RIDERID");
-  const [pagesizedata, setpagesizedata]=useState(50);
+  const [riderstatus, setRiderStatus] = useState('ALL')
+  const [documentstatus, setDocumentStatus] = useState('ALL')
+  const [vehicleid, setVehicleId] = useState('0');
+  const [filterby, setFilterBy] = React.useState("NONE");
+  const [pagesizedata, setpagesizedata] = useState(50);
   const [serviceArea, setServiceArea] = useState([]);
   const [serviceAreaStatus, setServiceAreaStatus] = useState('ALL');
   const [totalCount, setTotalCount] = useState(0);
-  const[paramslength, setParamLength] = useState(0);
+  const [paramslength, setParamLength] = useState(0);
   const maxPagesToShow = 5;
   const [searchParams] = useSearchParams();
+  const [rapf, setRapf] = useState(false)
 
   useEffect(() => {
-    console.log([...searchParams.entries()].length);  
+    console.log([...searchParams.entries()].length);
     setParamLength([...searchParams.entries()].length);
     const statusFromUrl = searchParams.get("riderStatus") || "ALL";
     const docStatusFromUrl = searchParams.get("documentStatus") || "ALL";
     const vehicleIdFromUrl = searchParams.get("vehicleid") || "0";
     const pageFromUrl = searchParams.get("page") || "0";
-  
+    console.log("statusFromUrl",statusFromUrl)
     setRiderStatus(statusFromUrl);
     setDocumentStatus(docStatusFromUrl);
     setVehicleId(vehicleIdFromUrl);
     setCurrentPage(pageFromUrl);
-  }, [searchParams]);  
+    setRapf(true);
+
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!searchParams) {
+      setRapf(true);
+    }
+  }, [])
 
 
   useEffect(() => {
-    console.log("riderstatus",riderstatus)
+    console.log("documentstatus", documentstatus)
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      if (serviceAreaStatus == "ALL" && riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "RIDERID"){
+      if (rapf == true && serviceAreaStatus == "ALL" && riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "NONE" && paramslength == 0) {
         axiosInstance
           .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
             headers: {
@@ -216,10 +225,9 @@ const AllRiders = () => {
             },
           })
           .then((response) => {
-            
             setRiderData(response.data);
-            setTotalCount(Number(response.headers["x-total-count"])); 
-            setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+            setTotalCount(Number(response.headers["x-total-count"]));
+            setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize));
             console.log("this")
           })
           .catch((error) => {
@@ -229,10 +237,10 @@ const AllRiders = () => {
             setLoading(false);
           });
       }
-      
     }
-    
-  }, [riderstatus, documentstatus, vehicleid,currentPage,pagesizedata]); 
+  }, [riderstatus, documentstatus, vehicleid, currentPage, pagesizedata, rapf]);
+
+
 
   useEffect(() => {
     try {
@@ -246,20 +254,23 @@ const AllRiders = () => {
   const riderStatusFilter = (event) => {
     setRiderStatus(event.target.value);
   };
-  
+
   const documentStatusFilter = (event) => {
     setDocumentStatus(event.target.value);
   };
-  
+
   const vehicleIdFilter = (event) => {
     setVehicleId(event.target.value);
   };
-  
+
+
   const filterRiders = () => {
     setLoading(true);
+
+    if (riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0" && currentPage === 0) return;
+
     
-    if(riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0" && currentPage === 0) return;
-    
+
     const token = localStorage.getItem("jwtToken");
     try {
       axiosInstance
@@ -270,9 +281,9 @@ const AllRiders = () => {
               Authorization: `Bearer ${token}`,
             },
           })
-        
+
         .then((response) => {
-          setFilterBy("RIDERID");
+          setFilterBy("NONE");
           setSearch("");
           setRiderData(response.data);
           console.log("ertyd")
@@ -286,17 +297,18 @@ const AllRiders = () => {
       console.error("Error fetching user data:", error);
     }
   };
-  
+
+
+
   useEffect(() => {
     filterRiders();
-  }, [riderstatus, documentstatus, vehicleid, currentPage,pagesizedata]);
-
+  }, [riderstatus, documentstatus, vehicleid, currentPage, pagesizedata]);
 
   const handleChange = (event) => {
     const value = event.target.value;
     setFilterBy(value);
 
-    if (value === "RIDERID") {
+    if (filterby === "NONE") {
       setSearch("");
     }
   };
@@ -307,44 +319,61 @@ const AllRiders = () => {
 
   const FilterOrder = () => {
     setLoading(true);
-    if(filterby !== "RIDERID"){
-      setVehicleId('0');
-      setDocumentStatus('All');
-      setRiderStatus('All');
-    }
-   
-    const token = localStorage.getItem("jwtToken");
-
-      const endpoint =
-        filterby === "RIDERID" && riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0"
-          ? `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=0&size=${pagesizedata}`
-          : `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=0&size=${pagesizedata}`;
+    if (filterby == "NONE") {
+      if(riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0"){
+        setVehicleId('0');
+        setDocumentStatus('ALL');
+        setRiderStatus('ALL');
+      }
       
-      axiosInstance
-        .get(endpoint,{
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setRiderData(response.data); 
-          console.log("ertyui")
-        })
-        .catch((error) => {
-          console.error("Error fetching rider data:", error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    
+    }
+  
+    const token = localStorage.getItem("jwtToken");
+  
+    const endpoint =
+      filterby === "NONE" && riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0"
+        ? `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=0&size=${pagesizedata}`
+        : `${BASE_URL}/register/rider/get-rider-by-mobilenumber-or-riderid/${filterby}/${search}?page=0&size=${pagesizedata}`;
+  
+    axiosInstance
+      .get(endpoint, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setRiderData(response.data);
+        console.log("ertyui")
+      })
+      .catch((error) => {
+        console.error("Error fetching rider data:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
   };
 
   useEffect(() => {
+    if (rapf == true) {
+      
       FilterOrder();
-  }, [filterby, search, currentPage,pagesizedata]);
+    }
+  }, [search, currentPage, pagesizedata, rapf]);
+
+  useEffect(() => {
+    if (rapf == true) {
+      if(filterby == 'NONE'){
+        setSearch("")
+        setFilterBy("NONE")
+        FilterOrder();
+        
+      }
+    }
+  }, [filterby]);
 
 
-  const columns = useMemo(() => COLUMNS( {currentPage, documentstatus, riderstatus,vehicleid} ), [ currentPage, documentstatus, riderstatus,vehicleid ]);
+  const columns = useMemo(() => COLUMNS({ currentPage, documentstatus, riderstatus, vehicleid }), [currentPage, documentstatus, riderstatus, vehicleid]);
   const tableInstance = useTable(
     {
       columns,
@@ -353,8 +382,8 @@ const AllRiders = () => {
         pageIndex: currentPage,
         pageSize: 10,
       },
-      manualPagination: true, 
-      pageCount, 
+      manualPagination: true,
+      pageCount,
     },
     useSortBy,
     usePagination,
@@ -383,13 +412,13 @@ const AllRiders = () => {
   }, [pageIndex]);
 
   const handlePageSizeChange = (newSize) => {
-    setpagesizedata(newSize); 
-    setCurrentPage(0);  
+    setpagesizedata(newSize);
+    setCurrentPage(0);
   };
   // show hide
   const [isVisible, setIsVisible] = useState(true);
   const handleShow = () => {
-    setIsVisible(!isVisible); 
+    setIsVisible(!isVisible);
   };
   // get Service area 
   useEffect(() => {
@@ -412,8 +441,8 @@ const AllRiders = () => {
           `${BASE_URL}/order-history/search-city-wide-orders/${serviceAreaStatus}?page=${currentPage}&size=${pagesizedata}`,
           {
             orderType: "PLACED",
-            searchType: "NONE", 
-            number: 0,           
+            searchType: "NONE",
+            number: 0,
           },
           { headers: { Authorization: `Bearer ${token}` } },
         )
@@ -429,7 +458,7 @@ const AllRiders = () => {
       console.error("Error fetching user data:", error);
     }
   };
-  
+
   // useEffect(() => {
   //   filterOrders();
   // }, [serviceAreaStatus, currentPage]);
@@ -443,8 +472,8 @@ const AllRiders = () => {
     setRiderStatus("ALL");
     setDocumentStatus("ALL");
     setVehicleId("0");
-    setFilterBy("RIDERID");
-    setSearch(""); 
+    setFilterBy("NONE");
+    setSearch("");
   }
 
   return (
@@ -471,7 +500,7 @@ const AllRiders = () => {
                 </span>
               </div>
             </div>
-            <div className="filterbyRider me-3">                    
+            <div className="filterbyRider me-3">
               <Select
                 id="demo-simple-select"
                 value={filterby}
@@ -479,7 +508,7 @@ const AllRiders = () => {
                 displayEmpty
                 inputProps={{ 'aria-label': 'Without label' }}
               >
-                {/* <MenuItem value="NONE">NONE</MenuItem> */}
+                <MenuItem value="NONE">Select</MenuItem> 
                 <MenuItem value="RIDERID">Rider ID</MenuItem>
                 <MenuItem value="MOBILE">Mobile Number</MenuItem>
                 <MenuItem value="RIDERNAME">Rider Name</MenuItem>
@@ -494,14 +523,14 @@ const AllRiders = () => {
                 onChange={handleSearchChange}
               />
             </div>
-            <div className="rider-filter">            
-              <div className="d-flex justify-content-end">              
+            <div className="rider-filter">
+              <div className="d-flex justify-content-end">
                 <Button className="btn btn-dark desktop-view-filter" onClick={handleShow}>
                   <Icon icon="heroicons:adjustments-horizontal" className="text-[20px]"></Icon>
                 </Button>
               </div>
             </div>
-            
+
           </div>
           {isVisible && (
             <div>
@@ -520,7 +549,7 @@ const AllRiders = () => {
                         <MenuItem value="ALL">ALL</MenuItem>
                         {serviceArea.map((city, index) => (
                           <MenuItem value={city.id} key={index} id={city.id}>{city.name}</MenuItem>
-                        ))}                        
+                        ))}
                       </Select>
                     </FormControl>
                   </div>
@@ -617,7 +646,7 @@ const AllRiders = () => {
                   </div>
                 </div>
               </div>
-              <div className="backdrop-filter"  onClick={() => setIsVisible(false)} ></div>
+              <div className="backdrop-filter" onClick={() => setIsVisible(false)} ></div>
             </div>
           )}
         </div>
@@ -661,8 +690,8 @@ const AllRiders = () => {
                     className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700"
                     {...getTableBodyProps()}
                   >
-                        {page.length > 0 ? (
-                          page.map((row) => {
+                    {page.length > 0 ? (
+                      page.map((row) => {
                         prepareRow(row);
                         return (
                           <tr {...row.getRowProps()} key={row.id}>
@@ -697,7 +726,7 @@ const AllRiders = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[50,100, 200, 500].map((pageSize) => (
+              {[50, 100, 200, 500].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
@@ -732,10 +761,10 @@ const AllRiders = () => {
                   </button>
                 </li>
                 {(() => {
-                  const totalPages = pageCount; 
-                  const currentGroup = Math.floor(currentPage / maxPagesToShow); 
-                  const startPage = currentGroup * maxPagesToShow; 
-                  const endPage = Math.min(startPage + maxPagesToShow, totalPages); 
+                  const totalPages = pageCount;
+                  const currentGroup = Math.floor(currentPage / maxPagesToShow);
+                  const startPage = currentGroup * maxPagesToShow;
+                  const endPage = Math.min(startPage + maxPagesToShow, totalPages);
 
                   return (
                     <>
@@ -752,8 +781,8 @@ const AllRiders = () => {
                           <li key={pageNumber}>
                             <button
                               className={` ${pageNumber === currentPage
-                                  ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium"
-                                  : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal"
+                                ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium"
+                                : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal"
                                 } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150 `}
                               onClick={() => setCurrentPage(pageNumber)}
                             >
