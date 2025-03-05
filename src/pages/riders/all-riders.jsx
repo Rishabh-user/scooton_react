@@ -374,6 +374,34 @@ const AllRiders = () => {
     }
   }, [filterby]);
 
+  useEffect(() => {
+    if(search == ''){
+      setLoading(true);
+      const token = localStorage.getItem("jwtToken");
+      if (token) {
+        if(rapf == true && riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0" ){
+          axiosInstance
+            .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              setRiderData(response.data);
+              setTotalCount(Number(response.headers["x-total-count"])); 
+              setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }
+      }
+    }
+  }, [search]); 
+
 
   const columns = useMemo(() => COLUMNS({ currentPage, documentstatus, riderstatus, vehicleid }), [currentPage, documentstatus, riderstatus, vehicleid]);
   const tableInstance = useTable(
@@ -391,6 +419,7 @@ const AllRiders = () => {
     usePagination,
     useRowSelect
   );
+
 
   const {
     getTableProps,
@@ -697,6 +726,7 @@ const AllRiders = () => {
                         prepareRow(row);
                         return (
                           <tr {...row.getRowProps()} key={row.id}>
+                            
                             {row.cells.map((cell) => (
                               <td {...cell.getCellProps()} className="table-td" key={cell.column.id}>
                                 {cell.render("Cell")}

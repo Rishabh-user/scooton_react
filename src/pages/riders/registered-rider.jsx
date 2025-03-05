@@ -382,6 +382,34 @@ const RegisteredRiders = () => {
       setLoading(false); 
     });
   }
+
+  useEffect(() => {
+    if(search == ''){
+      setLoading(true);
+      const token = localStorage.getItem("jwtToken");
+      if (token) {
+        if(rapf == true && riderstatus === "ALL" && vehicleid === "0" ){
+          axiosInstance
+            .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              setRiderData(response.data);
+              setTotalCount(Number(response.headers["x-total-count"])); 
+              setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }
+      }
+    }
+  }, [search]); 
   // show hide
   const [isVisible, setIsVisible] = useState(true);
   const handleShow = () => {
@@ -389,14 +417,12 @@ const RegisteredRiders = () => {
   };
    // Clear the search input field
    const resetFilters = () => {
-    debugger
     // setServiceAreaStatus("ALL");
     setRiderStatus("ALL");
     //setDocumentStatus("ALL");
     setVehicleId("0");
     setFilterBy("NONE");
     setSearch(""); 
-    debugger
   }
 
   
