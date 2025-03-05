@@ -70,14 +70,24 @@ function App() {
   //   });
   // }, []);
 
+  const CustomToast = ({ title, message }) => (
+    <div>
+      <h4 className="font-medium text-base capitalize text-slate-900">{title}</h4>
+      <p className="text-slate-900 text-sm">{message}</p>
+    </div>
+  );
+
   useEffect(() => {
     const customSoundUrl = 'https://securestaging.net/scooton/notification.mp3';
     const customSound = new Audio(customSoundUrl);
     onMessage(messaging, (payload) => {
-        console.log("Foreground Notification:", payload);
         customSound.play();
-        //alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
-        toast.info(`${payload.notification.title}: ${payload.notification.body}`);
+        //toast.error(`${payload.notification.title}: ${payload.notification.body}`);
+        toast(<CustomToast title={payload.notification.title} message={payload.notification.body} />, {
+          type: "error",
+          autoClose: 10000,
+          icon: "🔔", // Custom emoji icon
+        });
     });
 }, []);
 
