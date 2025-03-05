@@ -180,7 +180,7 @@ const AllRiders = () => {
   const [documentstatus, setDocumentStatus] = useState('ALL')
   const [vehicleid, setVehicleId] = useState('0');
   const [filterby, setFilterBy] = React.useState("NONE");
-  const [pagesizedata, setpagesizedata] = useState(50);
+  const [pagesizedata, setpagesizedata] = useState(10);
   const [serviceArea, setServiceArea] = useState([]);
   const [serviceAreaStatus, setServiceAreaStatus] = useState('ALL');
   const [totalCount, setTotalCount] = useState(0);
@@ -217,7 +217,7 @@ const AllRiders = () => {
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      if (rapf == true && serviceAreaStatus == "ALL" && riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "NONE" && paramslength == 0) {
+      if (rapf == true && serviceAreaStatus == "ALL" && riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "NONE" ) {
         axiosInstance
           .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/ALL/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
             headers: {
@@ -225,9 +225,11 @@ const AllRiders = () => {
             },
           })
           .then((response) => {
+            console.log("res", response)
             setRiderData(response.data);
             setTotalCount(Number(response.headers["x-total-count"]));
-            setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize));
+            // setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize));
+            setPageCount(Number(response.headers["x-total-pages"]));
             console.log("this")
           })
           .catch((error) => {
@@ -726,7 +728,7 @@ const AllRiders = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[50, 100, 200, 500].map((pageSize) => (
+              {[10, 20, 30, 40, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>

@@ -185,7 +185,7 @@ const NonRegisteredRiders = () => {
   const [documentstatus, setDocumentStatus]= useState('ALL')
   const [vehicleid, setVehicleId]= useState('0');
   const [filterby, setFilterBy] = React.useState("RIDERID");
-  const [pagesizedata, setpagesizedata]=useState(50);
+  const [pagesizedata, setpagesizedata]=useState(10);
   const [serviceArea, setServiceArea] = useState([]);
   const [serviceAreaStatus, setServiceAreaStatus] = useState('ALL');
   const [totalCount, setTotalCount] = useState(0);
@@ -221,7 +221,7 @@ const NonRegisteredRiders = () => {
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      if(rapf == true && riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "RIDERID" && paramslength == 0){
+      if(rapf == true && riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "RIDERID" ){
         axiosInstance
           .get(`${BASE_URL}/register/rider/get-all-service-area-by-non-registration-status?page=${currentPage}&size=${pagesizedata}`, {
             headers: {
@@ -231,7 +231,8 @@ const NonRegisteredRiders = () => {
           .then((response) => {
             setRiderData(response.data);
             setTotalCount(Number(response.headers["x-total-count"])); 
-            setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+            //setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+            setPageCount(Number(response.headers["x-total-pages"]));
           })
           .catch((error) => {
             console.error("Error fetching user data:", error);
@@ -727,7 +728,7 @@ const NonRegisteredRiders = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[50,100, 200, 500].map((pageSize) => (
+              {[10,20,30,40,50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>

@@ -236,7 +236,8 @@ const RegisteredRiders = () => {
           .then((response) => {
             setRiderData(response.data);
             setTotalCount(Number(response.headers["x-total-count"])); 
-            setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+            //setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+            setPageCount(Number(response.headers["x-total-pages"]));
           })
           .catch((error) => {
             console.error("Error fetching user data:", error);
@@ -617,7 +618,7 @@ const RegisteredRiders = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[10, 25, 50].map((pageSize) => (
+              {[10, 20, 30,40,50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
