@@ -231,7 +231,6 @@ const NonRegisteredRiders = () => {
           .then((response) => {
             setRiderData(response.data);
             setTotalCount(Number(response.headers["x-total-count"])); 
-            //setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
             setPageCount(Number(response.headers["x-total-pages"]));
           })
           .catch((error) => {
@@ -283,6 +282,8 @@ const NonRegisteredRiders = () => {
           setFilterBy("RIDERID");
           setSearch("")
           setRiderData(response.data);
+          setTotalCount(Number(response.headers["x-total-count"]));
+          setPageCount(Number(response.headers["x-total-pages"]));
         })
         .catch((error) => {
           console.error("Error fetching rider data:", error);
@@ -329,6 +330,8 @@ const NonRegisteredRiders = () => {
         .get(endpoint)
         .then((response) => {
           setRiderData(response.data); 
+          setTotalCount(Number(response.headers["x-total-count"]));
+          setPageCount(Number(response.headers["x-total-pages"]));
         })
         .catch((error) => {
           console.error("Error fetching rider data:", error);
@@ -363,8 +366,8 @@ const NonRegisteredRiders = () => {
             })
             .then((response) => {
               setRiderData(response.data);
-              setTotalCount(Number(response.headers["x-total-count"])); 
-              setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+              setTotalCount(Number(response.headers["x-total-count"]));
+              setPageCount(Number(response.headers["x-total-pages"]));
             })
             .catch((error) => {
               console.error("Error fetching user data:", error);

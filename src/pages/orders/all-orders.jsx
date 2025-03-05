@@ -261,7 +261,7 @@ const AllOrders = () => {
   const [notification, setNotification] = useState("ALL");
   const [mobile, setMobile]= useState();
   const [notificationid,setNotifictionId]= useState();
-  const [pagesizedata, setpagesizedata]=useState(50);
+  const [pagesizedata, setpagesizedata]=useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [serviceArea, setServiceArea] = useState([]);
   const [serviceAreaStatus, setServiceAreaStatus] = useState('All');
@@ -807,7 +807,7 @@ const AllOrders = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[100, 300, 500].map((pageSize) => (
+              {[10,20, 30,40, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>

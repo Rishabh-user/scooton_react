@@ -278,6 +278,8 @@ const RegisteredRiders = () => {
           setFilterBy("NONE");
           setSearch("");
           setRiderData(response.data);
+          setTotalCount(Number(response.headers["x-total-count"]));
+          setPageCount(Number(response.headers["x-total-pages"]));
         })
         .catch((error) => {
           console.error("Error fetching rider data:", error);
@@ -374,6 +376,8 @@ const RegisteredRiders = () => {
     ).then((response) => {
     
       setRiderData(response.data);
+      setTotalCount(Number(response.headers["x-total-count"]));
+      setPageCount(Number(response.headers["x-total-pages"]));
     })
     .catch((error) => {
       console.error("Error fetching user data:", error);
@@ -388,7 +392,8 @@ const RegisteredRiders = () => {
       setLoading(true);
       const token = localStorage.getItem("jwtToken");
       if (token) {
-        if(rapf == true && riderstatus === "ALL" && vehicleid === "0" ){
+        if(rapf == true && riderstatus === "ALL" 
+          && vehicleid === "0" ){
           axiosInstance
             .get(`${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/REGISTERED/0/ALL/0?page=${currentPage}&size=${pagesizedata}`, {
               headers: {
@@ -397,8 +402,8 @@ const RegisteredRiders = () => {
             })
             .then((response) => {
               setRiderData(response.data);
-              setTotalCount(Number(response.headers["x-total-count"])); 
-              setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+              setTotalCount(Number(response.headers["x-total-count"]));
+              setPageCount(Number(response.headers["x-total-pages"])); 
             })
             .catch((error) => {
               console.error("Error fetching user data:", error);

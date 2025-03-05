@@ -16,6 +16,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from "../../components/ui/Button";
 import axiosInstance from "../../api";
+import { isRef } from "react-calendar/dist/cjs/shared/propTypes";
 
 
 const COLUMNS = ({ currentPage, documentstatus, riderstatus, vehicleid }) => [
@@ -201,6 +202,7 @@ const AllRiders = () => {
     setDocumentStatus(docStatusFromUrl);
     setVehicleId(vehicleIdFromUrl);
     setCurrentPage(pageFromUrl);
+    console.log("currentPage",currentPage)
     setRapf(true);
 
   }, [searchParams]);
@@ -213,7 +215,6 @@ const AllRiders = () => {
 
 
   useEffect(() => {
-    console.log("documentstatus", documentstatus)
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
@@ -225,7 +226,6 @@ const AllRiders = () => {
             },
           })
           .then((response) => {
-            console.log("res", response)
             setRiderData(response.data);
             setTotalCount(Number(response.headers["x-total-count"]));
             // setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize));
@@ -277,7 +277,7 @@ const AllRiders = () => {
     try {
       axiosInstance
         .get(
-          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/${documentstatus}/${currentPage}/${riderstatus}/${vehicleid}?page=${currentPage}&size=${pagesizedata}`,
+          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/${documentstatus}/0/${riderstatus}/${vehicleid}?page=${currentPage}&size=${pagesizedata}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -285,6 +285,8 @@ const AllRiders = () => {
           })
 
         .then((response) => {
+          setTotalCount(Number(response.headers["x-total-count"]));
+          setPageCount(Number(response.headers["x-total-pages"]));
           setFilterBy("NONE");
           setSearch("");
           setRiderData(response.data);
@@ -345,7 +347,8 @@ const AllRiders = () => {
       })
       .then((response) => {
         setRiderData(response.data);
-        console.log("ertyui")
+        setTotalCount(Number(response.headers["x-total-count"]));
+        setPageCount(Number(response.headers["x-total-pages"]));
       })
       .catch((error) => {
         console.error("Error fetching rider data:", error);
@@ -388,8 +391,8 @@ const AllRiders = () => {
             })
             .then((response) => {
               setRiderData(response.data);
-              setTotalCount(Number(response.headers["x-total-count"])); 
-              setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pageSize)); 
+              setTotalCount(Number(response.headers["x-total-count"]));
+              setPageCount(Number(response.headers["x-total-pages"]));
             })
             .catch((error) => {
               console.error("Error fetching user data:", error);
@@ -818,7 +821,7 @@ const AllRiders = () => {
                                 } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150 `}
                               onClick={() => setCurrentPage(pageNumber)}
                             >
-                              {pageNumber + 1}
+                            {pageNumber + 1}
                             </button>
                           </li>
                         );
