@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Icon from "@/components/ui/Icon";
 import {useTable, useRowSelect, useSortBy, usePagination,} from "react-table";
+import { useSearchParams  } from "react-router-dom";
 import Card from "../../components/ui/Card";
 import { BASE_URL } from "../../api";
 import Loading from "../../components/Loading";
@@ -18,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import Tooltip from "@/components/ui/Tooltip";
 import axiosInstance from "../../api";
 
-const COLUMNS = [
+const COLUMNS = ({ currentPage, documentstatus, riderstatus, vehicleid }) => [
   {
     Header: "Sr. No.",
     accessor: (row, i) => i + 1,
@@ -156,8 +157,8 @@ const COLUMNS = [
       const navigate = useNavigate();
       const handleViewClick = () => {
         const riderId = row.row.original.riderInfo.id;
-        navigate(`/rider-detail/${riderId}`);
-        //navigate(`/rider-detail/${riderId}?page=${currentPage || 0}&documentStatus=${documentstatus}&riderStatus=${riderstatus}&vehicleid=${vehicleid}&`);
+        //navigate(`/rider-detail/${riderId}`);
+        navigate(`/rider-detail/${riderId}?page=${currentPage || 0}&documentStatus=${documentstatus}&riderStatus=${riderstatus}&vehicleid=${vehicleid}&rider=nonregister`);
       };
       return (
         <div className="flex space-x-3 rtl:space-x-reverse">
@@ -189,13 +190,38 @@ const NonRegisteredRiders = () => {
   const [serviceAreaStatus, setServiceAreaStatus] = useState('ALL');
   const [totalCount, setTotalCount] = useState(0);
   const maxPagesToShow = 5;
+  const [paramslength, setParamLength] = useState(0);
+  const [searchParams] = useSearchParams();
+  const [rapf, setRapf] = useState(false)
+
+  useEffect(() => {
+    console.log([...searchParams.entries()].length);
+    setParamLength([...searchParams.entries()].length);
+    const statusFromUrl = searchParams.get("riderStatus") || "ALL";
+    const docStatusFromUrl = searchParams.get("documentStatus") || "ALL";
+    const vehicleIdFromUrl = searchParams.get("vehicleid") || "0";
+    const pageFromUrl = searchParams.get("page") || "0";
+    console.log("statusFromUrl",statusFromUrl)
+    setRiderStatus(statusFromUrl);
+    setDocumentStatus(docStatusFromUrl);
+    setVehicleId(vehicleIdFromUrl);
+    setCurrentPage(pageFromUrl);
+    setRapf(true);
+  
+  }, [searchParams]);
+
+  useEffect(() => {
+      if (!searchParams) {
+        setRapf(true);
+      }
+  }, [])
 
 
   useEffect(() => {
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      if(riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "RIDERID"){
+      if(rapf == true && riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "RIDERID" && paramslength == 0){
         axiosInstance
           .get(`${BASE_URL}/register/rider/get-all-service-area-by-non-registration-status?page=${currentPage}&size=${pagesizedata}`, {
             headers: {
@@ -215,7 +241,7 @@ const NonRegisteredRiders = () => {
           });
       }
     }
-  }, [riderstatus, documentstatus, vehicleid,currentPage,pagesizedata]);
+  }, [riderstatus, documentstatus, vehicleid,currentPage,pagesizedata,rapf]);
 
 
   useEffect(() => {
@@ -242,7 +268,10 @@ const NonRegisteredRiders = () => {
   };
   
   const filterRiders = () => {
-    if (riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0") return;
+    if(rapf == false){
+      if (riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0") return;
+    }
+
     setLoading(true);
     try {
       axiosInstance
@@ -324,7 +353,7 @@ const NonRegisteredRiders = () => {
       setLoading(true);
       const token = localStorage.getItem("jwtToken");
       if (token) {
-        if(riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "RIDERID"){
+        if(rapf == true && riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0" ){
           axiosInstance
             .get(`${BASE_URL}/register/rider/get-all-service-area-by-non-registration-status?page=${currentPage}&size=${pagesizedata}`, {
               headers: {
@@ -348,7 +377,7 @@ const NonRegisteredRiders = () => {
   }, [search]); 
   
 
-  const columns = useMemo(() => COLUMNS, []);
+  const columns = useMemo(() => COLUMNS({ currentPage, documentstatus, riderstatus, vehicleid }), [currentPage, documentstatus, riderstatus, vehicleid]);
   const tableInstance = useTable(
     {
       columns,
