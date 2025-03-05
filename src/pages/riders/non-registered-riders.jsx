@@ -157,6 +157,7 @@ const COLUMNS = [
       const handleViewClick = () => {
         const riderId = row.row.original.riderInfo.id;
         navigate(`/rider-detail/${riderId}`);
+        //navigate(`/rider-detail/${riderId}?page=${currentPage || 0}&documentStatus=${documentstatus}&riderStatus=${riderstatus}&vehicleid=${vehicleid}&`);
       };
       return (
         <div className="flex space-x-3 rtl:space-x-reverse">
@@ -536,7 +537,6 @@ const NonRegisteredRiders = () => {
                       displayEmpty
                       inputProps={{ 'aria-label': 'Without label' }}
                     >
-                      <MenuItem value="">Rider Status</MenuItem>
                       <MenuItem value="ALL">ALL</MenuItem>
                       <MenuItem value="ONLINE">ONLINE</MenuItem>
                       <MenuItem value="OFFLINE">OFFLINE</MenuItem>

@@ -266,8 +266,10 @@ const AllRiders = () => {
 
   const filterRiders = () => {
     setLoading(true);
-
-    if (riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0" && currentPage === 0) return;
+    if(rapf == false){
+      if (riderstatus == "ALL" && documentstatus === "ALL" && vehicleid === "0" && currentPage === 0) return;
+    }
+    
 
     const token = localStorage.getItem("jwtToken");
     try {
@@ -503,7 +505,6 @@ const AllRiders = () => {
                 id="demo-simple-select"
                 value={filterby}
                 onChange={handleChange}
-                displayEmpty
                 inputProps={{ 'aria-label': 'Without label' }}
               >
                 <MenuItem value="NONE">Select</MenuItem> 
@@ -517,6 +518,7 @@ const AllRiders = () => {
                 name="search"
                 className=""
                 placeholder="Filter By"
+                disabled={filterby == 'NONE'}
                 value={search}
                 onChange={handleSearchChange}
               />
