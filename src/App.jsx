@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // home pages  & dashboard
@@ -61,6 +61,8 @@ const messaging = getMessaging(app);
 
 function App() {
 
+  const [notificationCount, setNotificationCount] = useState(0);
+
   // useEffect(() => {
   //   // Listen for messages when app is in foreground
   //   onMessage(messaging, (payload) => {
@@ -80,15 +82,20 @@ function App() {
   useEffect(() => {
     const customSoundUrl = 'https://securestaging.net/scooton/notification.mp3';
     const customSound = new Audio(customSoundUrl);
-    onMessage(messaging, (payload) => {
+
+    const unsubscribe = onMessage(messaging, (payload) => {
         customSound.play();
-        //toast.error(`${payload.notification.title}: ${payload.notification.body}`);
+        // Update notification count correctly
+        setNotificationCount((prevCount) => prevCount + 1); // Correct way to update state
+
         toast(<CustomToast title={payload.notification.title} message={payload.notification.body} />, {
-          type: "error",
-          autoClose: 10000,
-          icon: "🔔", // Custom emoji icon
+            type: "error",
+            autoClose: 10000,
+            icon: "🔔", // Custom emoji icon
         });
     });
+
+    return () => unsubscribe(); // Clean up listener on component unmount
 }, []);
 
  
@@ -139,9 +146,9 @@ function App() {
           <Route path="non-registered-riders" element={<NonRegisteredRiders />} />
           <Route path="on-role-riders" element={<OnRoleRiders />} />
           <Route path="rider-detail/:riderId" element={<RiderDetail />} />
-          <Route path="all-orders" element={<AllOrders />} />
-          <Route path="all-orders/:id/:ordertype/:search" element={<AllOrders />} />
-          <Route path="all-orders/:ordertype" element={<AllOrders />} />
+          <Route path="all-orders" element={<AllOrders notificationCount={notificationCount} />} />
+          <Route path="all-orders/:id/:ordertype/:search" element={<AllOrders notificationCount={notificationCount}  />} />
+          <Route path="all-orders/:ordertype" element={<AllOrders notificationCount={notificationCount}  />} />
           <Route path="citywide-orders" element={<CityWideOrders />} />
           <Route path="offline-orders" element={<OfflineOrders />} />
           <Route path="create-orders" element={<CreateOrder />} />
