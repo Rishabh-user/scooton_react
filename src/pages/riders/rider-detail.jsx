@@ -493,12 +493,19 @@ const RiderDetail = () => {
                             <Link to={`/registered-riders?page=${pagenumber || 0}&documentStatus=${documentStatus}&riderStatus=${riderStatus}&vehicleid=${vehicleId}&rider=${riderstype}`}>
                                 <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                             </Link>
-                        ) : (
+                        )  : (
                             <Link to={`/all-riders?page=${pagenumber || 0}&documentStatus=${documentStatus}&riderStatus=${riderStatus}&vehicleid=${vehicleId}`}>
                                 <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                             </Link>
                         )
                     ) : null}
+
+                    {riderstype === 'onroleriders' ? (
+                    <Link to="/on-role-riders">
+                    <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
+                    </Link>
+                    ) : null}
+
 
                     
                     <h4 className="card-title ms-2 mb-0">Rider Details  <span className="px-2 py-1 text-sm rounded-[6px] bg-danger-500 text-white">Rider Id: {riderId}</span></h4>
