@@ -421,6 +421,10 @@ const AllOrders = ({notificationCount}) => {
     FilterOrder();
   }, [notificationCount]);
 
+  useEffect(() =>{
+    fetchOrders(ordersType)
+  },[search])
+
   const fetchOrders = (orderType) => {
     console.log("this")
     const dataToSend ={
@@ -440,9 +444,11 @@ const AllOrders = ({notificationCount}) => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((response) => {
+          console.log("resp", response)
           setOrderData(response.data);
           setTotalCount(Number(response.headers["x-total-count"])); 
-          setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pagesizedata)); 
+          setPageCount(Number(response.headers["x-total-pages"]));
+          console.log("1")
         })
         .catch((error) => {
           console.error("Error fetching order data:", error);
@@ -463,7 +469,9 @@ const AllOrders = ({notificationCount}) => {
       )
       .then((response) => {
         setOrderData(response.data);
-        setPageCount(response.data.totalPages);
+        setTotalCount(Number(response.headers["x-total-count"])); 
+        setPageCount(Number(response.headers["x-total-pages"]));
+        console.log("2")
       })
       .catch((error) => {
         console.error("Error fetching order data:", error);
@@ -595,7 +603,9 @@ const AllOrders = ({notificationCount}) => {
           if (response.data) {
             setOrderData(response.data); 
             SetOrderType(id.ordertype);
-            setPageCount(response.data.totalPages || 0);
+            setTotalCount(Number(response.headers["x-total-count"])); 
+            setPageCount(Number(response.headers["x-total-pages"]) || 0);
+            console.log("3")
             
           }
         })
@@ -606,13 +616,41 @@ const AllOrders = ({notificationCount}) => {
         });
       
     } else {
-      console.log("Fetching default orders...");
-      setLoading(true);
-      if(filterby == 'NONE'){
-      fetchOrders("PLACED");
+        console.log("Fetching default orders...");
+        setLoading(true);
+        if(filterby == 'NONE' && ordersType == 'PLACED'){
+        fetchOrders("PLACED");
       }
     }
   }, [id?.ordertype, currentPage,pagesizedata]);
+
+  useEffect (() => {
+    const dataToSend ={
+      "orderType": ordersType, "searchType": filterby
+    }
+    if (filterby && search) {
+      dataToSend.number = search; 
+    }
+ 
+    setLoading(true);
+    axiosInstance
+      .post(
+        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
+        dataToSend 
+      )
+      .then((response) => {
+        setOrderData(response.data);
+        setTotalCount(Number(response.headers["x-total-count"])); 
+        setPageCount(Number(response.headers["x-total-pages"]));
+        console.log("1")
+      })
+      .catch((error) => {
+        console.error("Error fetching order data:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  },[currentPage,pagesizedata])
 
   return (
     <>
