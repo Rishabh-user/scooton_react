@@ -192,7 +192,8 @@ const NonRegisteredRiders = () => {
   const maxPagesToShow = 5;
   const [paramslength, setParamLength] = useState(0);
   const [searchParams] = useSearchParams();
-  const [rapf, setRapf] = useState(false)
+  const [rapf, setRapf] = useState(false);
+  const [paramCurrentPage, setParamCurrentPage] = useState(0);
 
   useEffect(() => {
     console.log([...searchParams.entries()].length);
@@ -205,7 +206,8 @@ const NonRegisteredRiders = () => {
     setRiderStatus(statusFromUrl);
     setDocumentStatus(docStatusFromUrl);
     setVehicleId(vehicleIdFromUrl);
-    setCurrentPage(pageFromUrl);
+    // setCurrentPage(pageFromUrl);
+    setParamCurrentPage(pageFromUrl);
     setRapf(true);
   
   }, [searchParams]);
@@ -215,6 +217,10 @@ const NonRegisteredRiders = () => {
         setRapf(true);
       }
   }, [])
+
+  useEffect(() => {
+    setCurrentPage(Number(paramCurrentPage) || 0); 
+  }, [paramCurrentPage]);
 
 
   useEffect(() => {
@@ -527,6 +533,7 @@ const NonRegisteredRiders = () => {
                 name="search"
                 className=""
                 placeholder="Filter By"
+                disabled={filterby == 'NONE'}
                 // disabled={filterby === "NONE"}
                 value={search}
                 onChange={handleSearchChange}

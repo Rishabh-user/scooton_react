@@ -781,6 +781,7 @@ const AllOrders = ({notificationCount}) => {
                         id="search"
                         type="text"
                         name="search"
+                        disabled={filterby == 'NONE'}
                         value={search}
                         onChange={handleSearchChange}
                       />

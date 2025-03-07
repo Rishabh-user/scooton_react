@@ -236,7 +236,7 @@ const OfflineOrders = () => {
       .then((response) => {
         setOrderData(response.data);
         setTotalCount(Number(response.headers["x-total-count"])); 
-        setPageCount(Math.ceil(Number(response.headers["x-total-count"]) / pagesizedata)); 
+        setPageCount(Number(response.headers["x-total-pages"]));
       })
       .catch((error) => {
         console.error("Error fetching order data:", error);
@@ -338,7 +338,8 @@ const OfflineOrders = () => {
       )
       .then((response) => {
         setOrderData(response.data);
-        setPageCount(response.data.totalPages);
+        setTotalCount(Number(response.headers["x-total-count"])); 
+        setPageCount(Number(response.headers["x-total-pages"]));
       })
       .catch((error) => {
         console.error("Error fetching order data:", error);
@@ -380,6 +381,8 @@ const OfflineOrders = () => {
         )
         .then((response) => {
           setOrderData(response.data);
+          setTotalCount(Number(response.headers["x-total-count"])); 
+          setPageCount(Number(response.headers["x-total-pages"]));
         })
         .catch((error) => {
           console.error("Error fetching rider data:", error);

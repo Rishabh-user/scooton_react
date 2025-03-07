@@ -190,7 +190,8 @@ const RegisteredRiders = () => {
   const maxPagesToShow = 5;
   const [paramslength, setParamLength] = useState(0);
   const [searchParams] = useSearchParams();
-  const [rapf, setRapf] = useState(false)
+  const [rapf, setRapf] = useState(false);
+  const [paramCurrentPage, setParamCurrentPage] = useState(0);
 
   useEffect(() => {
     console.log([...searchParams.entries()].length);
@@ -201,7 +202,8 @@ const RegisteredRiders = () => {
     console.log("statusFromUrl",statusFromUrl)
     setRiderStatus(statusFromUrl);
     setVehicleId(vehicleIdFromUrl);
-    setCurrentPage(pageFromUrl);
+    //setCurrentPage(pageFromUrl);
+    setParamCurrentPage(pageFromUrl);
     setRapf(true);
     
   }, [searchParams]);
@@ -212,6 +214,10 @@ const RegisteredRiders = () => {
       setRapf(true);
     }
   }, [])
+
+  useEffect(() => {
+    setCurrentPage(Number(paramCurrentPage) || 0); 
+  }, [paramCurrentPage]);
 
 
   useEffect(() => {
@@ -507,6 +513,7 @@ const RegisteredRiders = () => {
                     name="search"
                     className=""
                     placeholder="Filter By"
+                    disabled={filterby == 'NONE'}
                     value={search}
                     onChange={handleSearchChange}
                   />
