@@ -214,7 +214,7 @@ const AllRiders = () => {
   }, [])
 
   useEffect(() => {
-    setCurrentPage(Number(paramCurrentPage) || 0); // Ensures it's an integer, defaulting to 0 if invalid
+    setCurrentPage(Number(paramCurrentPage) || 0); 
   }, [paramCurrentPage]);
 
   useEffect(() => {

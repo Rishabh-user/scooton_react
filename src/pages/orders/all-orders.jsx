@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../../components/ui/Modal";
 import Button from "@/components/ui/Button";
 import { toast, ToastContainer } from "react-toastify";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams,useSearchParams } from "react-router-dom";
 import axiosInstance from "../../api";
 
 // Notification
@@ -44,7 +44,7 @@ const messaging = getMessaging(app);
 // Notification
 
 
-const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
+const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType,currentPage,filterby,search) => [
   {
     Header: "Sr. No.",
     accessor: (row, i) => i + 1,
@@ -246,8 +246,8 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
       const navigate = useNavigate();
       const handleViewClick = () => {
         const orderId = row.row.original.order_Id;
-        
-        navigate(`/order-detail/${orderId}`);
+        //id=353672;directOrder=false;cityWide=true;serviceAreaId=0;customRadio=ALL%20ORDERS;page=1;searchId=ORDERID;searchText=353672;pageType=ALL
+        navigate(`/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=ALL`);
       };
       return (
         <div className="flex space-x-3 rtl:space-x-reverse">
@@ -281,9 +281,42 @@ const AllOrders = ({notificationCount}) => {
   const [totalCount, setTotalCount] = useState(0);
   const [serviceArea, setServiceArea] = useState([]);
   const [serviceAreaStatus, setServiceAreaStatus] = useState('All');
+  const [searchParams] = useSearchParams();
+   const [paramslength, setParamLength] = useState(0);
+  const [rapf, setRapf] = useState(false)
+  const [paramCurrentPage, setParamCurrentPage] = useState(0);
 
   const maxPagesToShow = 5;
   const id = useParams();
+
+  useEffect(() => {
+    console.log("asdfghj",[...searchParams.entries()].length);
+    setParamLength([...searchParams.entries()].length);
+    debugger
+    const customRadio = decodeURIComponent(searchParams.get("customRadio") || "PLACED");
+    const searchId = searchParams.get("searchId") || "NONE";
+    const searchText = searchParams.get("searchText") || "";
+    const pageFromUrl = searchParams.get("page") || "0";
+    console.log("customRadio",customRadio)
+    SetOrderType(customRadio);
+    setFilterBy(searchId);
+    setSearch(searchText);
+    setParamCurrentPage(pageFromUrl)
+    setRapf(true);
+    console.log("orders sdfghj",ordersType)
+     debugger
+  }, [searchParams]);
+
+  
+  useEffect(() => {
+    if (!searchParams) {
+      setRapf(true);
+    }
+  }, [])
+
+  useEffect(() => {
+    setCurrentPage(Number(paramCurrentPage) || 0); 
+  }, [paramCurrentPage]);
   
 
   const openIsNotificationModel = async (id) => {
@@ -422,7 +455,8 @@ const AllOrders = ({notificationCount}) => {
   }, [notificationCount]);
 
   useEffect(() =>{
-    fetchOrders(ordersType)
+    if(rapf == true && search =='')
+      fetchOrders(ordersType)
   },[search])
 
   const fetchOrders = (orderType) => {
@@ -437,7 +471,8 @@ const AllOrders = ({notificationCount}) => {
     setLoading(true);
     SetOrderType(orderType)
     const token = localStorage.getItem("jwtToken");
-      axiosInstance
+      if(rapf == true){
+        axiosInstance
         .post(
           `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
           dataToSend ,
@@ -448,7 +483,7 @@ const AllOrders = ({notificationCount}) => {
           setOrderData(response.data);
           setTotalCount(Number(response.headers["x-total-count"])); 
           setPageCount(Number(response.headers["x-total-pages"]));
-          console.log("1")
+          console.log("11")
         })
         .catch((error) => {
           console.error("Error fetching order data:", error);
@@ -456,6 +491,8 @@ const AllOrders = ({notificationCount}) => {
         .finally(() => {
           setLoading(false);
         });
+      }
+      
       
   };
   const FilterOrder = () => {
@@ -471,7 +508,7 @@ const AllOrders = ({notificationCount}) => {
         setOrderData(response.data);
         setTotalCount(Number(response.headers["x-total-count"])); 
         setPageCount(Number(response.headers["x-total-pages"]));
-        console.log("2")
+        console.log("22")
       })
       .catch((error) => {
         console.error("Error fetching order data:", error);
@@ -532,7 +569,7 @@ const AllOrders = ({notificationCount}) => {
   // };
 
   // const columns = useMemo(() => COLUMNS(openIsNotificationModel), []);
-  const columns = useMemo(() => COLUMNS(openIsNotificationModel, openIsDeleteOrder, ordersType), [ordersType]);
+  const columns = useMemo(() => COLUMNS(openIsNotificationModel, openIsDeleteOrder, ordersType,currentPage,filterby,search), [ordersType,,currentPage,filterby,search]);
 
  
 
@@ -605,7 +642,7 @@ const AllOrders = ({notificationCount}) => {
             SetOrderType(id.ordertype);
             setTotalCount(Number(response.headers["x-total-count"])); 
             setPageCount(Number(response.headers["x-total-pages"]) || 0);
-            console.log("3")
+            console.log("33")
             
           }
         })
@@ -616,13 +653,15 @@ const AllOrders = ({notificationCount}) => {
         });
       
     } else {
-        console.log("Fetching default orders...");
-        setLoading(true);
-        if(filterby == 'NONE' && ordersType == 'PLACED'){
-        fetchOrders("PLACED");
+      if(rapf == true){
+          console.log("Fetching default orders...");
+          setLoading(true);
+          if(filterby == 'NONE' && ordersType == 'PLACED'){
+          fetchOrders(ordersType);
+        }
       }
     }
-  }, [id?.ordertype, currentPage,pagesizedata]);
+  }, [id?.ordertype, currentPage,pagesizedata,rapf]);
 
   useEffect (() => {
     const dataToSend ={
@@ -633,24 +672,56 @@ const AllOrders = ({notificationCount}) => {
     }
  
     setLoading(true);
-    axiosInstance
-      .post(
-        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
-        dataToSend 
-      )
-      .then((response) => {
-        setOrderData(response.data);
-        setTotalCount(Number(response.headers["x-total-count"])); 
-        setPageCount(Number(response.headers["x-total-pages"]));
-        console.log("1")
-      })
-      .catch((error) => {
-        console.error("Error fetching order data:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  },[currentPage,pagesizedata])
+    if(rapf == true){
+      axiosInstance
+        .post(
+          `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
+          dataToSend 
+        )
+        .then((response) => {
+          setOrderData(response.data);
+          setTotalCount(Number(response.headers["x-total-count"])); 
+          setPageCount(Number(response.headers["x-total-pages"]));
+          console.log("1")
+        })
+        .catch((error) => {
+          console.error("Error fetching order data:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  },[currentPage,pagesizedata,rapf])
+
+  useEffect (() => {
+    const dataToSend ={
+      "orderType": "PLACED", "searchType": filterby
+    }
+    if (filterby && search) {
+      dataToSend.number = search; 
+    }
+ 
+    setLoading(true);
+    if(paramslength == 0){
+      axiosInstance
+        .post(
+          `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
+          dataToSend 
+        )
+        .then((response) => {
+          setOrderData(response.data);
+          setTotalCount(Number(response.headers["x-total-count"])); 
+          setPageCount(Number(response.headers["x-total-pages"]));
+          console.log("1")
+        })
+        .catch((error) => {
+          console.error("Error fetching order data:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  },[currentPage,pagesizedata,paramslength])
 
   return (
     <>
