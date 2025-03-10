@@ -67,8 +67,8 @@ const COLUMNS = [
       if (isNaN(date.getTime())) {
         return (
           <div className="rider-datetime text-center">
-            <span className="riderDate">..</span>            
-            <span className="riderTime">..</span>
+            <span className="riderDate"></span>            
+            <span className="riderTime"></span>
           </div>
         );
       }
@@ -94,8 +94,8 @@ const COLUMNS = [
       if (isNaN(date.getTime())) {
         return (
           <div className="rider-datetime text-center">
-            <span className="riderDate">..</span>            
-            <span className="riderTime">..</span>
+            <span className="riderDate"></span>            
+            <span className="riderTime"></span>
           </div>
         );
       }
@@ -249,7 +249,7 @@ const UserList = () => {
             {},
             {
               headers: { Authorization: `Bearer ${token}` },
-              params: { mobileNumber: search.trim(), page: currentPage, size: pagesizedata },
+              params: { mobileNumber: search.trim(), page: 0, size: pagesizedata },
             }
           );
           setLoading(false);

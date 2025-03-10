@@ -483,7 +483,7 @@ const AllOrders = ({notificationCount}) => {
         )
         .then((response) => {
           console.log("resp", response)
-          setOrderData(response.data);
+          setOrderData([...response.data]);
           setTotalCount(Number(response.headers["x-total-count"])); 
           setPageCount(Number(response.headers["x-total-pages"]));
           console.log("11")
