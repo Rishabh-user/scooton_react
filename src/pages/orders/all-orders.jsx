@@ -20,11 +20,10 @@ import threewheeler from '../../assets/images/icon/Three_Wheeler.png';
 import tataace from '../../assets/images/icon/Tata_Ace.png'
 import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
 import Tooltip from "@/components/ui/Tooltip";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams,useSearchParams } from "react-router-dom";
 import Modal from "../../components/ui/Modal";
 import Button from "@/components/ui/Button";
 import { toast, ToastContainer } from "react-toastify";
-import { useLocation, useParams,useSearchParams } from "react-router-dom";
 import axiosInstance from "../../api";
 
 // Notification
@@ -282,7 +281,7 @@ const AllOrders = ({notificationCount}) => {
   const [serviceArea, setServiceArea] = useState([]);
   const [serviceAreaStatus, setServiceAreaStatus] = useState('All');
   const [searchParams] = useSearchParams();
-   const [paramslength, setParamLength] = useState(0);
+  const [paramslength, setParamLength] = useState(0);
   const [rapf, setRapf] = useState(false)
   const [paramCurrentPage, setParamCurrentPage] = useState(0);
 
@@ -461,8 +460,14 @@ const AllOrders = ({notificationCount}) => {
 
   const fetchOrders = (orderType) => {
     console.log("this")
+    let searchtype
+    if(search == ''){
+      searchtype = 'NONE'
+    }else{
+      searchtype = filterby
+    }
     const dataToSend ={
-      "orderType": orderType, "searchType": filterby
+      "orderType": orderType, "searchType": searchtype
     }
     if (filterby && search) {
       dataToSend.number = search; 
@@ -722,6 +727,7 @@ const AllOrders = ({notificationCount}) => {
         });
     }
   },[currentPage,pagesizedata,paramslength])
+  
 
   return (
     <>
