@@ -500,6 +500,7 @@ const AllOrders = ({notificationCount}) => {
   };
   const FilterOrder = () => {
     setLoading(true);
+
     const token = localStorage.getItem("jwtToken");
     axiosInstance
       .post(
@@ -509,6 +510,7 @@ const AllOrders = ({notificationCount}) => {
       )
       .then((response) => {
         setOrderData(response.data);
+        console.log("response.data",response.data)
         setTotalCount(Number(response.headers["x-total-count"])); 
         setPageCount(Number(response.headers["x-total-pages"]));
         console.log("22")
