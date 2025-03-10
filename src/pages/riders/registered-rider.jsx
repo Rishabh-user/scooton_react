@@ -298,7 +298,9 @@ const RegisteredRiders = () => {
   };
   
   useEffect(() => {
-    filterRiders();
+    if(riderstatus !== "ALL" || vehicleid !== "0"){
+      filterRiders();
+    }
   }, [riderstatus, vehicleid,currentPage,pagesizedata]);
 
   const riderStatusFilter = (event) => {
@@ -370,7 +372,9 @@ const RegisteredRiders = () => {
 
   const FilterRiders = () =>{
     if(filterby !== "NONE"){
-      setRiderStatus('ALL');
+        setVehicleId('0');
+        setRiderStatus('ALL');
+  
     }
     
     const token = localStorage.getItem("jwtToken");

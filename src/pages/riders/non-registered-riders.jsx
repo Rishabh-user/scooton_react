@@ -184,7 +184,7 @@ const NonRegisteredRiders = () => {
   const [riderstatus, setRiderStatus]= useState('ALL')
   const [documentstatus, setDocumentStatus]= useState('ALL')
   const [vehicleid, setVehicleId]= useState('0');
-  const [filterby, setFilterBy] = React.useState("RIDERID");
+  const [filterby, setFilterBy] = React.useState("NONE");
   const [pagesizedata, setpagesizedata]=useState(10);
   const [serviceArea, setServiceArea] = useState([]);
   const [serviceAreaStatus, setServiceAreaStatus] = useState('ALL');
@@ -227,7 +227,7 @@ const NonRegisteredRiders = () => {
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      if(rapf == true && riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "RIDERID" ){
+      if(rapf == true && riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0" && filterby == "NONE" ){
         axiosInstance
           .get(`${BASE_URL}/register/rider/get-all-service-area-by-non-registration-status?page=${currentPage}&size=${pagesizedata}`, {
             headers: {
@@ -274,36 +274,41 @@ const NonRegisteredRiders = () => {
   };
   
   const filterRiders = () => {
-    if(rapf == false){
+    if (!rapf) {
       if (riderstatus === "ALL" && documentstatus === "ALL" && vehicleid === "0") return;
     }
-
     setLoading(true);
-    try {
-      axiosInstance
-        .get(
-          `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/${documentstatus}/0/${riderstatus}/${vehicleid}?page=${currentPage}&size=${pagesizedata}`
-        )
-        .then((response) => {
-          setFilterBy("RIDERID");
-          setSearch("")
-          setRiderData(response.data);
-          setTotalCount(Number(response.headers["x-total-count"]));
-          setPageCount(Number(response.headers["x-total-pages"]));
-        })
-        .catch((error) => {
-          console.error("Error fetching rider data:", error);
-        }).finally(() => {
-          setLoading(false);
-        });
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
+
+    axiosInstance
+      .get(
+        `${BASE_URL}/register/v2/rider/get-all-service-area-by-registration-status/${documentstatus}/0/${riderstatus}/${vehicleid}?page=${currentPage}&size=${pagesizedata}`
+      )
+      .then((response) => {
+        try {
+          console.log("API Response Data:", response.data);
+          setFilterBy("NONE");
+          setSearch("");
+          setRiderData(response.data?.riders || response.data); 
+          setTotalCount(Number(response.headers["x-total-count"] || 0));
+          setPageCount(Number(response.headers["x-total-pages"] || 1));
+        } catch (err) {
+          console.error("Error processing response:", err);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching rider data:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+        setTimeout(() => setLoading(false), 100); 
+      });
   };
+
   
   useEffect(() => {
+    if(riderstatus !== "ALL" || documentstatus !== "ALL" || vehicleid !== "0"){
       filterRiders();
-    
+    }
   }, [riderstatus, documentstatus, vehicleid, currentPage, pagesizedata]);
 
 
@@ -312,7 +317,7 @@ const NonRegisteredRiders = () => {
     setFilterBy(value);
 
     // Reset search if "NONE" is selected
-    if (value === "RIDERID") {
+    if (value === "NONE") {
       setSearch("");
     }
   };
@@ -324,7 +329,7 @@ const NonRegisteredRiders = () => {
 
   const FilterOrder = () => {
     setLoading(true);
-    if(filterby !== "RIDERID"){
+    if(filterby !== "NONE"){
       setVehicleId('0');
       setDocumentStatus('ALL');
       setRiderStatus('ALL');
@@ -335,7 +340,7 @@ const NonRegisteredRiders = () => {
       axiosInstance
         .get(endpoint)
         .then((response) => {
-          setRiderData(response.data); 
+          setRiderData(response.data);
           setTotalCount(Number(response.headers["x-total-count"]));
           setPageCount(Number(response.headers["x-total-pages"]));
         })
@@ -354,7 +359,7 @@ const NonRegisteredRiders = () => {
   }, [search, currentPage,pagesizedata]);  
 
   useEffect(() => {
-    if(filterby !== "RIDERID" && search !== "")
+    if(filterby !== "NONE" && search !== "")
       FilterOrder();
   },[filterby,search, currentPage, pagesizedata])
 
@@ -487,7 +492,7 @@ const NonRegisteredRiders = () => {
     setRiderStatus("ALL");
     setDocumentStatus("ALL");
     setVehicleId("0");
-    setFilterBy("RIDERID");
+    setFilterBy("NONE");
     setSearch(""); 
   }
   return (
@@ -522,7 +527,7 @@ const NonRegisteredRiders = () => {
                 displayEmpty
                 inputProps={{ 'aria-label': 'Without label' }}
               >
-                {/* <MenuItem value="NONE">NONE</MenuItem> */}
+                <MenuItem value="NONE">NONE</MenuItem>
                 <MenuItem value="RIDERID">Rider ID</MenuItem>
                 <MenuItem value="MOBILE">Mobile Number</MenuItem>
                 <MenuItem value="RIDERNAME">Rider Name</MenuItem>

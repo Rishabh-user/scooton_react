@@ -308,8 +308,9 @@ const AllRiders = () => {
 
 
   useEffect(() => {
-    console.log("filterRiders currentPage", currentPage);
-    filterRiders();
+    if(riderstatus !== "ALL" || documentstatus !== "ALL" || vehicleid !== "0"){
+      filterRiders();
+    }
   }, [riderstatus, documentstatus, vehicleid, currentPage, pagesizedata]);
 
   const handleChange = (event) => {
@@ -334,6 +335,12 @@ const AllRiders = () => {
         setRiderStatus('ALL');
       }
 
+    }
+
+    if(filterby !== "NONE"){
+      setVehicleId('0');
+      setDocumentStatus('ALL');
+      setRiderStatus('ALL');
     }
 
     const token = localStorage.getItem("jwtToken");

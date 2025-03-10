@@ -291,7 +291,6 @@ const AllOrders = ({notificationCount}) => {
   useEffect(() => {
     console.log("asdfghj",[...searchParams.entries()].length);
     setParamLength([...searchParams.entries()].length);
-    debugger
     const customRadio = decodeURIComponent(searchParams.get("customRadio") || "PLACED");
     const searchId = searchParams.get("searchId") || "NONE";
     const searchText = searchParams.get("searchText") || "";
@@ -303,7 +302,6 @@ const AllOrders = ({notificationCount}) => {
     setParamCurrentPage(pageFromUrl)
     setRapf(true);
     console.log("orders sdfghj",ordersType)
-     debugger
   }, [searchParams]);
 
   
