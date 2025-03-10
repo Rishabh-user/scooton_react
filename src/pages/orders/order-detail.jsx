@@ -520,7 +520,7 @@ const OrderDetail = () => {
                                     <td className="px-6 py-2">
                                         Order Id
                                     </td>
-                                    <td className="px-6 py-2">
+                                    <td className="px-6 py-2 text-end">
                                      
                                         {thirdPartyUsername ? orderDetails.orderId : orderDetails.order_Id}
                                     </td>
@@ -529,7 +529,7 @@ const OrderDetail = () => {
                                     <td className="px-6 py-2">
                                         Order Date
                                     </td>
-                                    <td className="px-6 py-2">
+                                    <td className="px-6 py-2 text-end">
                                         {thirdPartyUsername ? new Date(orderDetails.orderDateTime).toLocaleString("en-US", {
                                             year: "numeric",
                                             month: "short",
