@@ -261,7 +261,11 @@ const OrderDetail = () => {
                                 <Link to={`/offline-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=offline`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link> 
-                            ) : null
+                            ) : orders == 'SparksPlus' || orders == 'ShipRocket' ? (
+                                <Link to={`/${orders}?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=${orders}`}>
+                                    <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
+                                </Link> 
+                            ) :null
                             
                         ) : null}
                         <h4 className="card-title ms-2 mb-0">Order Details</h4>

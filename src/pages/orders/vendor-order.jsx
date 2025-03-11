@@ -20,7 +20,7 @@ import threewheeler from '../../assets/images/icon/Three_Wheeler.png';
 import tataace from '../../assets/images/icon/Tata_Ace.png'
 import pickup_8ft from "../../assets/images/icon/Pickup_8ft.png";
 import Tooltip from "@/components/ui/Tooltip";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useSearchParams } from "react-router-dom";
 import Modal from "../../components/ui/Modal";
 import Button from "@/components/ui/Button";
 import { toast, ToastContainer } from "react-toastify";
@@ -28,7 +28,7 @@ import { useLocation, useParams } from "react-router-dom";
 import axiosInstance from "../../api";
 
 
-const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
+const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType,currentPage,filterby,search) => [
   {
     Header: "Sr. No.",
     accessor: (row, i) => i + 1,
@@ -220,6 +220,7 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType) => [
         const orderId = row.row.original.order_Id;
         const username  = row.row.original.thirdPartyOrders.userInfo.userName;
         navigate(`/order-detail/${username}/${orderId}`);
+        navigate(`/order-detail/${username}/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${username}`);
       };
       return (
         <div className="flex space-x-3 rtl:space-x-reverse">
@@ -252,10 +253,40 @@ const Vendor = () => {
   const [notification, setNotification] = useState("ALL");
   const [mobile, setMobile]= useState();
   const [notificationid,setNotifictionId]= useState();
-  const [pagesizedata, setpagesizedata]=useState(50);
+  const [pagesizedata, setpagesizedata]=useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [selectedCancelReason, setSelectedCancelReason] = useState("");
   const [cancelReason, setCancelReason] = useState("");
+  const [searchParams] = useSearchParams();
+  const [paramslength, setParamLength] = useState(0);
+  const [rapf, setRapf] = useState(false)
+  const [paramCurrentPage, setParamCurrentPage] = useState(0);
+
+  useEffect(() => {
+    setParamLength([...searchParams.entries()].length);
+    const customRadio = decodeURIComponent(searchParams.get("customRadio") || "PLACED");
+    const searchId = searchParams.get("searchId") || "NONE";
+    const searchText = searchParams.get("searchText") || "";
+    const pageFromUrl = searchParams.get("page") || "0";
+    console.log("customRadio",customRadio)
+    SetOrderType(customRadio);
+    setFilterBy(searchId);
+    setSearch(searchText);
+    setParamCurrentPage(pageFromUrl)
+    setRapf(true);
+    console.log("orders sdfghj",ordersType)
+  }, [searchParams]);
+  
+    
+  useEffect(() => {
+    if (!searchParams) {
+      setRapf(true);
+    }
+  }, [])
+  
+  useEffect(() => {
+    setCurrentPage(Number(paramCurrentPage) || 0); 
+  }, [paramCurrentPage]);
   // Cancel order reason
   const CancelOrderReason = [
     {
@@ -294,7 +325,7 @@ const Vendor = () => {
   useEffect(() => {
       try {
           axiosInstance.get(`${BASE_URL}/thirdParty/get-all-thirdParty-client`).then((resp) => {
-              console.log("resp", resp.data.jsonData);
+      
               setClientData(resp.data.jsonData);  
           });
       } catch (error) {
@@ -312,7 +343,7 @@ const Vendor = () => {
     useEffect(() => {
       console.log("e")
         fetchOrders(ordersType);
-    }, [filterby, search,currentPage,pagesizedata]);
+    }, [search,currentPage,pagesizedata]);
 
     const fetchClientid = () => {
         const foundClient = clientData.find((item) => item.userName === id.vendor);
@@ -337,20 +368,26 @@ const Vendor = () => {
     };
 
     useEffect(() => {  
-        if(clientId !='' && clientUserId !='' && ordersType == "PLACED"){
+        if(clientId !='' && clientUserId !='' && ordersType){
           console.log("2")
-            fetchOrders("PLACED")
+            fetchOrders(ordersType)
         }
     },[clientId,clientUserId,currentPage,pagesizedata])
 
     const fetchOrders = (orderType) => {
         setLoading(true);
+        let searchtype
+        if(search == ''){
+          searchtype = 'NONE'
+        }else{
+          searchtype = filterby
+        }
         if(clientId == '' || clientUserId == "") return;
         const dataToSend ={
             "clientId": clientId,
             "clientType": "THIRDPARTY",
             "orderType": orderType,
-            "searchType": filterby,
+            "searchType": searchtype,
             "userId": clientUserId
         }
         if (filterby && search) {
@@ -365,6 +402,7 @@ const Vendor = () => {
             
             )
             .then((response) => {
+              console.log("qwerty",response)
               setOrderData(response.data);
               setTotalCount(Number(response.headers["x-total-count"])); 
               setPageCount(Number(response.headers["x-total-pages"]));
@@ -459,7 +497,7 @@ const Vendor = () => {
   };
 
 
-  const columns = useMemo(() => COLUMNS(openIsNotificationModel, openIsDeleteOrder, ordersType), [ordersType]);
+  const columns = useMemo(() => COLUMNS(openIsNotificationModel, openIsDeleteOrder, ordersType,currentPage,filterby,search), [ordersType,currentPage,filterby,search]);
 
  
 
@@ -468,7 +506,7 @@ const Vendor = () => {
       columns,
       data: orderData,
       initialState: {
-        pageSize: 100,
+        pageSize: 10,
         pageIndex: currentPage,
       },
       manualPagination: true,
@@ -568,6 +606,7 @@ const Vendor = () => {
                         id="search"
                         type="text"
                         name="search"
+                        disabled={filterby == 'NONE'}
                         value={search}
                         onChange={handleSearchChange}
                       />
@@ -651,7 +690,7 @@ const Vendor = () => {
               value={pagesizedata}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
             >
-              {[100, 300, 500].map((pageSize) => (
+              {[10,20, 30, 40,50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
