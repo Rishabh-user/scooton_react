@@ -192,12 +192,10 @@ const RegisteredRiders = () => {
   const [paramCurrentPage, setParamCurrentPage] = useState(0);
 
   useEffect(() => {
-    console.log([...searchParams.entries()].length);
     setParamLength([...searchParams.entries()].length);
     const statusFromUrl = searchParams.get("riderStatus") || "ALL";
     const vehicleIdFromUrl = searchParams.get("vehicleid") || "0";
     const pageFromUrl = searchParams.get("page") || "0";
-    console.log("statusFromUrl",statusFromUrl)
     setRiderStatus(statusFromUrl);
     setVehicleId(vehicleIdFromUrl);
     //setCurrentPage(pageFromUrl);
@@ -278,7 +276,6 @@ const RegisteredRiders = () => {
           }
         )
         .then((response) => {
-          console.log("w")
           setFilterBy("NONE");
           setSearch("");
           setRiderData(response.data);

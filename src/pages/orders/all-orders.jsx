@@ -294,13 +294,11 @@ const AllOrders = ({notificationCount}) => {
     const searchId = searchParams.get("searchId") || "NONE";
     const searchText = searchParams.get("searchText") || "";
     const pageFromUrl = searchParams.get("page") || "0";
-    console.log("customRadio",customRadio)
     SetOrderType(customRadio);
     setFilterBy(searchId);
     setSearch(searchText);
     setParamCurrentPage(pageFromUrl)
     setRapf(true);
-    console.log("orders sdfghj",ordersType)
   }, [searchParams]);
 
   
@@ -428,7 +426,6 @@ const AllOrders = ({notificationCount}) => {
   },[search])
 
   const fetchOrders = (orderType) => {
-    console.log("this")
     let searchtype
     if(search == ''){
       searchtype = 'NONE'
@@ -453,11 +450,9 @@ const AllOrders = ({notificationCount}) => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((response) => {
-          console.log("resp", response)
           setOrderData([...response.data]);
           setTotalCount(Number(response.headers["x-total-count"])); 
           setPageCount(Number(response.headers["x-total-pages"]));
-          console.log("11")
         })
         .catch((error) => {
           console.error("Error fetching order data:", error);
@@ -481,10 +476,8 @@ const AllOrders = ({notificationCount}) => {
       )
       .then((response) => {
         setOrderData(response.data);
-        console.log("response.data",response.data)
         setTotalCount(Number(response.headers["x-total-count"])); 
         setPageCount(Number(response.headers["x-total-pages"]));
-        console.log("22")
       })
       .catch((error) => {
         console.error("Error fetching order data:", error);
@@ -618,7 +611,6 @@ const AllOrders = ({notificationCount}) => {
             SetOrderType(id.ordertype);
             setTotalCount(Number(response.headers["x-total-count"])); 
             setPageCount(Number(response.headers["x-total-pages"]) || 0);
-            console.log("33")
             
           }
         })
@@ -658,7 +650,6 @@ const AllOrders = ({notificationCount}) => {
           setOrderData(response.data);
           setTotalCount(Number(response.headers["x-total-count"])); 
           setPageCount(Number(response.headers["x-total-pages"]));
-          console.log("1")
         })
         .catch((error) => {
           console.error("Error fetching order data:", error);
@@ -688,7 +679,6 @@ const AllOrders = ({notificationCount}) => {
           setOrderData(response.data);
           setTotalCount(Number(response.headers["x-total-count"])); 
           setPageCount(Number(response.headers["x-total-pages"]));
-          console.log("1")
         })
         .catch((error) => {
           console.error("Error fetching order data:", error);

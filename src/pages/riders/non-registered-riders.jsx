@@ -194,13 +194,11 @@ const NonRegisteredRiders = () => {
   const [paramCurrentPage, setParamCurrentPage] = useState(0);
 
   useEffect(() => {
-    console.log([...searchParams.entries()].length);
     setParamLength([...searchParams.entries()].length);
     const statusFromUrl = searchParams.get("riderStatus") || "ALL";
     const docStatusFromUrl = searchParams.get("documentStatus") || "ALL";
     const vehicleIdFromUrl = searchParams.get("vehicleid") || "0";
     const pageFromUrl = searchParams.get("page") || "0";
-    console.log("statusFromUrl",statusFromUrl)
     setRiderStatus(statusFromUrl);
     setDocumentStatus(docStatusFromUrl);
     setVehicleId(vehicleIdFromUrl);
@@ -283,7 +281,6 @@ const NonRegisteredRiders = () => {
       )
       .then((response) => {
         try {
-          console.log("API Response Data:", response.data);
           setFilterBy("NONE");
           setSearch("");
           setRiderData(response.data?.riders || response.data); 

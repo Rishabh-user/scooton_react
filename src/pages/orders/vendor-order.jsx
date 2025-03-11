@@ -26,6 +26,19 @@ import Button from "@/components/ui/Button";
 import { toast, ToastContainer } from "react-toastify";
 import { useLocation, useParams } from "react-router-dom";
 import axiosInstance from "../../api";
+import { getMessaging, onMessage } from "firebase/messaging";
+import { initializeApp } from "firebase/app";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBGvEB_pxl_Wh_8mEiH8TzRmjOMpi6RtwE",
+  authDomain: "scooton-debug.firebaseapp.com",
+  projectId: "scooton-debug",
+  storageBucket: "scooton-debug.firebasestorage.app",
+  messagingSenderId: "767080447811",
+  appId: "1:767080447811:web:c6a3ec4edd3f2f300a39f6",
+};
+const app = initializeApp(firebaseConfig);
+const messaging = getMessaging(app);
 
 
 const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType,currentPage,filterby,search) => [
@@ -236,7 +249,7 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType,currentP
 
 ];
 
-const Vendor = () => {
+const Vendor = ({notificationCount}) => {
   const [loading, setLoading] = useState(true);
   const [clientUserId, setClientUserId] = useState("");
   const [clientId, setClientId] = useState("");
@@ -268,13 +281,11 @@ const Vendor = () => {
     const searchId = searchParams.get("searchId") || "NONE";
     const searchText = searchParams.get("searchText") || "";
     const pageFromUrl = searchParams.get("page") || "0";
-    console.log("customRadio",customRadio)
     SetOrderType(customRadio);
     setFilterBy(searchId);
     setSearch(searchText);
     setParamCurrentPage(pageFromUrl)
     setRapf(true);
-    console.log("orders sdfghj",ordersType)
   }, [searchParams]);
   
     
@@ -283,7 +294,12 @@ const Vendor = () => {
       setRapf(true);
     }
   }, [])
-  
+
+  useEffect(() => {
+    console.log("notificationCount",notificationCount)
+    fetchOrders(ordersType);
+  }, [notificationCount]);
+
   useEffect(() => {
     setCurrentPage(Number(paramCurrentPage) || 0); 
   }, [paramCurrentPage]);
@@ -341,8 +357,7 @@ const Vendor = () => {
     }, [clientData]); 
 
     useEffect(() => {
-      console.log("e")
-        fetchOrders(ordersType);
+      fetchOrders(ordersType);
     }, [search,currentPage,pagesizedata]);
 
     const fetchClientid = () => {
@@ -350,7 +365,6 @@ const Vendor = () => {
         if (foundClient) {
             setClientId(foundClient.clientId);
             setClientUserId(foundClient.id);
-            console.log("clientid", foundClient.clientId);
         }
     };
 
@@ -359,7 +373,6 @@ const Vendor = () => {
         if (event.target.value == 'NONE') {
           setSearch("");
           fetchOrders(ordersType)
-          console.log("this one 2",filterby,search);
         }
         
     };
@@ -402,7 +415,6 @@ const Vendor = () => {
             
             )
             .then((response) => {
-              console.log("qwerty",response)
               setOrderData(response.data);
               setTotalCount(Number(response.headers["x-total-count"])); 
               setPageCount(Number(response.headers["x-total-pages"]));

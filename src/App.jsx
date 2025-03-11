@@ -156,7 +156,7 @@ function App() {
           <Route path="order-detail/:thirdPartyUsername/:orderId" element={<OrderDetail />} />
           <Route path="add-homepage" element={<AddHomePage />} />
           <Route path="homepage-list" element={<HomepageList />} />
-          <Route path = ":vendor" element={<Vendor />} />
+          <Route path = ":vendor" element={<Vendor notificationCount={notificationCount} />} />
           <Route element={<ProtectedRoute isAuthRoute={"ROLE_SUPER_ADMIN"} />}>
             <Route path="setting" element={<Settings />} />
             <Route path="role-list" element={<RoleList />} />

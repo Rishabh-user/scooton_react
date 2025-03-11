@@ -184,7 +184,6 @@ const OnRoleRiders = () => {
           },
         })
         .then((response) => {
-          console.log("res", response)
           setRiderData(response.data);
           setTotalCount(Number(response.headers["x-total-count"]));  
           setPageCount(Number(response.headers["x-total-pages"]));

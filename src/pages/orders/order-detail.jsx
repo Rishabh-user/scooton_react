@@ -197,8 +197,6 @@ const OrderDetail = () => {
         try{
            await axiosInstance.get(`${BASE_URL}/rider/nearby-riders`,{params}).then((response) => {
                 if(response.data.length > 0){
-                    debugger
-                    console.log("response", response.data);
                     setNearRiderMap(true);
                     setRiderNearLocation(response.data)
                     const activeRiders = response.data.filter(rider => rider.riderActiveForOrders === true);
@@ -211,7 +209,6 @@ const OrderDetail = () => {
         
                     const totalRiders = response.data.length;
                     setNearTotalRider(totalRiders)
-                    debugger
                 }
                 else {
                     toast.error("Sorry, no rider available at the moment. Please try again later.")
