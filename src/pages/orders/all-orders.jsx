@@ -470,7 +470,7 @@ const AllOrders = ({notificationCount}) => {
     const token = localStorage.getItem("jwtToken");
     axiosInstance
       .post(
-        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
+        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=0&size=${pagesizedata}`,
         { "number": search, "orderType": ordersType, "searchType": filterby },
         { headers: { Authorization: `Bearer ${token}` } },
       )
