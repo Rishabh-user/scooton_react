@@ -437,6 +437,7 @@ const AllOrders = ({notificationCount}) => {
           setOrderData([...response.data]);
           setTotalCount(Number(response.headers["x-total-count"])); 
           setPageCount(Number(response.headers["x-total-pages"]));
+          console.log("1")
         })
         .catch((error) => {
           console.error("Error fetching order data:", error);
@@ -450,7 +451,7 @@ const AllOrders = ({notificationCount}) => {
   };
   const FilterOrder = () => {
     setLoading(true);
-
+    
     const token = localStorage.getItem("jwtToken");
     axiosInstance
       .post(
@@ -462,6 +463,7 @@ const AllOrders = ({notificationCount}) => {
         setOrderData(response.data);
         setTotalCount(Number(response.headers["x-total-count"])); 
         setPageCount(Number(response.headers["x-total-pages"]));
+        console.log("2")
       })
       .catch((error) => {
         console.error("Error fetching order data:", error);
@@ -595,6 +597,7 @@ const AllOrders = ({notificationCount}) => {
             SetOrderType(id.ordertype);
             setTotalCount(Number(response.headers["x-total-count"])); 
             setPageCount(Number(response.headers["x-total-pages"]) || 0);
+            console.log("3")
             
           }
         })
@@ -634,6 +637,7 @@ const AllOrders = ({notificationCount}) => {
           setOrderData(response.data);
           setTotalCount(Number(response.headers["x-total-count"])); 
           setPageCount(Number(response.headers["x-total-pages"]));
+          console.log("4")
         })
         .catch((error) => {
           console.error("Error fetching order data:", error);
@@ -663,6 +667,7 @@ const AllOrders = ({notificationCount}) => {
           setOrderData(response.data);
           setTotalCount(Number(response.headers["x-total-count"])); 
           setPageCount(Number(response.headers["x-total-pages"]));
+          console.log("5")
         })
         .catch((error) => {
           console.error("Error fetching order data:", error);
