@@ -47,14 +47,15 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { getMessaging, onMessage } from "firebase/messaging";
 import { initializeApp } from "firebase/app";
+import { apiKey, authDomain, projectId, storageBucket,messagingSenderId,appId } from "./firebasekeys";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBGvEB_pxl_Wh_8mEiH8TzRmjOMpi6RtwE",
-  authDomain: "scooton-debug.firebaseapp.com",
-  projectId: "scooton-debug",
-  storageBucket: "scooton-debug.firebasestorage.app",
-  messagingSenderId: "767080447811",
-  appId: "1:767080447811:web:c6a3ec4edd3f2f300a39f6",
+  apiKey:`${apiKey}`,
+  authDomain: `${authDomain}`,
+  projectId: `${projectId}`,
+  storageBucket: `${storageBucket}`,
+  messagingSenderId: `${messagingSenderId}`,
+  appId: `${appId}`,
 };
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
@@ -62,15 +63,6 @@ const messaging = getMessaging(app);
 function App() {
 
   const [notificationCount, setNotificationCount] = useState(0);
-
-  // useEffect(() => {
-  //   // Listen for messages when app is in foreground
-  //   onMessage(messaging, (payload) => {
-  //     console.log("Foreground Notification:", payload);
-  //     alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
-  //     toast.info(`${payload.notification.title}: ${payload.notification.body}`);
-  //   });
-  // }, []);
 
   const CustomToast = ({ title, message }) => (
     <div>
