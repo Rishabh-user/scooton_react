@@ -584,19 +584,18 @@ const OrderDetail = () => {
                                 
 
                                 {thirdPartyUsername ? (
-                                    orderDetails?.orderStatus == 'In Progress' && (
-                                        <>
-                                           <tr className="border-b border-slate-100 dark:border-slate-700">
-                                                <td className=" px-6 py-2"> Pickup OTP </td>
-                                                <td className=" px-6 py-2 text-end">{orderDetails?.pickupOtp}</td>
-                                            </tr>
-                                            <tr className="border-b border-slate-100 dark:border-slate-700">
-                                                <td className=" px-6 py-2"> Delivery OTP</td>
-                                                <td className=" px-6 py-2 text-end">{orderDetails?.deiveryOtp}</td>
-                                            </tr>
-                                        </>
-                                    )
-                                ) : (orderDetails?.orderStatus == 'In Progress' && (
+                                    <>
+                                        <tr className="border-b border-slate-100 dark:border-slate-700">
+                                            <td className=" px-6 py-2"> Pickup OTP </td>
+                                            <td className=" px-6 py-2 text-end">{orderDetails?.pickupOtp}</td>
+                                        </tr>
+                                        <tr className="border-b border-slate-100 dark:border-slate-700">
+                                            <td className=" px-6 py-2"> Delivery OTP</td>
+                                            <td className=" px-6 py-2 text-end">{orderDetails?.deiveryOtp}</td>
+                                        </tr>
+                                    </>
+                                    
+                                ) : (
                                     <>
                                        <tr className="border-b border-slate-100 dark:border-slate-700">
                                             <td className=" px-6 py-2"> Pickup OTP </td>
@@ -607,7 +606,7 @@ const OrderDetail = () => {
                                             <td className=" px-6 py-2 text-end">{orderDetails?.deliveryOtp}</td>
                                         </tr>
                                     </>
-                                ))}
+                                )}
                                 
                                 {!thirdPartyUsername && (
                                     <>
