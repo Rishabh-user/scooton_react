@@ -19,7 +19,7 @@ import axiosInstance from "../../api";
 import { isRef } from "react-calendar/dist/cjs/shared/propTypes";
 
 
-const COLUMNS = ({ currentPage, documentstatus, riderstatus, vehicleid }) => [
+const COLUMNS = ({ currentPage, documentstatus, riderstatus, vehicleid,pagesizedata }) => [
   {
     Header: "Sr. No.",
     accessor: (row, i) => i + 1,
@@ -153,7 +153,7 @@ const COLUMNS = ({ currentPage, documentstatus, riderstatus, vehicleid }) => [
       const navigate = useNavigate();
       const handleViewClick = () => {
         const riderId = row.row.original.riderInfo.id;
-        navigate(`/rider-detail/${riderId}?page=${currentPage || 0}&documentStatus=${documentstatus}&riderStatus=${riderstatus}&vehicleid=${vehicleid}`);
+        navigate(`/rider-detail/${riderId}?page=${currentPage || 0}&documentStatus=${documentstatus}&riderStatus=${riderstatus}&vehicleid=${vehicleid}&pagesizedata=${pagesizedata}`);
       };
       return (
         <div className="flex space-x-3 rtl:space-x-reverse">
@@ -194,10 +194,13 @@ const AllRiders = () => {
     const docStatusFromUrl = searchParams.get("documentStatus") || "ALL";
     const vehicleIdFromUrl = searchParams.get("vehicleid") || "0";
     const pageFromUrl = searchParams.get("page") || "0";
+    const pagesizedata1 = searchParams.get("pagesizedata") || 10;
+
     setRiderStatus(statusFromUrl);
     setVehicleId(vehicleIdFromUrl);
     setParamCurrentPage(pageFromUrl);
     setDocumentStatus(docStatusFromUrl);
+    setpagesizedata(Number(pagesizedata1) || 10); 
     setRapf(true);
 
   }, [searchParams]);
@@ -410,7 +413,7 @@ const AllRiders = () => {
   }, [search]);
 
 
-  const columns = useMemo(() => COLUMNS({ currentPage, documentstatus, riderstatus, vehicleid }), [currentPage, documentstatus, riderstatus, vehicleid]);
+  const columns = useMemo(() => COLUMNS({ currentPage, documentstatus, riderstatus, vehicleid,pagesizedata }), [currentPage, documentstatus, riderstatus, vehicleid,pagesizedata]);
   const tableInstance = useTable(
     {
       columns,

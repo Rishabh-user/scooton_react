@@ -48,7 +48,8 @@ const OrderDetail = () => {
     const searchId = searchParams.get("searchId") || '';   
     const searchText = searchParams.get("searchText") || ''; 
     const pagenumber = searchParams.get("page");
-    const orders = searchParams?.get("orders") 
+    const orders = searchParams?.get("orders");
+    const pagesizedata = searchParams?.get("pagesizedata");
 
     const openPickupModal = async () => {
         setisPickupModal(true);
@@ -251,11 +252,11 @@ const OrderDetail = () => {
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link> 
                             ) : orders == 'citywide' ? (
-                                <Link to={`/citywide-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=citywide`}>
+                                <Link to={`/citywide-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=citywide&pagesizedata=${pagesizedata}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link> 
                             ) : orders == 'offline' ? (
-                                <Link to={`/offline-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=offline`}>
+                                <Link to={`/offline-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=offline&pagesizedata=${pagesizedata}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link> 
                             ) : orders == 'SparksPlus' || orders == 'ShipRocket' ? (
