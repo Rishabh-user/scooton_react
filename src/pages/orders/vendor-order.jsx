@@ -566,7 +566,7 @@ const Vendor = ({notificationCount}) => {
 
   return (
     <>
-      <ToastContainer/>
+      {/* <ToastContainer/> */}
       <Card>
         <div className="order-header">
           <div className=" mb-6">
