@@ -302,7 +302,10 @@ const OfflineOrders = () => {
   }
 
   const replaceOrder = () => {
-    axiosInstance.post(`${BASE_URL}/order/accepted-order-reorder/${orderid}`).then((response)=>{
+    const dataToSend ={
+      "orderType" : 'CITYWIDE'
+    }
+    axiosInstance.post(`${BASE_URL}/order/accepted-order-reorder/${orderid}`,dataToSend).then((response)=>{
       toast.success(response)
     }).catch((error) => {
       console.error(error);
