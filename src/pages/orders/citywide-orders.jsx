@@ -452,7 +452,7 @@ const CityWideOrders = () => {
   }
 
   const reorderPlaceOrder = () => {
-    axiosInstance.get(`${BASE_URL}/order/accepted-order-reorder/${orderdeleteid}`).then((response)=>{
+    axiosInstance.post(`${BASE_URL}/order/accepted-order-reorder/${orderdeleteid}`).then((response)=>{
       toast.success(response)
       setOrderData((prevList) => prevList.filter((item) => item.order_Id !== orderdeleteid));
     }).catch((error) => {
