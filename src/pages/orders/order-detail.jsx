@@ -1,5 +1,5 @@
-import React, { useEffect, useState,useRef } from "react";
-import { useParams, Link,useSearchParams } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import Card from "../../components/ui/Card";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { BASE_URL } from "../../api";
@@ -10,23 +10,23 @@ import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosInstance from "../../api";
-import { GoogleMap, LoadScript,useLoadScript, Marker,InfoWindow  } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, useLoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 
 const mapContainerStyle = {
     width: '100%',
     height: '50vh',
-  };
-  
-  const markers = [
-      { lat: '', lng: '' }
-  ];
- 
+};
+
+const markers = [
+    { lat: '', lng: '' }
+];
+
 
 
 const OrderDetail = () => {
     const navigate = useNavigate();
     const { orderId } = useParams();
-    const {thirdPartyUsername} = useParams();
+    const { thirdPartyUsername } = useParams();
     const [orderDetail, setOrderDetail] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isPickupModal, setisPickupModal] = useState(false);
@@ -36,17 +36,17 @@ const OrderDetail = () => {
     const [delivered, setDelivered] = useState(false);
     const [nearRiderMap, setNearRiderMap] = useState(false);
     const [riderNearLocation, setRiderNearLocation] = useState([]);
-    const [nearActiveRider, setNearActiveRider]= useState(null);
-    const [nearInActiveRider, setNearInActiveRider]= useState(null);
-    const [nearTotalRider, setNearTotalRider]= useState(null);
+    const [nearActiveRider, setNearActiveRider] = useState(null);
+    const [nearInActiveRider, setNearInActiveRider] = useState(null);
+    const [nearTotalRider, setNearTotalRider] = useState(null);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [selectedPickupMarker, setSelectedPickupMarker] = useState(null);
     const [selectedDroppMarker, setSelectedDropMarker] = useState(null);
     const mapRef = useRef(null);
     const [searchParams] = useSearchParams();
-    const customRadio = searchParams.get("customRadio") || '';  
-    const searchId = searchParams.get("searchId") || '';   
-    const searchText = searchParams.get("searchText") || ''; 
+    const customRadio = searchParams.get("customRadio") || '';
+    const searchId = searchParams.get("searchId") || '';
+    const searchText = searchParams.get("searchText") || '';
     const pagenumber = searchParams.get("page");
     const orders = searchParams?.get("orders");
     const pagesizedata = searchParams?.get("pagesizedata");
@@ -69,7 +69,7 @@ const OrderDetail = () => {
                         },
                     });
                     setOrderDetail(response.data.jsonData);
-                }else{
+                } else {
                     const response = await axiosInstance.get(`${BASE_URL}/order/v2/orders/get-city-wide-order/${orderId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -107,7 +107,7 @@ const OrderDetail = () => {
 
     const handlePickupConfirm = async (payload) => {
         try {
-            let response;      
+            let response;
             if (thirdPartyUsername) {
                 response = await axiosInstance.post(
                     `${BASE_URL}/thirdParty/pickup-delivery-otp-verification-admin/`,
@@ -118,7 +118,7 @@ const OrderDetail = () => {
                     `${BASE_URL}/rider/pickup-delivery-otp-verification-admin/`,
                     payload
                 );
-            }    
+            }
             if (response?.data?.message === "Success") {
                 setisPickupModal(false);
                 setPickup(true);
@@ -129,10 +129,10 @@ const OrderDetail = () => {
         } catch (error) {
             toast.error('An error occurred while confirming pickup. Please try again.');
         }
-    };    
+    };
     const handleDeliveryConfirm = async (payload) => {
         try {
-            let response;      
+            let response;
             if (thirdPartyUsername) {
                 response = await axiosInstance.post(
                     `${BASE_URL}/thirdParty/pickup-delivery-otp-verification-admin/`,
@@ -143,7 +143,7 @@ const OrderDetail = () => {
                     `${BASE_URL}/rider/pickup-delivery-otp-verification-admin/`,
                     payload
                 );
-            } 
+            }
             if (response?.data?.message === "Success") {
                 toast.success('Delivery confirmed successfully!');
                 setDelivered(true);
@@ -156,17 +156,17 @@ const OrderDetail = () => {
         }
     };
     const downloadInvoice = async () => {
-        
+
         setisLoadingInvoice(true);
         try {
-            
+
             const response = await axiosInstance.post(
                 `${BASE_URL}/order/orders/admin/getInvoice/${orderId}`,
-                {} ,
+                {},
                 { responseType: 'blob' }
             );
             if (response.data) {
-                const url = window.URL.createObjectURL(new Blob([response.data], {type: 'application/pdf'}));
+                const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
                 const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', `Invoice_${orderId}.pdf`);
@@ -175,7 +175,7 @@ const OrderDetail = () => {
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(url);
                 toast.success('Invoice Download successfully!');
-                
+
             } else {
                 toast.error('Failed to failed to download: ' + response.data.message);
             }
@@ -185,51 +185,51 @@ const OrderDetail = () => {
             setLoading(false);
             setisLoadingInvoice(false);
         };
-        
+
     };
 
     const nearByRiderDetails = async () => {
-        const params ={
-            radius:5,
+        const params = {
+            radius: 5,
             userLatitude: customerDetails?.pickupLocation?.lat,
             userLongitude: customerDetails?.pickupLocation?.lon,
             vehicleId: orderDetail?.vehiceDetails?.id
         }
-        try{
-           await axiosInstance.get(`${BASE_URL}/rider/nearby-riders`,{params}).then((response) => {
-                if(response.data.length > 0){
+        try {
+            await axiosInstance.get(`${BASE_URL}/rider/nearby-riders`, { params }).then((response) => {
+                if (response.data.length > 0) {
                     setNearRiderMap(true);
                     setRiderNearLocation(response.data)
                     const activeRiders = response.data.filter(rider => rider.riderActiveForOrders === true);
                     const countActiveRiders = activeRiders.length;
                     setNearActiveRider(countActiveRiders);
-        
+
                     const inactiveRiders = response.data.filter(rider => rider.riderActiveForOrders === false);
                     const countInactiveRiders = inactiveRiders.length;
                     setNearInActiveRider(countInactiveRiders);
-        
+
                     const totalRiders = response.data.length;
                     setNearTotalRider(totalRiders)
                 }
                 else {
                     toast.error("Sorry, no rider available at the moment. Please try again later.")
                 }
-           })
-        }catch (error){
+            })
+        } catch (error) {
             console.error("Error fetching rider location:", error);
         }
 
     }
 
-    const pickupLocation  = {
-        lat: customerDetails?.pickupLocation?.lat, 
+    const pickupLocation = {
+        lat: customerDetails?.pickupLocation?.lat,
         lng: customerDetails?.pickupLocation?.lon,
         address: customerDetails?.pickupAddress,
         name: "Pickup Location"
     }
 
-    const dropLocation  = {
-        lat: customerDetails?.deliveryLocation?.lat, 
+    const dropLocation = {
+        lat: customerDetails?.deliveryLocation?.lat,
         lng: customerDetails?.deliveryLocation?.lon,
         address: customerDetails?.deliveryAddress,
         name: "Drop Location"
@@ -247,24 +247,24 @@ const OrderDetail = () => {
                             <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                         </Link> */}
                         {customRadio && pagenumber ? (
-                            orders =='ALL' ? (
-                                <Link to={`/all-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=ALL`}>
+                            orders == 'ALL' ? (
+                                <Link to={`/all-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=ALL&pagesizedata=${pagesizedata}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
-                                </Link> 
+                                </Link>
                             ) : orders == 'citywide' ? (
                                 <Link to={`/citywide-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=citywide&pagesizedata=${pagesizedata}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
-                                </Link> 
+                                </Link>
                             ) : orders == 'offline' ? (
                                 <Link to={`/offline-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=offline&pagesizedata=${pagesizedata}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
-                                </Link> 
+                                </Link>
                             ) : orders == 'SparksPlus' || orders == 'ShipRocket' ? (
                                 <Link to={`/${orders}?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=${orders}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
-                                </Link> 
-                            ) :null
-                            
+                                </Link>
+                            ) : null
+
                         ) : null}
                         <h4 className="card-title ms-2 mb-0">Order Details</h4>
                     </div>
@@ -292,26 +292,26 @@ const OrderDetail = () => {
                         </li> */}
                         <li className="multistep-list active">
                             <span>{thirdPartyUsername ? new Date(orderDetails.orderDateTime).toLocaleString("en-US", {
-                                            year: "numeric",
-                                            month: "short",
-                                            day: "2-digit",
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                            second: "2-digit",
-                                            hour12: true,
-                                            timeZone: "UTC"
-                                            }) :  orderDetails.orderDateTime}</span>
+                                year: "numeric",
+                                month: "short",
+                                day: "2-digit",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit",
+                                hour12: true,
+                                timeZone: "UTC"
+                            }) : orderDetails.orderDateTime}</span>
                             <div className="multistep-item">Order Placed</div>
                         </li>
-                        
+
                         {tripDetails?.orderAccepted && (
-                             <li className={`multistep-list  ${tripDetails?.orderAccepted ? 'active' : ''}`}>
+                            <li className={`multistep-list  ${tripDetails?.orderAccepted ? 'active' : ''}`}>
                                 {tripDetails?.orderAcceptedTimeTaken && (
                                     <span className="orderTimetaken">{tripDetails?.orderAcceptedTimeTaken || ' '}</span>
                                 )}
                                 <span>{tripDetails?.orderAcceptedDateTime || ' '}</span>
                                 <div className="multistep-item">Accepted</div>
-                             </li>
+                            </li>
                         )}
                         {(!tripDetails?.orderAccepted && orderDetails.orderStatus !== 'Cancelled') && (
                             <li className={`multistep-list  ${tripDetails?.orderAccepted ? 'active' : ''}`}>
@@ -332,7 +332,7 @@ const OrderDetail = () => {
                                     if (!tripDetails?.orderInTransit) {
                                         openPickupModal();
                                     }
-                                }}> Pickup 
+                                }}> Pickup
                                 </div>
                                 {isPickupModal && (
                                     <Modal
@@ -365,7 +365,7 @@ const OrderDetail = () => {
                                 )}
                             </li>
                         )}
-                        {(!tripDetails?.orderInTransit && orderDetails.orderStatus !== 'Cancelled')  && (
+                        {(!tripDetails?.orderInTransit && orderDetails.orderStatus !== 'Cancelled') && (
                             <li className={`multistep-list ${tripDetails?.orderInTransit ? 'active' : ''}`}>
                                 {tripDetails?.orderInTransitTimeTaken && (
                                     <span className="orderTimetaken">{tripDetails?.orderInTransitTimeTaken || ' '}</span>
@@ -375,7 +375,7 @@ const OrderDetail = () => {
                                     if (!tripDetails?.orderInTransit) {
                                         openPickupModal();
                                     }
-                                }}> Pickup 
+                                }}> Pickup
                                 </div>
                                 {isPickupModal && (
                                     <Modal
@@ -409,9 +409,9 @@ const OrderDetail = () => {
                             </li>
                         )}
                         {tripDetails?.orderDelivered && (
-                           <li className={`multistep-list ${tripDetails?.orderDelivered ? 'active' : ''}`}>
+                            <li className={`multistep-list ${tripDetails?.orderDelivered ? 'active' : ''}`}>
                                 {tripDetails?.orderDeliveredTimeTaken && (
-                                   <span className="orderTimetaken">{tripDetails?.orderDeliveredTimeTaken || ' '}</span>
+                                    <span className="orderTimetaken">{tripDetails?.orderDeliveredTimeTaken || ' '}</span>
                                 )}
                                 <span>{tripDetails?.orderDeliveredDateTime || ' '}</span>
                                 <div className="multistep-item"
@@ -454,9 +454,9 @@ const OrderDetail = () => {
                             </li>
                         )}
                         {(!tripDetails?.orderDelivered && orderDetails.orderStatus !== 'Cancelled') && (
-                           <li className={`multistep-list ${tripDetails?.orderDelivered ? 'active' : ''}`}>
+                            <li className={`multistep-list ${tripDetails?.orderDelivered ? 'active' : ''}`}>
                                 {tripDetails?.orderDeliveredTimeTaken && (
-                                   <span className="orderTimetaken">{tripDetails?.orderDeliveredTimeTaken || ' '}</span>
+                                    <span className="orderTimetaken">{tripDetails?.orderDeliveredTimeTaken || ' '}</span>
                                 )}
                                 <span>{tripDetails?.orderDeliveredDateTime || ' '}</span>
                                 <div className="multistep-item"
@@ -498,17 +498,17 @@ const OrderDetail = () => {
                                 )}
                             </li>
                         )}
-                       
+
                         {orderDetails.orderStatus === 'Cancelled' && (
-                            <li className={`multistep-list ${orderDetails.orderStatus === 'Cancelled'? 'active' : ''}`}>
-                                 {cancelDetails?.orderCancelledTimeTaken && (
+                            <li className={`multistep-list ${orderDetails.orderStatus === 'Cancelled' ? 'active' : ''}`}>
+                                {cancelDetails?.orderCancelledTimeTaken && (
                                     <span className="orderTimetaken">{cancelDetails?.orderCancelledTimeTaken || ' '}</span>
                                 )}
                                 <span>{cancelDetails.orderCancelledDateTime}</span>
                                 <div className="multistep-item">Cancel</div>
                             </li>
                         )}
-                        
+
                     </ul>
                 </div>
             </div>
@@ -523,7 +523,7 @@ const OrderDetail = () => {
                                         Order Id
                                     </td>
                                     <td className="px-6 py-2 text-end">
-                                     
+
                                         {thirdPartyUsername ? orderDetails.orderId : orderDetails.order_Id}
                                     </td>
                                 </tr>
@@ -541,7 +541,7 @@ const OrderDetail = () => {
                                             second: "2-digit",
                                             hour12: true,
                                             timeZone: "UTC"
-                                            }) :  orderDetails.orderDateTime}
+                                        }) : orderDetails.orderDateTime}
                                     </td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
@@ -551,17 +551,17 @@ const OrderDetail = () => {
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Order Type </td>
                                     <td className=" px-6 py-2 text-end">
-                                        { thirdPartyUsername ? "THIRD PARTY" :orderDetails.orderType}
+                                        {thirdPartyUsername ? "THIRD PARTY" : orderDetails.orderType}
                                     </td>
                                 </tr>
                                 {cancelDetails?.orderCancelled === true && (
                                     <tr className="border-b border-slate-100 dark:border-slate-700">
                                         <td className=" px-6 py-2"> Order Cancel Reason </td>
                                         <td className=" px-6 py-2 text-end">
-                                        {cancelDetails?.cancelReasonType?.trim() || cancelDetails?.cancelReasonSelected}
+                                            {cancelDetails?.cancelReasonType?.trim() || cancelDetails?.cancelReasonSelected}
                                         </td>
                                     </tr>
-                                )}                                
+                                )}
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Pickup Address </td>
                                     <td className=" px-6 py-2 text-end">{customerDetails?.pickupAddress}</td>
@@ -580,9 +580,14 @@ const OrderDetail = () => {
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Distance (KM) </td>
-                                    <td className=" px-6 py-2 text-end">{orderDetails?.distance}</td>
+                                    {thirdPartyUsername ? (
+                                        <td className=" px-6 py-2 text-end">{orderDetails?.distance?.value} {orderDetails?.distance?.text}</td>
+                                    ) : (
+                                        <td className=" px-6 py-2 text-end">{orderDetails?.distance}</td>
+                                    )}
+
                                 </tr>
-                                
+
 
                                 {thirdPartyUsername ? (
                                     <>
@@ -595,10 +600,10 @@ const OrderDetail = () => {
                                             <td className=" px-6 py-2 text-end">{orderDetails?.deiveryOtp}</td>
                                         </tr>
                                     </>
-                                    
+
                                 ) : (
                                     <>
-                                       <tr className="border-b border-slate-100 dark:border-slate-700">
+                                        <tr className="border-b border-slate-100 dark:border-slate-700">
                                             <td className=" px-6 py-2"> Pickup OTP </td>
                                             <td className=" px-6 py-2 text-end">{orderDetails?.pickupOtp}</td>
                                         </tr>
@@ -608,7 +613,7 @@ const OrderDetail = () => {
                                         </tr>
                                     </>
                                 )}
-                                
+
                                 {!thirdPartyUsername && (
                                     <>
                                         <tr className="border-b border-slate-100 dark:border-slate-700">
@@ -621,7 +626,7 @@ const OrderDetail = () => {
                                         </tr> */}
                                     </>
                                 )}
-                                
+
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Package Weight</td>
                                     <td className=" px-6 py-2 text-end">
@@ -652,7 +657,7 @@ const OrderDetail = () => {
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2"> Rider Name</td>
                                     <td className="text-end px-6 py-2">
-                                      <Link to={`/rider-detail/${riderDetails?.riderId}`} className="hover:underline">  {riderDetails?.riderName || ""} </Link>
+                                        <Link to={`/rider-detail/${riderDetails?.riderId}`} className="hover:underline">  {riderDetails?.riderName || ""} </Link>
                                     </td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
@@ -665,7 +670,7 @@ const OrderDetail = () => {
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Vehicle Type</td>
-                                    <td className="text-end px-6 py-2"> 
+                                    <td className="text-end px-6 py-2">
                                         {thirdPartyUsername ? vehiceDetails?.vehicleType : vehiceDetails?.vehicleType}
                                     </td>
                                 </tr>
@@ -680,7 +685,7 @@ const OrderDetail = () => {
                                     <td className="px-6 py-2">Payment Mode</td>
                                     <td className="text-end px-6 py-2">{orderDetails?.paymentMode}</td>
                                 </tr>
-                                {(orderDetails.orderStatus === 'Delivered' && orderDetails.paymentMode !== 'PREPAID')  && (
+                                {(orderDetails.orderStatus === 'Delivered' && orderDetails.paymentMode !== 'PREPAID') && (
                                     <tr className="border-b border-slate-100 dark:border-slate-700">
                                         <td className="px-6 py-2">Payment Status</td>
                                         <td className="text-end px-6 py-2">COMPLETED</td>
@@ -692,7 +697,7 @@ const OrderDetail = () => {
                                         <td className="text-end px-6 py-2">PENDING</td>
                                     </tr>
                                 )}
-                                {( orderDetails.paymentMode === 'PREPAID') && (
+                                {(orderDetails.paymentMode === 'PREPAID') && (
                                     <tr className="border-b border-slate-100 dark:border-slate-700">
                                         <td className="px-6 py-2">Payment Status</td>
                                         {/* <td className="text-end px-6 py-2">Cancelled</td> */}
@@ -712,7 +717,7 @@ const OrderDetail = () => {
                                         <td className="text-end px-6 py-2">{orderDetails.refundStatus}</td>
                                     </tr>
                                 )} */}
-                                
+
                                 {/* {(orderDetails.orderStatus === 'In Progress' && orderDetails.paymentMode === 'PREPAID') && (
                                     <tr className="border-b border-slate-100 dark:border-slate-700">
                                         <td className="px-6 py-2">Payment Status</td>
@@ -727,7 +732,7 @@ const OrderDetail = () => {
                                 </tr>
                                 {!thirdPartyUsername && (
                                     <>
-                                       <tr className="border-b border-slate-100 dark:border-slate-700">
+                                        <tr className="border-b border-slate-100 dark:border-slate-700">
                                             <td className="px-6 py-2">Discount</td>
                                             <td className="text-end px-6 py-2">{orderDetails.orderAmount.discount}</td>
                                         </tr>
@@ -749,110 +754,119 @@ const OrderDetail = () => {
                                         </tr>
                                     </>
                                 )}
-                                
+
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Total Amount Payable</td>
                                     <td className="text-end px-6 py-2">
-                                        { thirdPartyUsername ? orderDetails.orderAmount : orderDetails.orderAmount.finalPrice}
+                                        {thirdPartyUsername ? orderDetails.orderAmount : orderDetails.orderAmount.finalPrice}
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div className="mt-3 text-end">
+                    <div className="mt-3 d-flex justify-content-end gap-3">
                         {orderDetails.orderStatus === 'In Progress' && (
-                            <button type="button" className="btn btn-dark p-2" onClick={() => {nearByRiderDetails()}}> Get Near By Rider</button>
+                            <>
+                                <img src={vehiceDetails?.imageUrl} alt={vehiceDetails?.vehicleType} width={40} />
+                                <button type="button" className="btn btn-dark p-2" onClick={() => { nearByRiderDetails() }}> Get Near By Rider</button>
+                            </>
+
                         )}
-                        
+
                     </div>
                     {nearRiderMap && (
-                            <Modal
+                        <Modal
                             activeModal={nearRiderMap}
                             uncontrol
                             className="max-w-5xl"
                             title="Near By Rider"
                             centered
                             onClose={() => setNearRiderMap(false)}
-                            >
+                        >
                             <div>
                                 {/* <h6 className="text-center mb-2">Near By Rider</h6> */}
                                 <LoadScript googleMapsApiKey="AIzaSyDTetPmohnWdWT0lsYV9iT-58Z5Gm4jmgA" preventGoogleFonts={true}>
-                                <div className="overflow-hidden">
-                                    <GoogleMap
-                                        mapContainerStyle={mapContainerStyle}
-                                        center={pickupLocation}
-                                        zoom={20}
-                                        onLoad={(map) => (mapRef.current = map)}
-                                    >
-                                        {riderNearLocation?.map((marker, index) => (
+                                    <div className="overflow-hidden">
+                                        <GoogleMap
+                                            mapContainerStyle={mapContainerStyle}
+                                            center={pickupLocation}
+                                            zoom={20}
+                                            onLoad={(map) => (mapRef.current = map)}
+                                        >
+                                            {riderNearLocation?.map((marker, index) => (
+                                                <Marker
+                                                    key={index}
+                                                    position={{ lat: marker.latitude, lng: marker.longitude }}
+                                                    icon={marker.riderActiveForOrders ? 'https://securestaging.net/scooton/rider-icon-green.png' : 'https://securestaging.net/scooton/rider-icon-red.png'}
+                                                    onClick={() => setSelectedMarker(marker)}
+                                                />
+                                            ))}
+
+                                            {selectedMarker && selectedMarker.latitude && selectedMarker.longitude && (
+                                                <InfoWindow
+                                                    position={{ lat: selectedMarker.latitude, lng: selectedMarker.longitude }}
+                                                    options={{ disableAutoPan: true }} // Removes default close button
+                                                >
+                                                    <div className="rider-detail">
+                                                        <button className="close-btn" onClick={() => setSelectedMarker(null)}>✖</button>
+                                                        <div className="rider-name">{selectedMarker.firstName}</div>
+                                                        <div className="rider-no">{selectedMarker.mobileNumber}</div>
+                                                    </div>
+                                                </InfoWindow>
+
+
+                                            )}
                                             <Marker
-                                                key={index}
-                                                position={{ lat: marker.latitude, lng: marker.longitude }} 
-                                                icon={marker.riderActiveForOrders ? 'https://securestaging.net/scooton/rider-icon-green.png' : 'https://securestaging.net/scooton/rider-icon-red.png'}
-                                                onClick={() => setSelectedMarker(marker)}
+                                                position={pickupLocation}
+                                                icon={{
+                                                    url: "https://securestaging.net/scooton/pickuppoint.png",
+                                                }}
+                                                onClick={() => setSelectedPickupMarker(pickupLocation)}
                                             />
-                                        ))}
 
-                                        {selectedMarker && selectedMarker.latitude && selectedMarker.longitude && (
-                                            <InfoWindow
-                                                position={{ lat: selectedMarker.latitude, lng: selectedMarker.longitude }} 
-                                                onCloseClick={() => setSelectedMarker(null)}
-                                            >
-                                                <div style={{ padding: "5px", fontSize: "14px" }}>
-                                                <strong>{selectedMarker.firstName}</strong> <br />
-                                                    {selectedMarker.mobileNumber}
-                                                </div>
-                                            </InfoWindow>
-                                        )}
-                                        <Marker 
-                                            position={pickupLocation}
-                                            icon={{
-                                                url: "https://securestaging.net/scooton/pickuppoint.png",
-                                            }}
-                                            onClick={() => setSelectedPickupMarker(pickupLocation)}
-                                        />
+                                            {selectedPickupMarker && (
+                                                <InfoWindow
+                                                    position={pickupLocation}
+                                                    options={{ disableAutoPan: true }} // Removes default close button
+                                                >
+                                                    <div className="rider-detail">
+                                                        <button className="close-btn" onClick={() => setSelectedPickupMarker(null)}>✖</button>
+                                                        <div className="rider-name">{selectedPickupMarker.firstName}</div>
+                                                        <div className="rider-no">{selectedPickupMarker.address}</div>
+                                                    </div>
+                                                </InfoWindow>
+                                            )}
 
-                                        {selectedPickupMarker && (
-                                            <InfoWindow 
-                                            position={selectedPickupMarker} 
-                                            
-                                            onCloseClick={() => setSelectedPickupMarker(null)}
-                                            >
-                                            <div style={{ padding: "5px", fontSize: "14px" }}>
-                                                <strong>{selectedPickupMarker.name}</strong> <br />
-                                                {selectedPickupMarker.address}
-                                            </div>
-                                            </InfoWindow>
-                                        )}
-                                        <Marker 
-                                            position={dropLocation}
-                                            icon={{
-                                                url: "https://securestaging.net/scooton/Droppoint.png",
-                                            }}
-                                            onClick={() => setSelectedDropMarker(dropLocation)}
-                                        />
+                                            <Marker
+                                                position={dropLocation}
+                                                icon={{
+                                                    url: "https://securestaging.net/scooton/Droppoint.png",
+                                                }}
+                                                onClick={() => setSelectedDropMarker(dropLocation)}
+                                            />
 
-                                        {selectedDroppMarker && (
-                                            <InfoWindow 
-                                            position={selectedDroppMarker} 
-                                            
-                                            onCloseClick={() => setSelectedDropMarker(null)}
-                                            >
-                                            <div style={{ padding: "5px", fontSize: "14px" }}>
-                                                <strong>{selectedDroppMarker.name}</strong> <br />
-                                                {selectedDroppMarker.address}
-                                            </div>
-                                            </InfoWindow>
-                                        )}
-                                    </GoogleMap>
-                                </div>
+                                            {selectedDroppMarker && (
+                                                <InfoWindow
+                                                    position={selectedDroppMarker}
+                                                    options={{ disableAutoPan: true }}
+                                                >
+                                                    <div className="rider-detail">
+                                                        <button className="close-btn" onClick={() => setSelectedDropMarker(null)}>✖</button>
+                                                        <div className="rider-name">{selectedDroppMarker.name}</div>
+                                                        <div className="rider-no">{selectedDroppMarker.address}</div>
+                                                    </div>
+                                                </InfoWindow>
+                                            )}
+
+                                        </GoogleMap>
+                                    </div>
                                 </LoadScript>
                             </div>
                             <div className="mt-2 text-center">
-                               <strong>
+                                <strong>
                                     Near By Total Riders: {nearTotalRider} [
-                                    <span style={{ color: "green", fontWeight: "bold" }}>Active Rider: {nearActiveRider} </span> 
-                                    <span>-</span> 
+                                    <span style={{ color: "green", fontWeight: "bold" }}>Active Rider: {nearActiveRider} </span>
+                                    <span>-</span>
                                     <span style={{ color: "red", fontWeight: "bold" }}> InActive Riders: {nearInActiveRider}</span>]
                                 </strong>
 
@@ -861,8 +875,8 @@ const OrderDetail = () => {
                     )}
                 </div>
             </div>
-            
-            
+
+
         </Card>
     );
 };
