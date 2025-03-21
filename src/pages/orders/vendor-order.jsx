@@ -37,9 +37,52 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType,currentP
     Header: "Order ID",
     accessor: "order_Id",
   },
+  // {
+  //   Header: "Client Order ID",
+  //   accessor: "thirdPartyOrders.clientOrderId",
+  // },
   {
     Header: "Client Order ID",
     accessor: "thirdPartyOrders.clientOrderId",
+    Cell: ({ value }) => {
+      if (!value) return "-";
+  
+      const [copied, setCopied] = useState(false);
+  
+      const handleCopy = () => {
+        navigator.clipboard.writeText(value);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+      };
+  
+      if (value.length <= 10) {
+        return (
+          <div className="flex items-center space-x-2">
+            <Tooltip content={copied ? "Copied!" : "Copy"} placement="top" arrow animation="shift-away">
+              <button onClick={handleCopy} className="border rounded-md bg-scooton cursor-pointer p-1">
+                <Icon icon="heroicons-outline:document-duplicate" className="text-gray-500 hover:text-gray-700" />
+              </button>
+            </Tooltip>
+            <span>{value}</span>
+          </div>
+        );
+      }
+  
+      const shortValue = `${value.slice(0, 5)}...${value.slice(-5)}`;
+  
+      return (
+        <div className="flex items-center space-x-2">
+          <Tooltip content={copied ? "Copied!" : "Copy"} placement="top" arrow animation="shift-away">
+            <button onClick={handleCopy} className="border rounded-md bg-scooton cursor-pointer p-1">
+              <Icon icon="heroicons-outline:document-duplicate" className="text-gray-500 hover:text-gray-700" />
+            </button>
+          </Tooltip>
+          <Tooltip content={value} placement="top" arrow animation="shift-away">
+            <span className="cursor-pointer">{shortValue}</span>
+          </Tooltip>
+        </div>
+      );
+    },
   },
   {
     Header: "Mobile Number",
