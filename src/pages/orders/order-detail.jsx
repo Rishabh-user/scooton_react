@@ -581,7 +581,7 @@ const OrderDetail = () => {
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Distance (KM) </td>
                                     {thirdPartyUsername ? (
-                                        <td className=" px-6 py-2 text-end">{orderDetails?.distance?.value} {orderDetails?.distance?.text}</td>
+                                        <td className=" px-6 py-2 text-end">{orderDetails?.distance?.text} , {orderDetails?.distance?.value} </td>
                                     ) : (
                                         <td className=" px-6 py-2 text-end">{orderDetails?.distance}</td>
                                     )}
@@ -786,80 +786,75 @@ const OrderDetail = () => {
                             <div>
                                 {/* <h6 className="text-center mb-2">Near By Rider</h6> */}
                                 <LoadScript googleMapsApiKey="AIzaSyDTetPmohnWdWT0lsYV9iT-58Z5Gm4jmgA" preventGoogleFonts={true}>
-                                    <div className="overflow-hidden">
-                                        <GoogleMap
-                                            mapContainerStyle={mapContainerStyle}
-                                            center={pickupLocation}
-                                            zoom={20}
-                                            onLoad={(map) => (mapRef.current = map)}
-                                        >
-                                            {riderNearLocation?.map((marker, index) => (
-                                                <Marker
-                                                    key={index}
-                                                    position={{ lat: marker.latitude, lng: marker.longitude }}
-                                                    icon={marker.riderActiveForOrders ? 'https://securestaging.net/scooton/rider-icon-green.png' : 'https://securestaging.net/scooton/rider-icon-red.png'}
-                                                    onClick={() => setSelectedMarker(marker)}
-                                                />
-                                            ))}
-
-                                            {selectedMarker && selectedMarker.latitude && selectedMarker.longitude && (
-                                                <InfoWindow
-                                                    position={{ lat: selectedMarker.latitude, lng: selectedMarker.longitude }}
-                                                    options={{ disableAutoPan: true }} // Removes default close button
-                                                >
-                                                    <div className="rider-detail">
-                                                        <button className="close-btn" onClick={() => setSelectedMarker(null)}>✖</button>
-                                                        <div className="rider-name">{selectedMarker.firstName}</div>
-                                                        <div className="rider-no">{selectedMarker.mobileNumber}</div>
-                                                    </div>
-                                                </InfoWindow>
-
-
-                                            )}
+                                <div className="overflow-hidden">
+                                    <GoogleMap
+                                        mapContainerStyle={mapContainerStyle}
+                                        center={pickupLocation}
+                                        zoom={20}
+                                        onLoad={(map) => (mapRef.current = map)}
+                                    >
+                                        {riderNearLocation?.map((marker, index) => (
                                             <Marker
-                                                position={pickupLocation}
-                                                icon={{
-                                                    url: "https://securestaging.net/scooton/pickuppoint.png",
-                                                }}
-                                                onClick={() => setSelectedPickupMarker(pickupLocation)}
+                                                key={index}
+                                                position={{ lat: marker.latitude, lng: marker.longitude }} 
+                                                icon={marker.riderActiveForOrders ? 'https://securestaging.net/scooton/rider-icon-green.png' : 'https://securestaging.net/scooton/rider-icon-red.png'}
+                                                onClick={() => setSelectedMarker(marker)}
                                             />
+                                        ))}
 
-                                            {selectedPickupMarker && (
-                                                <InfoWindow
-                                                    position={pickupLocation}
-                                                    options={{ disableAutoPan: true }} // Removes default close button
-                                                >
-                                                    <div className="rider-detail">
-                                                        <button className="close-btn" onClick={() => setSelectedPickupMarker(null)}>✖</button>
-                                                        <div className="rider-name">{selectedPickupMarker.firstName}</div>
-                                                        <div className="rider-no">{selectedPickupMarker.address}</div>
-                                                    </div>
-                                                </InfoWindow>
-                                            )}
+                                        {selectedMarker && selectedMarker.latitude && selectedMarker.longitude && (
+                                            <InfoWindow
+                                                position={{ lat: selectedMarker.latitude, lng: selectedMarker.longitude }} 
+                                                onCloseClick={() => setSelectedMarker(null)}
+                                            >
+                                                <div>
+                                                    <h6 className="mb-1 text-base mr-3">{selectedMarker.firstName}</h6>
+                                                    <p className="font-normal">{selectedMarker.mobileNumber}</p>
+                                                </div>
+                                            </InfoWindow>
+                                        )}
+                                        <Marker 
+                                            position={pickupLocation}
+                                            icon={{
+                                                url: "https://securestaging.net/scooton/pickuppoint.png",
+                                            }}
+                                            onClick={() => setSelectedPickupMarker(pickupLocation)}
+                                        />
 
-                                            <Marker
-                                                position={dropLocation}
-                                                icon={{
-                                                    url: "https://securestaging.net/scooton/Droppoint.png",
-                                                }}
-                                                onClick={() => setSelectedDropMarker(dropLocation)}
-                                            />
+                                        {selectedPickupMarker && (
+                                            <InfoWindow 
+                                            position={selectedPickupMarker} 
+                                            
+                                            onCloseClick={() => setSelectedPickupMarker(null)}
+                                            >
+                                            <div>
+                                                <h6 className="mb-1 text-base mr-3">{selectedPickupMarker.name}</h6>
+                                                <p className="font-normal">{selectedPickupMarker.address}</p>
+                                            </div>
+                                            </InfoWindow>
+                                        )}
+                                        <Marker 
+                                            position={dropLocation}
+                                            icon={{
+                                                url: "https://securestaging.net/scooton/Droppoint.png",
+                                            }}
+                                            onClick={() => setSelectedDropMarker(dropLocation)}
+                                        />
 
-                                            {selectedDroppMarker && (
-                                                <InfoWindow
-                                                    position={selectedDroppMarker}
-                                                    options={{ disableAutoPan: true }}
-                                                >
-                                                    <div className="rider-detail">
-                                                        <button className="close-btn" onClick={() => setSelectedDropMarker(null)}>✖</button>
-                                                        <div className="rider-name">{selectedDroppMarker.name}</div>
-                                                        <div className="rider-no">{selectedDroppMarker.address}</div>
-                                                    </div>
-                                                </InfoWindow>
-                                            )}
-
-                                        </GoogleMap>
-                                    </div>
+                                        {selectedDroppMarker && (
+                                            <InfoWindow 
+                                            position={selectedDroppMarker} 
+                                            
+                                            onCloseClick={() => setSelectedDropMarker(null)}
+                                            >
+                                            <div>
+                                                <h6 className="mb-1 text-base mr-3">{selectedDroppMarker.name}</h6>
+                                                <p className="font-normal">{selectedDroppMarker.address}</p> 
+                                            </div>
+                                            </InfoWindow>
+                                        )}
+                                    </GoogleMap>
+                                </div>
                                 </LoadScript>
                             </div>
                             <div className="mt-2 text-center">
