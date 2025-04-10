@@ -76,6 +76,11 @@ const RiderDetail = () => {
     const [selectedOrderIndex, setSelectedOrderIndex] = useState(null);
     const [ordeeCurrentPage, setOrderCurrentPage] = useState(0);
     const role = getRole();
+    const navigate = useNavigate();
+    const [isDeleteModal, setIsDeleteModal] = useState(false);
+    const [isMapOpen, setIsMapOpen] = useState(false);
+    const [updateridersdetails, setUpdateRiderDetails] = useState(null);
+    const [loading, setLoading] = useState(true);
 
 
     // useEffect(() => {
@@ -87,12 +92,7 @@ const RiderDetail = () => {
     //       });
     //     }
     // }, []);
-    const navigate = useNavigate();
-    const [isDeleteModal, setIsDeleteModal] = useState(false);
-    const [isMapOpen, setIsMapOpen] = useState(false);
 
-    const [updateridersdetails, setUpdateRiderDetails] = useState(null);
-    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const fetchRiderOrderDetail = async () => {
             try {
@@ -432,9 +432,9 @@ const RiderDetail = () => {
         }
     };
 
-    if (loading) {
-        return <Loading />;
-    }
+    // if (loading) {
+    //     return <Loading />;
+    // }
 
     const date = new Date();
 
@@ -470,27 +470,58 @@ const RiderDetail = () => {
 
     };
 
-    const orderHistory = async () => {
-        const riderOrderResponse = await axiosInstance.get(`${BASE_URL}/rider/get-rider-orders/${riderId}?endDate=${formattedFromDate}&page=0&size=500&startDate=2022-12-01`, {
 
+    const orderHistory = async () => {
+        setLoading(true);
+        await axiosInstance.get(`${BASE_URL}/rider/get-rider-orders/${riderId}?endDate=${formattedFromDate}&page=0&size=500&startDate=2022-12-01`, {
+        }).then((response) => {
+
+            console.log("response", response)
+            setRiderOrderDetail(response?.data?.jsonData?.orderDetails);
+        }).catch((error) => {
+            console.error("Error fetching order data:", error);
+        }).finally(() => {
+            setLoading(false);
         });
-        setRiderOrderDetail(riderOrderResponse?.data?.jsonData?.orderDetails);
 
     }
 
+    // const orderHistory = async () => {
+    //     const riderOrderResponse = await axiosInstance.get(`${BASE_URL}/rider/get-rider-orders/${riderId}?endDate=${formattedFromDate}&page=0&size=500&startDate=2022-12-01`, {
+
+    //     });
+    //     console.log("riderOrderResponse",riderOrderResponse)
+    //     setRiderOrderDetail(riderOrderResponse?.data?.jsonData?.orderDetails);
+
+    // }
+
     const orderWallet = async () => {
-        const riderWalletResponse = await axiosInstance.get(`${BASE_URL}/rider/v2/get-rider-wallet/${riderId}?page=0&size=100`, {
-        });
-        console.log("riderWalletResponse",riderWalletResponse)
-        setRiderWalletDetail(riderWalletResponse?.data?.jsonData?.walletTxn);
-        setWalletAmount(riderWalletResponse?.data?.jsonData?.balance);
+        setLoading(true);
+        await axiosInstance.get(`${BASE_URL}/rider/v2/get-rider-wallet/${riderId}?page=0&size=100`, {
+        }).then((response) => {
+            console.log("response", response)
+            setRiderWalletDetail(response?.data?.jsonData?.walletTxn);
+            setWalletAmount(response?.data?.jsonData?.balance);
+        }).catch((error) => {
+            console.error("Error fetching order data:", error);
+        }).finally(() => {
+            setLoading(false);
+        })
+
     }
 
     const earning = async () => {
-        const riderTripResponse = await axiosInstance.get(`${BASE_URL}/rider/get-rider-earning/${riderId}?endDate=${formattedFromDate}&page=0&size=500&startDate=2022-12-01`, {
+        setLoading(true);
+        await axiosInstance.get(`${BASE_URL}/rider/get-rider-earning/${riderId}?endDate=${formattedFromDate}&page=0&size=500&startDate=2022-12-01`, {
+        }).then((response) => {
+            console.log("response", response)
+            setRiderTripDetail(response?.data?.jsonData?.tripDetails);
+        }).catch((response) => {
+            console.error("Error fetching order data:", error);
+        }).finally(() => {
+            setLoading(false);
+        })
 
-        });
-        setRiderTripDetail(riderTripResponse?.data?.jsonData?.tripDetails);
     }
 
 
@@ -941,77 +972,88 @@ const RiderDetail = () => {
                         </TabPanel>
                         <TabPanel>
                             <h6 className="mt-5">Order Details</h6>
-                            <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
-                                <table className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                                    <thead className="bg-slate-200 dark:bg-slate-700">
-                                        <tr>
-                                            <th className="table-th">
-                                                <span >Sr. No</span>
-                                            </th>
-                                            <th className="table-th">
-                                                <span>Order Id</span>
-                                            </th>
-                                            <th className="table-th">
-                                                <span>Order Status</span>
-                                            </th>
-                                            <th className="table-th">
-                                                <span>Order Type</span>
-                                            </th>
-                                            <th className="table-th">
-                                                <span>Order Date</span>
-                                            </th>
-                                            <th className="table-th">
-                                                <span>Order Amount</span>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                        {paginatedOrders?.length === 0 ? (
-                                            <tr>
-                                                <td colSpan="6" className="text-center p-4">No orders found.</td>
-                                            </tr>
-                                        ) : (
-                                            paginatedOrders?.map((order, index) => (
-                                                <tr key={index} onClick={() => handleViewClick(order.order_Id)}>
-                                                    <td className="table-td">{startIndex + index + 1}</td>
-                                                    <td className="table-td">{order.order_Id}</td>
-                                                    <td className="table-td">{order.orderStatus}</td>
-                                                    <td className="table-td">{order.orderType}</td>
-                                                    <td className="table-td">{order.orderDate}</td>
-                                                    <td className="table-td">{order.orderAmount}</td>
-                                                </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
-
-                            </div>
-                            <div className="text-sm rounded leading-[16px] flex h-6 items-center justify-center transition-all duration-150">
-                                <button
-                                    disabled={currentPage === 1}
-                                    className="text-sm mx-2 leading-4 text-slate-900 dark:text-white rtl:rotate-180"
-                                    onClick={() => goToPage(currentPage - 1)}
-                                >
-                                    Previous
-                                </button>
-                                {[...Array(totalPages)?.keys()]?.map((page) => (
-                                    <button
-                                        key={page}
-                                        className={`px-2 py-1 mx-2 rounded ${currentPage === page + 1 ? 'bg-scooton-900 text-white' : 'bg-gray-200 text-black'
-                                            }`}
-                                        onClick={() => goToPage(page + 1)}
-                                    >
-                                        {page + 1}
-                                    </button>
-                                ))}
-                                <button
-                                    className="text-sm mx-2 leading-4 text-slate-900 dark:text-white rtl:rotate-180"
-                                    disabled={currentPage === totalPages}
-                                    onClick={() => goToPage(currentPage + 1)}
-                                >
-                                    Next
-                                </button>
-                            </div>
+                            {
+                                loading ? (
+                                    <div className="flex justify-center items-center w-100">
+                                        <Loading />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
+                                            <>
+                                                <table className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                                    <thead className="bg-slate-200 dark:bg-slate-700">
+                                                        <tr>
+                                                            <th className="table-th">
+                                                                <span >Sr. No</span>
+                                                            </th>
+                                                            <th className="table-th">
+                                                                <span>Order Id</span>
+                                                            </th>
+                                                            <th className="table-th">
+                                                                <span>Order Status</span>
+                                                            </th>
+                                                            <th className="table-th">
+                                                                <span>Order Type</span>
+                                                            </th>
+                                                            <th className="table-th">
+                                                                <span>Order Date</span>
+                                                            </th>
+                                                            <th className="table-th">
+                                                                <span>Order Amount</span>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                                        {paginatedOrders?.length === 0 ? (
+                                                            <tr>
+                                                                <td colSpan="6" className="text-center p-4">No orders found.</td>
+                                                            </tr>
+                                                        ) : (
+                                                            paginatedOrders?.map((order, index) => (
+                                                                <tr key={index} onClick={() => handleViewClick(order.order_Id)}>
+                                                                    <td className="table-td">{startIndex + index + 1}</td>
+                                                                    <td className="table-td">{order.order_Id}</td>
+                                                                    <td className="table-td">{order.orderStatus}</td>
+                                                                    <td className="table-td">{order.orderType}</td>
+                                                                    <td className="table-td">{order.orderDate}</td>
+                                                                    <td className="table-td">{order.orderAmount}</td>
+                                                                </tr>
+                                                            ))
+                                                        )}
+                                                    </tbody>
+                                                </table>
+                                            </>
+                                        </div>
+                                        <div className="text-sm rounded leading-[16px] flex h-6 items-center justify-center transition-all duration-150">
+                                            <button
+                                                disabled={currentPage === 1}
+                                                className="text-sm mx-2 leading-4 text-slate-900 dark:text-white rtl:rotate-180"
+                                                onClick={() => goToPage(currentPage - 1)}
+                                            >
+                                                Previous
+                                            </button>
+                                            {[...Array(totalPages)?.keys()]?.map((page) => (
+                                                <button
+                                                    key={page}
+                                                    className={`px-2 py-1 mx-2 rounded ${currentPage === page + 1 ? 'bg-scooton-900 text-white' : 'bg-gray-200 text-black'
+                                                        }`}
+                                                    onClick={() => goToPage(page + 1)}
+                                                >
+                                                    {page + 1}
+                                                </button>
+                                            ))}
+                                            <button
+                                                className="text-sm mx-2 leading-4 text-slate-900 dark:text-white rtl:rotate-180"
+                                                disabled={currentPage === totalPages}
+                                                onClick={() => goToPage(currentPage + 1)}
+                                            >
+                                                Next
+                                            </button>
+                                        </div>
+                                    </>
+                                )
+                            }
                         </TabPanel>
                         <TabPanel>
 
@@ -1023,164 +1065,182 @@ const RiderDetail = () => {
                                 )}
 
                             </div>
+                            {
+                                loading ? (
+                                    <div className="flex justify-center items-center w-100">
+                                        <Loading />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
+                                            <table className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                                <thead className=" bg-slate-200 dark:bg-slate-700">
+                                                    <tr>
+                                                        <th className=" table-th">
+                                                            <span>Sr. No</span>
+                                                        </th>
+                                                        <th className=" table-th">
+                                                            <span>Order Id</span>
+                                                        </th>
+                                                        <th className=" table-th">
+                                                            <span>Order Date</span>
+                                                        </th>
+                                                        <th className=" table-th">
+                                                            <span>Wallet Txn</span>
+                                                        </th>
+                                                        <th className=" table-th">
+                                                            <span>Payment Mode</span>
+                                                        </th>
+                                                        <th className=" table-th">
+                                                            <span>Payment Type</span>
+                                                        </th>
+                                                        <th className=" table-th">
+                                                            <span>Rider Fees</span>
+                                                        </th>
+                                                        <th className=" table-th">
+                                                            <span>Order Amount</span>
+                                                        </th>
+                                                        <th className=" table-th">
+                                                            <span>Payment Status</span>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                                    {walletpaginatedOrders?.length === 0 ? (
+                                                        <tr>
+                                                            <td colSpan="8" className="text-center p-4">No orders found.</td>
+                                                        </tr>
+                                                    ) : (
+                                                        walletpaginatedOrders?.map((order, index) => (
+                                                            <tr key={index}>
+                                                                <td className="table-td">{index + 1}</td>
+                                                                <td className="table-td">{order.tripId}</td>
+                                                                <td className="table-td">{order.tripDate}</td>
+                                                                <td className="table-td">{order.txnWallet}</td>
+                                                                <td className="table-td">{order.paymentMode}</td>
+                                                                <td className="table-td">{order.paymentType}</td>
+                                                                <td className="table-td">{order.riderFee}</td>
+                                                                <td className="table-td">{order.tripFare}</td>
+                                                                <td className="table-td">
+                                                                    {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
+                                                                </td>
 
+                                                            </tr>
+                                                        ))
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div className="text-sm rounded leading-[16px] flex h-6 items-center justify-center transition-all duration-150">
+                                            <button
+                                                disabled={walletcurrentPage === 1}
+                                                className="text-sm leading-4 mx-2 text-slate-900 dark:text-white rtl:rotate-180"
+                                                onClick={() => walletgoToPage(walletcurrentPage - 1)}
+                                            >
+                                                Previous
+                                            </button>
 
+                                            {[...Array(wallettotalPages)?.keys()]?.map((page) => (
+                                                <button
+                                                    key={page}
+                                                    className={`px-2 py-1 mx-2 rounded ${walletcurrentPage === page + 1 ? 'bg-scooton-900 text-white' : 'bg-gray-200 text-black'
+                                                        }`}
+                                                    onClick={() => walletgoToPage(page + 1)}
+                                                >
+                                                    {page + 1}
+                                                </button>
+                                            ))}
 
-                            <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
-                                <table className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                                    <thead className=" bg-slate-200 dark:bg-slate-700">
-                                        <tr>
-                                            <th className=" table-th">
-                                                <span>Sr. No</span>
-                                            </th>
-                                            <th className=" table-th">
-                                                <span>Order Id</span>
-                                            </th>
-                                            <th className=" table-th">
-                                                <span>Order Date</span>
-                                            </th>
-                                            <th className=" table-th">
-                                                <span>Wallet Txn</span>
-                                            </th>
-                                            <th className=" table-th">
-                                                <span>Payment Mode</span>
-                                            </th>
-                                            <th className=" table-th">
-                                                <span>Payment Type</span>
-                                            </th>
-                                            <th className=" table-th">
-                                                <span>Rider Fees</span>
-                                            </th>
-                                            <th className=" table-th">
-                                                <span>Order Amount</span>
-                                            </th>
-                                            <th className=" table-th">
-                                                <span>Payment Status</span>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                        {walletpaginatedOrders?.length === 0 ? (
-                                            <tr>
-                                                <td colSpan="8" className="text-center p-4">No orders found.</td>
-                                            </tr>
-                                        ) : (
-                                            walletpaginatedOrders?.map((order, index) => (
-                                                <tr key={index}>
-                                                    <td className="table-td">{index + 1}</td>
-                                                    <td className="table-td">{order.tripId}</td>
-                                                    <td className="table-td">{order.tripDate}</td>
-                                                    <td className="table-td">{order.txnWallet}</td>
-                                                    <td className="table-td">{order.paymentMode}</td>
-                                                    <td className="table-td">{order.paymentType}</td>
-                                                    <td className="table-td">{order.riderFee}</td>
-                                                    <td className="table-td">{order.tripFare}</td>
-                                                    <td className="table-td">
-                                                        {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
-                                                    </td>
-
-                                                </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="text-sm rounded leading-[16px] flex h-6 items-center justify-center transition-all duration-150">
-                                <button
-                                    disabled={walletcurrentPage === 1}
-                                    className="text-sm leading-4 mx-2 text-slate-900 dark:text-white rtl:rotate-180"
-                                    onClick={() => walletgoToPage(walletcurrentPage - 1)}
-                                >
-                                    Previous
-                                </button>
-
-                                {[...Array(wallettotalPages)?.keys()]?.map((page) => (
-                                    <button
-                                        key={page}
-                                        className={`px-2 py-1 mx-2 rounded ${walletcurrentPage === page + 1 ? 'bg-scooton-900 text-white' : 'bg-gray-200 text-black'
-                                            }`}
-                                        onClick={() => walletgoToPage(page + 1)}
-                                    >
-                                        {page + 1}
-                                    </button>
-                                ))}
-
-                                <button
-                                    disabled={walletcurrentPage === wallettotalPages}
-                                    className="text-sm leading-4 mx-2 text-slate-900 dark:text-white rtl:rotate-180"
-                                    onClick={() => walletgoToPage(walletcurrentPage + 1)}
-                                >
-                                    Next
-                                </button>
-                            </div>
+                                            <button
+                                                disabled={walletcurrentPage === wallettotalPages}
+                                                className="text-sm leading-4 mx-2 text-slate-900 dark:text-white rtl:rotate-180"
+                                                onClick={() => walletgoToPage(walletcurrentPage + 1)}
+                                            >
+                                                Next
+                                            </button>
+                                        </div>
+                                    </>
+                                )
+                            }
                         </TabPanel>
                         <TabPanel>
                             <h6 className="mt-5">Earning</h6>
-                            <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
-                                <table className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                                    <thead className=" bg-slate-200 dark:bg-slate-700">
-                                        <tr>
-                                            <th className=" table-th">
-                                                <span>Sr. No</span>
-                                            </th>
-                                            <th className=" table-th">
-                                                <span>Trip Id</span>
-                                            </th>
-                                            <th className=" table-th">
-                                                <span>Trip Date</span>
-                                            </th>
-                                            <th className=" table-th">
-                                                <span>Trip Amount</span>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                        {earringpaginatedOrders?.length === 0 ? (
-                                            <tr>
-                                                <td colSpan="4" className="text-center p-4">No orders found.</td>
-                                            </tr>
-                                        ) : (
-                                            earringpaginatedOrders?.map((order, index) => (
-                                                <tr key={index}>
-                                                    <td className="table-td">{index + 1}</td>
-                                                    <td className="table-td">{order.tripId}</td>
-                                                    <td className="table-td">{order.tripDate}</td>
-                                                    <td className="table-td">{order.tripAmount}</td>
+                            {
+                                loading ? (
+                                    <div className="flex justify-center items-center w-100">
+                                        <Loading />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
+                                            <table className="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
+                                                <thead className=" bg-slate-200 dark:bg-slate-700">
+                                                    <tr>
+                                                        <th className=" table-th">
+                                                            <span>Sr. No</span>
+                                                        </th>
+                                                        <th className=" table-th">
+                                                            <span>Trip Id</span>
+                                                        </th>
+                                                        <th className=" table-th">
+                                                            <span>Trip Date</span>
+                                                        </th>
+                                                        <th className=" table-th">
+                                                            <span>Trip Amount</span>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                                    {earringpaginatedOrders?.length === 0 ? (
+                                                        <tr>
+                                                            <td colSpan="4" className="text-center p-4">No orders found.</td>
+                                                        </tr>
+                                                    ) : (
+                                                        earringpaginatedOrders?.map((order, index) => (
+                                                            <tr key={index}>
+                                                                <td className="table-td">{index + 1}</td>
+                                                                <td className="table-td">{order.tripId}</td>
+                                                                <td className="table-td">{order.tripDate}</td>
+                                                                <td className="table-td">{order.tripAmount}</td>
 
-                                                </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="text-sm rounded leading-[16px] flex h-6 items-center justify-center transition-all duration-150">
-                                <button
-                                    disabled={earringcurrentPage === 1}
-                                    className="text-sm leading-4 mx-2 text-slate-900 dark:text-white rtl:rotate-180"
-                                    onClick={() => earringgoToPage(earringcurrentPage - 1)}
-                                >
-                                    Previous
-                                </button>
+                                                            </tr>
+                                                        ))
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div className="text-sm rounded leading-[16px] flex h-6 items-center justify-center transition-all duration-150">
+                                            <button
+                                                disabled={earringcurrentPage === 1}
+                                                className="text-sm leading-4 mx-2 text-slate-900 dark:text-white rtl:rotate-180"
+                                                onClick={() => earringgoToPage(earringcurrentPage - 1)}
+                                            >
+                                                Previous
+                                            </button>
 
-                                {[...Array(earringtotalPages)?.keys()]?.map((page) => (
-                                    <button
-                                        key={page}
-                                        className={`px-2 py-1 mx-2 rounded ${earringcurrentPage === page + 1 ? 'bg-scooton-500 text-white' : 'bg-gray-200 text-black'
-                                            }`}
-                                        onClick={() => earringgoToPage(page + 1)}
-                                    >
-                                        {page + 1}
-                                    </button>
-                                ))}
+                                            {[...Array(earringtotalPages)?.keys()]?.map((page) => (
+                                                <button
+                                                    key={page}
+                                                    className={`px-2 py-1 mx-2 rounded ${earringcurrentPage === page + 1 ? 'bg-scooton-500 text-white' : 'bg-gray-200 text-black'
+                                                        }`}
+                                                    onClick={() => earringgoToPage(page + 1)}
+                                                >
+                                                    {page + 1}
+                                                </button>
+                                            ))}
 
-                                <button
-                                    disabled={earringcurrentPage === earringtotalPages}
-                                    className="text-sm leading-4 mx-2 text-slate-900 dark:text-white rtl:rotate-180"
-                                    onClick={() => earringgoToPage(earringcurrentPage + 1)}
-                                >
-                                    Next
-                                </button>
-                            </div>
+                                            <button
+                                                disabled={earringcurrentPage === earringtotalPages}
+                                                className="text-sm leading-4 mx-2 text-slate-900 dark:text-white rtl:rotate-180"
+                                                onClick={() => earringgoToPage(earringcurrentPage + 1)}
+                                            >
+                                                Next
+                                            </button>
+                                        </div>
+                                    </>
+                                )
+                            }
+
                         </TabPanel>
                     </Tabs>
                 </div>
