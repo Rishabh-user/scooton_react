@@ -1013,7 +1013,7 @@ const RiderDetail = () => {
                                                         ) : (
                                                             riderOrderDetail?.map((order, index) => (
                                                                 <tr key={index} onClick={() => handleViewClick(order.order_Id)}>
-                                                                    <td className="table-td">{index + 1}</td>
+                                                                    <td className="table-td">{(orderHistoryCurrentPage * orderHistorypagesize) + index + 1}</td>
                                                                     <td className="table-td">{order.order_Id}</td>
                                                                     <td className="table-td">{order.orderStatus}</td>
                                                                     <td className="table-td">{order.orderType}</td>
@@ -1180,7 +1180,7 @@ const RiderDetail = () => {
                                                     ) : (
                                                         riderWalletDetail?.map((order, index) => (
                                                             <tr key={index}>
-                                                                <td className="table-td">{index + 1}</td>
+                                                                <td className="table-td">{(currentPage * pagesize) + index + 1}</td>
                                                                 <td className="table-td">{order.tripId}</td>
                                                                 <td className="table-td">{order.tripDate}</td>
                                                                 <td className="table-td">{order.txnWallet}</td>
@@ -1333,7 +1333,7 @@ const RiderDetail = () => {
                                                     ) : (
                                                         riderTripDetail?.map((order, index) => (
                                                             <tr key={index}>
-                                                                <td className="table-td">{index + 1}</td>
+                                                                <td className="table-td">{(earningCurrentPage * earningpagesize) + index + 1}</td>
                                                                 <td className="table-td">{order.tripId}</td>
                                                                 <td className="table-td">{order.tripDate}</td>
                                                                 <td className="table-td">{order.tripAmount}</td>
