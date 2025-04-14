@@ -481,8 +481,8 @@ const RiderDetail = () => {
 
 
     useEffect(() => {
-        if (isLoad) 
-          orderWallet();
+        if (isLoad)
+            orderWallet();
     }, [currentPage, pagesize])
 
     const orderWallet = async () => {
@@ -675,8 +675,8 @@ const RiderDetail = () => {
                             <TabList>
                                 <Tab>Rider Details</Tab>
                                 <Tab onClick={() => { orderHistory(); resetOrderHistory() }}>Order History</Tab>
-                                <Tab onClick={() => {orderWallet(); resetWallet()}}>Wallet</Tab>
-                                <Tab onClick={() => {earning(); resetEarning()}}>Earning</Tab>
+                                <Tab onClick={() => { orderWallet(); resetWallet() }}>Wallet</Tab>
+                                <Tab onClick={() => { earning(); resetEarning() }}>Earning</Tab>
                             </TabList>
                         </div>
                         <TabPanel>
@@ -1189,7 +1189,35 @@ const RiderDetail = () => {
                                                                 <td className="table-td">{order.riderFee}</td>
                                                                 <td className="table-td">{order.tripFare}</td>
                                                                 <td className="table-td">
-                                                                    {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
+                                                                    {(() => {
+                                                                        const status = order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1);
+
+                                                                        if (status === 'Success') {
+                                                                            return (
+                                                                                <p className="inline-block text-[0.875rem] px-2 text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-success-500 bg-success-500">
+                                                                                    {status}
+                                                                                </p>
+                                                                            );
+                                                                        } else if (status === 'Pending') {
+                                                                            return (
+                                                                                <p className="inline-block text-[0.875rem] px-2 text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-yellow-500 bg-yellow-200">
+                                                                                    {status}
+                                                                                </p>
+                                                                            );
+                                                                        } else if (status === 'FAILED' || status === 'Failed') {
+                                                                            return (
+                                                                                <p className="inline-block text-[0.875rem] px-2 text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-red-500 bg-red-200">
+                                                                                    {status}
+                                                                                </p>
+                                                                            );
+                                                                        } else {
+                                                                            return (
+                                                                                <p className="inline-block text-[0.875rem] px-2 text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-gray-500 bg-gray-200">
+                                                                                    {status}
+                                                                                </p>
+                                                                            );
+                                                                        }
+                                                                    })()}
                                                                 </td>
 
                                                             </tr>
