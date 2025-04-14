@@ -481,8 +481,8 @@ const RiderDetail = () => {
 
 
     useEffect(() => {
-        if (isLoad) { }
-        orderWallet();
+        if (isLoad) 
+          orderWallet();
     }, [currentPage, pagesize])
 
     const orderWallet = async () => {
