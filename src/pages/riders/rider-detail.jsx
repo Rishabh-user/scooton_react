@@ -83,19 +83,19 @@ const RiderDetail = () => {
     const [loading, setLoading] = useState(true);
     const [totalCount, setTotalCount] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
-    const [pagesize, setPageSize] = useState(10);
+    const [pagesize, setPageSize] = useState(30);
     const [pageCount, setPageCount] = useState(0);
     const maxPagesToShow = 5;
     const [isLoad, setLaod] = useState(false);
     const [isLoadOrderHistory, setLaodOrderHistory] = useState(false);
     const [orderHistoryTotalCount, setOrderHistoryTotalCount] = useState(0);
     const [orderHistoryCurrentPage, setOrderHistoryCurrentPage] = useState(0);
-    const [orderHistorypagesize, setOrderHistoryPageSize] = useState(5);
+    const [orderHistorypagesize, setOrderHistoryPageSize] = useState(30);
     const [orderHistorypageCount, setOrderHistoryPageCount] = useState(0);
     const [isLoadEarning, setLaodEarning] = useState(false);
     const [earningTotalCount, setEarningTotalCount] = useState(0);
     const [earningCurrentPage, setEarningCurrentPage] = useState(0);
-    const [earningpagesize, setEarningPageSize] = useState(10);
+    const [earningpagesize, setEarningPageSize] = useState(30);
     const [earningpageCount, setEarningPageCount] = useState(0);
 
 
