@@ -81,6 +81,23 @@ const RiderDetail = () => {
     const [isMapOpen, setIsMapOpen] = useState(false);
     const [updateridersdetails, setUpdateRiderDetails] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [totalCount, setTotalCount] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pagesize, setPageSize] = useState(10);
+    const [pageCount, setPageCount] = useState(0);
+    const maxPagesToShow = 5;
+    const [isLoad, setLaod] = useState(false);
+    const [isLoadOrderHistory, setLaodOrderHistory] = useState(false);
+    const [orderHistoryTotalCount, setOrderHistoryTotalCount] = useState(0);
+    const [orderHistoryCurrentPage, setOrderHistoryCurrentPage] = useState(0);
+    const [orderHistorypagesize, setOrderHistoryPageSize] = useState(5);
+    const [orderHistorypageCount, setOrderHistoryPageCount] = useState(0);
+    const [isLoadEarning, setLaodEarning] = useState(false);
+    const [earningTotalCount, setEarningTotalCount] = useState(0);
+    const [earningCurrentPage, setEarningCurrentPage] = useState(0);
+    const [earningpagesize, setEarningPageSize] = useState(10);
+    const [earningpageCount, setEarningPageCount] = useState(0);
+
 
 
     // useEffect(() => {
@@ -384,53 +401,10 @@ const RiderDetail = () => {
 
 
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 50;
 
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
 
-    const paginatedOrders = riderOrderDetail?.slice(startIndex, endIndex);
 
-    const totalPages = Math.ceil(riderOrderDetail?.length / itemsPerPage) || 0;
 
-    const goToPage = (page) => {
-        if (page > 0 && page <= totalPages) {
-            setCurrentPage(page);
-        }
-    };
-
-    const [walletcurrentPage, setWalletCurrentPage] = useState(1);
-    const walletitemsPerPage = 50;
-
-    const walletstartIndex = (walletcurrentPage - 1) * walletitemsPerPage;
-    const walletendIndex = walletstartIndex + walletitemsPerPage;
-
-    const walletpaginatedOrders = riderWalletDetail?.slice(walletstartIndex, walletendIndex);
-
-    const wallettotalPages = Math.ceil((riderWalletDetail?.length || 0) / walletitemsPerPage);
-
-    const walletgoToPage = (page) => {
-        if (page > 0 && page <= wallettotalPages) {
-            setWalletCurrentPage(page);
-        }
-    };
-
-    const [earringcurrentPage, setEarringCurrentPage] = useState(1);
-    const earringitemsPerPage = 50;
-
-    const earringstartIndex = (earringcurrentPage - 1) * earringitemsPerPage;
-    const earringendIndex = earringstartIndex + earringitemsPerPage;
-
-    const earringpaginatedOrders = riderTripDetail?.slice(earringstartIndex, earringendIndex);
-
-    const earringtotalPages = Math.ceil((riderTripDetail?.length || 0) / earringitemsPerPage);
-
-    const earringgoToPage = (page) => {
-        if (page > 0 && page <= earringtotalPages) {
-            setEarringCurrentPage(page);
-        }
-    };
 
     // if (loading) {
     //     return <Loading />;
@@ -470,13 +444,31 @@ const RiderDetail = () => {
 
     };
 
+    const resetOrderHistory = () => {
+        setOrderHistoryCurrentPage(0);
+    }
+    const resetWallet = () => {
+        setCurrentPage(0);
+    }
+    const resetEarning = () => {
+        setEarningCurrentPage(0);
+    }
+
+    useEffect(() => {
+        if (isLoadOrderHistory)
+            orderHistory();
+    }, [orderHistoryCurrentPage, orderHistorypagesize]);
+
 
     const orderHistory = async () => {
+        setLaodOrderHistory(true)
         setLoading(true);
-        await axiosInstance.get(`${BASE_URL}/rider/get-rider-orders/${riderId}?endDate=${formattedFromDate}&page=0&size=500&startDate=2022-12-01`, {
+        await axiosInstance.get(`${BASE_URL}/rider/get-rider-orders/${riderId}?endDate=${formattedFromDate}&page=${orderHistoryCurrentPage}&size=${orderHistorypagesize}&startDate=2022-12-01`, {
         }).then((response) => {
 
             console.log("response", response)
+            setOrderHistoryTotalCount(response?.data?.jsonData?.totalCount);
+            setOrderHistoryPageCount(response?.data?.jsonData?.totalPages);
             setRiderOrderDetail(response?.data?.jsonData?.orderDetails);
         }).catch((error) => {
             console.error("Error fetching order data:", error);
@@ -486,20 +478,21 @@ const RiderDetail = () => {
 
     }
 
-    // const orderHistory = async () => {
-    //     const riderOrderResponse = await axiosInstance.get(`${BASE_URL}/rider/get-rider-orders/${riderId}?endDate=${formattedFromDate}&page=0&size=500&startDate=2022-12-01`, {
 
-    //     });
-    //     console.log("riderOrderResponse",riderOrderResponse)
-    //     setRiderOrderDetail(riderOrderResponse?.data?.jsonData?.orderDetails);
 
-    // }
+    useEffect(() => {
+        if (isLoad) { }
+        orderWallet();
+    }, [currentPage, pagesize])
 
     const orderWallet = async () => {
+        setLaod(true)
         setLoading(true);
-        await axiosInstance.get(`${BASE_URL}/rider/v2/get-rider-wallet/${riderId}?page=0&size=100`, {
+        await axiosInstance.get(`${BASE_URL}/rider/v2/get-rider-wallet/${riderId}?page=${currentPage}&size=${pagesize}`, {
         }).then((response) => {
             console.log("response", response)
+            setTotalCount(response?.data?.jsonData?.totalCount);
+            setPageCount(response?.data?.jsonData?.totalPages);
             setRiderWalletDetail(response?.data?.jsonData?.walletTxn);
             setWalletAmount(response?.data?.jsonData?.balance);
         }).catch((error) => {
@@ -510,11 +503,19 @@ const RiderDetail = () => {
 
     }
 
+    useEffect(() => {
+        if (isLoadEarning)
+            earning();
+    }, [earningCurrentPage, earningpagesize]);
+
     const earning = async () => {
+        setLaodEarning(true);
         setLoading(true);
-        await axiosInstance.get(`${BASE_URL}/rider/get-rider-earning/${riderId}?endDate=${formattedFromDate}&page=0&size=500&startDate=2022-12-01`, {
+        await axiosInstance.get(`${BASE_URL}/rider/get-rider-earning/${riderId}?endDate=${formattedFromDate}&page=${earningCurrentPage}&size=${earningpagesize}&startDate=2022-12-01`, {
         }).then((response) => {
             console.log("response", response)
+            setEarningTotalCount(response?.data?.jsonData?.totalCount);
+            setEarningPageCount(response?.data?.jsonData?.totalPages);
             setRiderTripDetail(response?.data?.jsonData?.tripDetails);
         }).catch((response) => {
             console.error("Error fetching order data:", error);
@@ -673,9 +674,9 @@ const RiderDetail = () => {
                         <div className="max-w-[800px] mx-auto">
                             <TabList>
                                 <Tab>Rider Details</Tab>
-                                <Tab onClick={() => orderHistory()}>Order History</Tab>
-                                <Tab onClick={() => orderWallet()}>Wallet</Tab>
-                                <Tab onClick={() => earning()}>Earning</Tab>
+                                <Tab onClick={() => { orderHistory(); resetOrderHistory() }}>Order History</Tab>
+                                <Tab onClick={() => {orderWallet(); resetWallet()}}>Wallet</Tab>
+                                <Tab onClick={() => {earning(); resetEarning()}}>Earning</Tab>
                             </TabList>
                         </div>
                         <TabPanel>
@@ -1005,14 +1006,14 @@ const RiderDetail = () => {
                                                         </tr>
                                                     </thead>
                                                     <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                                        {paginatedOrders?.length === 0 ? (
+                                                        {riderOrderDetail?.length === 0 ? (
                                                             <tr>
                                                                 <td colSpan="6" className="text-center p-4">No orders found.</td>
                                                             </tr>
                                                         ) : (
-                                                            paginatedOrders?.map((order, index) => (
+                                                            riderOrderDetail?.map((order, index) => (
                                                                 <tr key={index} onClick={() => handleViewClick(order.order_Id)}>
-                                                                    <td className="table-td">{startIndex + index + 1}</td>
+                                                                    <td className="table-td">{index + 1}</td>
                                                                     <td className="table-td">{order.order_Id}</td>
                                                                     <td className="table-td">{order.orderStatus}</td>
                                                                     <td className="table-td">{order.orderType}</td>
@@ -1025,31 +1026,97 @@ const RiderDetail = () => {
                                                 </table>
                                             </>
                                         </div>
-                                        <div className="text-sm rounded leading-[16px] flex h-6 items-center justify-center transition-all duration-150">
-                                            <button
-                                                disabled={currentPage === 1}
-                                                className="text-sm mx-2 leading-4 text-slate-900 dark:text-white rtl:rotate-180"
-                                                onClick={() => goToPage(currentPage - 1)}
-                                            >
-                                                Previous
-                                            </button>
-                                            {[...Array(totalPages)?.keys()]?.map((page) => (
-                                                <button
-                                                    key={page}
-                                                    className={`px-2 py-1 mx-2 rounded ${currentPage === page + 1 ? 'bg-scooton-900 text-white' : 'bg-gray-200 text-black'
-                                                        }`}
-                                                    onClick={() => goToPage(page + 1)}
-                                                >
-                                                    {page + 1}
-                                                </button>
-                                            ))}
-                                            <button
-                                                className="text-sm mx-2 leading-4 text-slate-900 dark:text-white rtl:rotate-180"
-                                                disabled={currentPage === totalPages}
-                                                onClick={() => goToPage(currentPage + 1)}
-                                            >
-                                                Next
-                                            </button>
+                                        <div className="md:flex md:space-y-0 space-y-5 justify-center mt-6 items-center">
+                                            <ul className="flex items-center space-x-3 rtl:space-x-reverse">
+                                                {orderHistoryTotalCount > orderHistorypagesize && (
+                                                    <>
+                                                        {/* First Page */}
+                                                        <li>
+                                                            <button
+                                                                onClick={() => setOrderHistoryCurrentPage(0)}
+                                                                disabled={orderHistoryCurrentPage === 0}
+                                                                className={orderHistoryCurrentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                                                            >
+                                                                <Icon icon="heroicons:chevron-double-left-solid" />
+                                                            </button>
+                                                        </li>
+
+                                                        {/* Previous Page */}
+                                                        <li>
+                                                            <button
+                                                                onClick={() => setOrderHistoryCurrentPage(orderHistoryCurrentPage - 1)}
+                                                                disabled={orderHistoryCurrentPage === 0}
+                                                                className={orderHistoryCurrentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                                                            >
+                                                                Prev
+                                                            </button>
+                                                        </li>
+
+                                                        {/* Dynamic Page Numbers with Ellipsis */}
+                                                        {(() => {
+                                                            const totalPages = orderHistorypageCount;
+                                                            const currentGroup = Math.floor(orderHistoryCurrentPage / maxPagesToShow);
+                                                            const startPage = currentGroup * maxPagesToShow;
+                                                            const endPage = Math.min(startPage + maxPagesToShow, totalPages);
+
+                                                            return (
+                                                                <>
+                                                                    {startPage > 0 && (
+                                                                        <li>
+                                                                            <button onClick={() => setOrderHistoryCurrentPage(startPage - 1)}>...</button>
+                                                                        </li>
+                                                                    )}
+
+                                                                    {Array.from({ length: endPage - startPage }).map((_, idx) => {
+                                                                        const pageNumber = startPage + idx;
+                                                                        return (
+                                                                            <li key={pageNumber}>
+                                                                                <button
+                                                                                    className={` ${pageNumber === orderHistoryCurrentPage
+                                                                                        ? " bg-scooton-900 dark:bg-slate-600 dark:text-slate-200 text-white font-medium text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150"
+                                                                                        : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900 font-normal"
+                                                                                        } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150 `}
+                                                                                    onClick={() => setOrderHistoryCurrentPage(pageNumber)}
+                                                                                >
+                                                                                    {pageNumber + 1}
+                                                                                </button>
+                                                                            </li>
+                                                                        );
+                                                                    })}
+
+                                                                    {endPage < totalPages && (
+                                                                        <li>
+                                                                            <button onClick={() => setOrderHistoryCurrentPage(endPage)}>...</button>
+                                                                        </li>
+                                                                    )}
+                                                                </>
+                                                            );
+                                                        })()}
+
+                                                        {/* Next Page */}
+                                                        <li>
+                                                            <button
+                                                                onClick={() => setOrderHistoryCurrentPage(orderHistoryCurrentPage + 1)}
+                                                                disabled={orderHistoryCurrentPage >= orderHistorypageCount - 1}
+                                                                className={orderHistoryCurrentPage >= orderHistorypageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
+                                                            >
+                                                                Next
+                                                            </button>
+                                                        </li>
+
+                                                        {/* Last Page */}
+                                                        <li>
+                                                            <button
+                                                                onClick={() => setOrderHistoryCurrentPage(orderHistorypageCount - 1)}
+                                                                disabled={orderHistoryCurrentPage >= orderHistorypageCount - 1}
+                                                                className={orderHistoryCurrentPage >= orderHistorypageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
+                                                            >
+                                                                <Icon icon="heroicons:chevron-double-right-solid" />
+                                                            </button>
+                                                        </li>
+                                                    </>
+                                                )}
+                                            </ul>
                                         </div>
                                     </>
                                 )
@@ -1106,12 +1173,12 @@ const RiderDetail = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                                    {walletpaginatedOrders?.length === 0 ? (
+                                                    {riderWalletDetail?.length === 0 ? (
                                                         <tr>
                                                             <td colSpan="8" className="text-center p-4">No orders found.</td>
                                                         </tr>
                                                     ) : (
-                                                        walletpaginatedOrders?.map((order, index) => (
+                                                        riderWalletDetail?.map((order, index) => (
                                                             <tr key={index}>
                                                                 <td className="table-td">{index + 1}</td>
                                                                 <td className="table-td">{order.tripId}</td>
@@ -1131,34 +1198,102 @@ const RiderDetail = () => {
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div className="text-sm rounded leading-[16px] flex h-6 items-center justify-center transition-all duration-150">
-                                            <button
-                                                disabled={walletcurrentPage === 1}
-                                                className="text-sm leading-4 mx-2 text-slate-900 dark:text-white rtl:rotate-180"
-                                                onClick={() => walletgoToPage(walletcurrentPage - 1)}
-                                            >
-                                                Previous
-                                            </button>
+                                        <div className="md:flex md:space-y-0 space-y-5 justify-center  mt-6 items-center">
+                                            <ul className="flex items-center space-x-3 rtl:space-x-reverse">
+                                                {totalCount > pagesize && (
+                                                    <>
+                                                        {/* First Page */}
+                                                        <li>
+                                                            <button
+                                                                onClick={() => setCurrentPage(0)}
+                                                                disabled={currentPage === 0}
+                                                                className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                                                            >
+                                                                <Icon icon="heroicons:chevron-double-left-solid" />
+                                                            </button>
+                                                        </li>
 
-                                            {[...Array(wallettotalPages)?.keys()]?.map((page) => (
-                                                <button
-                                                    key={page}
-                                                    className={`px-2 py-1 mx-2 rounded ${walletcurrentPage === page + 1 ? 'bg-scooton-900 text-white' : 'bg-gray-200 text-black'
-                                                        }`}
-                                                    onClick={() => walletgoToPage(page + 1)}
-                                                >
-                                                    {page + 1}
-                                                </button>
-                                            ))}
+                                                        {/* Previous Page */}
+                                                        <li>
+                                                            <button
+                                                                onClick={() => setCurrentPage(currentPage - 1)}
+                                                                disabled={currentPage === 0}
+                                                                className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                                                            >
+                                                                Prev
+                                                            </button>
+                                                        </li>
 
-                                            <button
-                                                disabled={walletcurrentPage === wallettotalPages}
-                                                className="text-sm leading-4 mx-2 text-slate-900 dark:text-white rtl:rotate-180"
-                                                onClick={() => walletgoToPage(walletcurrentPage + 1)}
-                                            >
-                                                Next
-                                            </button>
+                                                        {/* Dynamic Page Numbers with Ellipsis */}
+                                                        {(() => {
+                                                            const totalPages = pageCount;
+                                                            const currentGroup = Math.floor(currentPage / maxPagesToShow);
+                                                            const startPage = currentGroup * maxPagesToShow;
+                                                            const endPage = Math.min(startPage + maxPagesToShow, totalPages);
+
+                                                            return (
+                                                                <>
+                                                                    {/* Left Ellipsis */}
+                                                                    {startPage > 0 && (
+                                                                        <li>
+                                                                            <button onClick={() => setCurrentPage(startPage - 1)}>...</button>
+                                                                        </li>
+                                                                    )}
+
+                                                                    {/* Page Buttons */}
+                                                                    {Array.from({ length: endPage - startPage }).map((_, idx) => {
+                                                                        const pageNumber = startPage + idx;
+                                                                        return (
+                                                                            <li key={pageNumber}>
+                                                                                <button
+                                                                                    className={` ${pageNumber === currentPage
+                                                                                        ? " bg-scooton-900 dark:bg-slate-600 dark:text-slate-200 text-white font-medium text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150"
+                                                                                        : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900 font-normal"
+                                                                                        } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150 `}
+                                                                                    onClick={() => setCurrentPage(pageNumber)}
+                                                                                >
+                                                                                    {pageNumber + 1}
+                                                                                </button>
+                                                                            </li>
+                                                                        );
+                                                                    })}
+
+                                                                    {/* Right Ellipsis */}
+                                                                    {endPage < totalPages && (
+                                                                        <li>
+                                                                            <button onClick={() => setCurrentPage(endPage)}>...</button>
+                                                                        </li>
+                                                                    )}
+                                                                </>
+                                                            );
+                                                        })()}
+
+                                                        {/* Next Page */}
+                                                        <li>
+                                                            <button
+                                                                onClick={() => setCurrentPage(currentPage + 1)}
+                                                                disabled={currentPage >= pageCount - 1}
+                                                                className={currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
+                                                            >
+                                                                Next
+                                                            </button>
+                                                        </li>
+
+                                                        {/* Last Page */}
+                                                        <li>
+                                                            <button
+                                                                onClick={() => setCurrentPage(pageCount - 1)}
+                                                                disabled={currentPage >= pageCount - 1}
+                                                                className={currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
+                                                            >
+                                                                <Icon icon="heroicons:chevron-double-right-solid" />
+                                                            </button>
+                                                        </li>
+                                                    </>
+                                                )}
+                                            </ul>
                                         </div>
+
                                     </>
                                 )
                             }
@@ -1191,12 +1326,12 @@ const RiderDetail = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody className="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                                    {earringpaginatedOrders?.length === 0 ? (
+                                                    {riderTripDetail?.length === 0 ? (
                                                         <tr>
                                                             <td colSpan="4" className="text-center p-4">No orders found.</td>
                                                         </tr>
                                                     ) : (
-                                                        earringpaginatedOrders?.map((order, index) => (
+                                                        riderTripDetail?.map((order, index) => (
                                                             <tr key={index}>
                                                                 <td className="table-td">{index + 1}</td>
                                                                 <td className="table-td">{order.tripId}</td>
@@ -1209,34 +1344,102 @@ const RiderDetail = () => {
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div className="text-sm rounded leading-[16px] flex h-6 items-center justify-center transition-all duration-150">
-                                            <button
-                                                disabled={earringcurrentPage === 1}
-                                                className="text-sm leading-4 mx-2 text-slate-900 dark:text-white rtl:rotate-180"
-                                                onClick={() => earringgoToPage(earringcurrentPage - 1)}
-                                            >
-                                                Previous
-                                            </button>
+                                        <div className="md:flex md:space-y-0 space-y-5 justify-center mt-6 items-center">
+                                            <ul className="flex items-center space-x-3 rtl:space-x-reverse">
+                                                {earningTotalCount > earningpagesize && (
+                                                    <>
+                                                        {/* First Page */}
+                                                        <li>
+                                                            <button
+                                                                onClick={() => setEarningCurrentPage(0)}
+                                                                disabled={earningCurrentPage === 0}
+                                                                className={earningCurrentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                                                            >
+                                                                <Icon icon="heroicons:chevron-double-left-solid" />
+                                                            </button>
+                                                        </li>
 
-                                            {[...Array(earringtotalPages)?.keys()]?.map((page) => (
-                                                <button
-                                                    key={page}
-                                                    className={`px-2 py-1 mx-2 rounded ${earringcurrentPage === page + 1 ? 'bg-scooton-500 text-white' : 'bg-gray-200 text-black'
-                                                        }`}
-                                                    onClick={() => earringgoToPage(page + 1)}
-                                                >
-                                                    {page + 1}
-                                                </button>
-                                            ))}
+                                                        {/* Previous Page */}
+                                                        <li>
+                                                            <button
+                                                                onClick={() => setEarningCurrentPage(earningCurrentPage - 1)}
+                                                                disabled={earningCurrentPage === 0}
+                                                                className={earningCurrentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                                                            >
+                                                                Prev
+                                                            </button>
+                                                        </li>
 
-                                            <button
-                                                disabled={earringcurrentPage === earringtotalPages}
-                                                className="text-sm leading-4 mx-2 text-slate-900 dark:text-white rtl:rotate-180"
-                                                onClick={() => earringgoToPage(earringcurrentPage + 1)}
-                                            >
-                                                Next
-                                            </button>
+                                                        {/* Dynamic Page Numbers with Ellipsis */}
+                                                        {(() => {
+                                                            const totalPages = earningpageCount;
+                                                            const currentGroup = Math.floor(earningCurrentPage / maxPagesToShow);
+                                                            const startPage = currentGroup * maxPagesToShow;
+                                                            const endPage = Math.min(startPage + maxPagesToShow, totalPages);
+
+                                                            return (
+                                                                <>
+                                                                    {/* Left Ellipsis */}
+                                                                    {startPage > 0 && (
+                                                                        <li>
+                                                                            <button onClick={() => setEarningCurrentPage(startPage - 1)}>...</button>
+                                                                        </li>
+                                                                    )}
+
+                                                                    {/* Page Buttons */}
+                                                                    {Array.from({ length: endPage - startPage }).map((_, idx) => {
+                                                                        const pageNumber = startPage + idx;
+                                                                        return (
+                                                                            <li key={pageNumber}>
+                                                                                <button
+                                                                                    className={` ${pageNumber === earningCurrentPage
+                                                                                        ? " bg-scooton-900 dark:bg-slate-600 dark:text-slate-200 text-white font-medium text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150"
+                                                                                        : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900 font-normal"
+                                                                                        } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150 `}
+                                                                                    onClick={() => setEarningCurrentPage(pageNumber)}
+                                                                                >
+                                                                                    {pageNumber + 1}
+                                                                                </button>
+                                                                            </li>
+                                                                        );
+                                                                    })}
+
+                                                                    {/* Right Ellipsis */}
+                                                                    {endPage < totalPages && (
+                                                                        <li>
+                                                                            <button onClick={() => setEarningCurrentPage(endPage)}>...</button>
+                                                                        </li>
+                                                                    )}
+                                                                </>
+                                                            );
+                                                        })()}
+
+                                                        {/* Next Page */}
+                                                        <li>
+                                                            <button
+                                                                onClick={() => setEarningCurrentPage(earningCurrentPage + 1)}
+                                                                disabled={earningCurrentPage >= earningpageCount - 1}
+                                                                className={earningCurrentPage >= earningpageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
+                                                            >
+                                                                Next
+                                                            </button>
+                                                        </li>
+
+                                                        {/* Last Page */}
+                                                        <li>
+                                                            <button
+                                                                onClick={() => setEarningCurrentPage(earningpageCount - 1)}
+                                                                disabled={earningCurrentPage >= earningpageCount - 1}
+                                                                className={earningCurrentPage >= earningpageCount - 1 ? "opacity-50 cursor-not-allowed" : ""}
+                                                            >
+                                                                <Icon icon="heroicons:chevron-double-right-solid" />
+                                                            </button>
+                                                        </li>
+                                                    </>
+                                                )}
+                                            </ul>
                                         </div>
+
                                     </>
                                 )
                             }
