@@ -63,14 +63,14 @@ const OrderDetail = () => {
             try {
                 const token = localStorage.getItem('jwtToken');
                 if (thirdPartyUsername) {
-                    const response = await axiosInstance.post(`${BASE_URL}/thirdParty/get-third-party-orders/${orderId}`, {
+                    const response = await axiosInstance.post(`${BASE_URL}/thirdParty/get-third-party-orders/${orderId}?orderType=THIRDPARTY`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     });
                     setOrderDetail(response.data.jsonData);
                 } else {
-                    const response = await axiosInstance.get(`${BASE_URL}/order/v2/orders/get-city-wide-order/${orderId}`, {
+                    const response = await axiosInstance.get(`${BASE_URL}/order/v2/orders/get-city-wide-order/${orderId}?orderType=CITYWIDE`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -832,7 +832,7 @@ const OrderDetail = () => {
                                         <GoogleMap
                                             mapContainerStyle={mapContainerStyle}
                                             center={pickupLocation}
-                                            zoom={20}
+                                            zoom={10}
                                             onLoad={(map) => (mapRef.current = map)}
                                         >
                                             {riderNearLocation?.map((marker, index) => (

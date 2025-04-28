@@ -873,7 +873,7 @@ const RiderDetail = () => {
                                         <tbody>
                                             {documentDetail?.length === 0 ? (
                                                 <tr>
-                                                    <td colSpan="5" className="text-center p-4">No orders found.</td>
+                                                    <td colSpan="5" className="text-center p-4">No Document found.</td>
                                                 </tr>
                                             ) : (
                                                 documentDetail?.map((order, index) => (
@@ -1208,6 +1208,12 @@ const RiderDetail = () => {
                                                                             return (
                                                                                 <p className="inline-block text-[0.875rem] px-2 text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-red-500 bg-red-200">
                                                                                     {status}
+                                                                                </p>
+                                                                            );
+                                                                        }else if (status === 'NO_PAY' || status === 'NO_PAY') {
+                                                                            return (
+                                                                                <p className="inline-block text-[0.875rem] px-2 text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-red-500 bg-red-200">
+                                                                                    CANCELLED
                                                                                 </p>
                                                                             );
                                                                         } else {
