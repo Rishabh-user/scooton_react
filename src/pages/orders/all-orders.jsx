@@ -321,7 +321,7 @@ const AllOrders = ({notificationCount}) => {
         },
       }
       ).then((response) => {
-        toast.success("Order cancel successfully");
+        toast.success("Order cancelled successfully");
         setOrderData((prevList) => prevList.filter((item) => item.order_Id !== orderdeleteid));
       })
     .catch (
