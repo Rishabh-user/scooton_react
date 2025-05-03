@@ -72,7 +72,7 @@ function App() {
   );
 
   useEffect(() => {
-    const customSoundUrl = 'https://securestaging.net/scooton/notification.mp3';
+    const customSoundUrl = 'https://image-res.s3.ap-south-1.amazonaws.com/Admin-assets/notification.mp3';
     const customSound = new Audio(customSoundUrl);
 
     const unsubscribe = onMessage(messaging, (payload) => {
