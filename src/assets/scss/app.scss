@@ -381,7 +381,7 @@ width: 100%;padding: 1rem;margin-bottom: 1rem;}
 
 div[data-tippy-root] div{ width: auto; word-wrap: break-word;}
 
-.Toastify__toast-container--top-right {
-  position: absolute;
-  z-index: 99999999;
+.Toastify {
+  position: relative;
+  z-index: 999999;
 }

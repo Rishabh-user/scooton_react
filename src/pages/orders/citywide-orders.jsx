@@ -388,6 +388,7 @@ const CityWideOrders = () => {
       )
       .then((response) => {
         setOrderData(response.data);
+        console.log("response 2",response)
         setTotalCount(Number(response.headers["x-total-count"])); 
         setPageCount(Number(response.headers["x-total-pages"]));
       })
@@ -418,6 +419,7 @@ const CityWideOrders = () => {
       )
       .then((response) => {
         setLoading(true);
+        console.log("response 1",response)
         setOrderData(response.data);
         setTotalCount(Number(response.headers["x-total-count"])); 
         setPageCount(Number(response.headers["x-total-pages"]));
@@ -441,7 +443,7 @@ const CityWideOrders = () => {
         },
       }
       ).then((response) => {
-        toast.success("Order cancel successfully");
+        toast.success("Order cancelled successfully");
         setOrderData((prevList) => prevList.filter((item) => item.order_Id !== orderdeleteid));
       })
     .catch (
@@ -808,112 +810,115 @@ const CityWideOrders = () => {
             <i>After 20 minutes, if an order is still not accepted/Picked up, it turns red.</i>
         </div>
         <div className="md:flex md:space-y-0 space-y-5 justify-between mt-6 items-center">
-          <div className=" flex items-center space-x-3 rtl:space-x-reverse">
-            <select
-              className="form-control py-2 w-max"
-              value={pagesizedata}
-              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-            >
-              {[10,20,30,40,50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
-            <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
-              Page{" "}
-              <span>
-                {pageIndex + 1} of {pageOptions.length}
-              </span>
-            </span>
-          </div>
-          <ul className="flex items-center space-x-3 rtl:space-x-reverse">
-            {totalCount > pagesizedata && (
-              <>
-                <li>
-                  <button
-                    onClick={() => gotoPage(0)}
-                    disabled={currentPage === 0}
-                    className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
-                  >
-                    <Icon icon="heroicons:chevron-double-left-solid" />
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    disabled={currentPage === 0}
-                    className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
-                  >
-                    Prev
-                  </button>
-                </li>
-                {(() => {
-                  const totalPages = pageCount; 
-                  const currentGroup = Math.floor(currentPage / maxPagesToShow);
-                  const startPage = currentGroup * maxPagesToShow; 
-                  const endPage = Math.min(startPage + maxPagesToShow, totalPages); 
-                  return (
-                    <>
-                      {startPage > 0 && (
+                  <div className=" flex items-center space-x-3 rtl:space-x-reverse">
+                    <select
+                      className="form-control py-2 w-max"
+                      value={pagesizedata}
+                      onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                    >
+                      {[10,20, 30,40, 50].map((pageSize) => (
+                        <option key={pageSize} value={pageSize}>
+                          Show {pageSize}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                      Page{" "}
+                      <span>
+                        {pageIndex + 1} of {pageOptions.length}
+                      </span>
+                    </span>
+                  </div>
+                  <ul className="flex items-center space-x-3 rtl:space-x-reverse">
+                    {totalCount > pagesizedata && (
+                      <>
                         <li>
-                          <button onClick={() => setCurrentPage(startPage - 1)}>
-                            ...
+                          <button
+                            onClick={() => gotoPage(0)}
+                            disabled={currentPage === 0}
+                            className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                          >
+                            <Icon icon="heroicons:chevron-double-left-solid" />
                           </button>
                         </li>
-                      )}
-                      {Array.from({ length: endPage - startPage }).map((_, idx) => {
-                        const pageNumber = startPage + idx;
-                        return (
-                          <li key={pageNumber}>
-                            <button
-                              className={` ${pageNumber === currentPage
-                                ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium"
-                                : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal"
-                              } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150 `}
-                              onClick={() => setCurrentPage(pageNumber)}
-                            >
-                              {pageNumber + 1}
-                            </button>
-                          </li>
-                        );
-                      })}
-                      {endPage < totalPages && (
                         <li>
-                          <button onClick={() => setCurrentPage(endPage)}>
-                            ...
+                          <button
+                            onClick={() => setCurrentPage(currentPage - 1)}
+                            disabled={currentPage === 0}
+                            className={currentPage === 0 ? "opacity-50 cursor-not-allowed" : ""}
+                          >
+                            Prev
                           </button>
                         </li>
-                      )}
-                    </>
-                  );
-                })()}
-                <li>
-                  <button
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    disabled={currentPage >= pageCount - 1}
-                    className={
-                      currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""
-                    }
-                  >
-                    Next
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => gotoPage(pageCount - 1)}
-                    disabled={currentPage >= pageCount - 1}
-                    className={
-                      currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""
-                    }
-                  >
-                    <Icon icon="heroicons:chevron-double-right-solid" />
-                  </button>
-                </li>
-              </>
-            )}
-          </ul>
-        </div>
+                        {(() => {
+                          const totalPages = pageCount; 
+                          const currentGroup = Math.floor(currentPage / maxPagesToShow); 
+                          const startPage = currentGroup * maxPagesToShow; 
+                          const endPage = Math.min(startPage + maxPagesToShow, totalPages); 
+        
+                          return (
+                            <>
+                              {startPage > 0 && (
+                                <li>
+                                  <button onClick={() => setCurrentPage(startPage - 1)}>
+                                    ...
+                                  </button>
+                                </li>
+                              )}
+                              {Array.from({ length: endPage - startPage }).map((_, idx) => {
+                                const pageNumber = startPage + idx;
+                                return (
+                                  <li key={pageNumber}>
+                                    <button
+                                      className={` ${pageNumber === currentPage
+                                        ? "bg-scooton-900 dark:bg-slate-600  dark:text-slate-200 text-white font-medium"
+                                        : "bg-slate-100 dark:bg-slate-700 dark:text-slate-400 text-slate-900  font-normal"
+                                      } text-sm rounded leading-[16px] flex h-6 w-6 items-center justify-center transition-all duration-150 `}
+                                      onClick={() => setCurrentPage(pageNumber)}
+                                    >
+                                      {pageNumber + 1}
+                                    </button>
+                                  </li>
+                                );
+                              })}
+                              {endPage < totalPages && (
+                                <li>
+                                  <button onClick={() => setCurrentPage(endPage)}>
+                                    ...
+                                  </button>
+                                </li>
+                              )}
+                            </>
+                          );
+                        })()}
+                        <li>
+                          <button
+                            onClick={() => setCurrentPage(currentPage + 1)}
+                            disabled={currentPage >= pageCount - 1}
+                            className={
+                              currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""
+                            }
+                          >
+                            Next
+                          </button>
+                        </li>
+        
+                        {/* Last Page Button */}
+                        <li>
+                          <button
+                            onClick={() => gotoPage(pageCount - 1)}
+                            disabled={currentPage >= pageCount - 1}
+                            className={
+                              currentPage >= pageCount - 1 ? "opacity-50 cursor-not-allowed" : ""
+                            }
+                          >
+                            <Icon icon="heroicons:chevron-double-right-solid" />
+                          </button>
+                        </li>
+                      </>
+                    )}
+                  </ul>
+                </div>
       </Card>
 
       {notificationModel && (
