@@ -839,7 +839,7 @@ const OrderDetail = () => {
                                                 <Marker
                                                     key={index}
                                                     position={{ lat: marker.latitude, lng: marker.longitude }}
-                                                    icon={marker.riderActiveForOrders ? 'https://securestaging.net/scooton/rider-icon-green.png' : 'https://securestaging.net/scooton/rider-icon-red.png'}
+                                                    icon={marker.riderActiveForOrders ? 'https://image-res.s3.ap-south-1.amazonaws.com/Admin-assets/rider-icon-green.png' : 'https://image-res.s3.ap-south-1.amazonaws.com/Admin-assets/rider-icon-red.png'}
                                                     onClick={() => setSelectedMarker(marker)}
                                                 />
                                             ))}
@@ -858,7 +858,7 @@ const OrderDetail = () => {
                                             <Marker
                                                 position={pickupLocation}
                                                 icon={{
-                                                    url: "https://securestaging.net/scooton/pickuppoint.png",
+                                                    url: "https://image-res.s3.ap-south-1.amazonaws.com/Admin-assets/pickuppoint.png",
                                                 }}
                                                 onClick={() => setSelectedPickupMarker(pickupLocation)}
                                             />
@@ -878,7 +878,7 @@ const OrderDetail = () => {
                                             <Marker
                                                 position={dropLocation}
                                                 icon={{
-                                                    url: "https://securestaging.net/scooton/Droppoint.png",
+                                                    url: "https://image-res.s3.ap-south-1.amazonaws.com/Admin-assets/Droppoint.png",
                                                 }}
                                                 onClick={() => setSelectedDropMarker(dropLocation)}
                                             />
