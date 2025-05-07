@@ -101,7 +101,7 @@ const OrderDetail = () => {
         packageDetails,
         cancelDetails,
         riderDetails,
-        vehicleDetails,
+        vehiceDetails,
         tripDetails
     } = orderDetail;
 
@@ -193,7 +193,7 @@ const OrderDetail = () => {
             radius: 5,
             userLatitude: customerDetails?.pickupLocation?.lat,
             userLongitude: customerDetails?.pickupLocation?.lon,
-            vehicleId: orderDetail?.vehicleDetails?.id
+            vehicleId: orderDetail?.vehiceDetails?.id
         }
         try {
             await axiosInstance.get(`${BASE_URL}/rider/nearby-riders`, { params }).then((response) => {
@@ -269,7 +269,7 @@ const OrderDetail = () => {
                         <h4 className="card-title ms-2 mb-0">Order Details</h4>
                     </div>
                     <div className="mb-2 d-flex gap-4">
-                        <img src={vehicleDetails?.imageUrl} alt={vehicleDetails?.vehicleType} width={40} />
+                        <img src={vehiceDetails?.imageUrl} alt={vehiceDetails?.vehicleType} width={40} />
                         {orderDetails.orderStatus === 'Delivered' && (
                             <button type="button" className="btn btn-sm btn-dark py-1 px-2" onClick={downloadInvoice}>Get Invoice</button>
                         )}
@@ -713,7 +713,7 @@ const OrderDetail = () => {
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Vehicle Type</td>
                                     <td className="text-end px-6 py-2">
-                                        {thirdPartyUsername ? vehicleDetails?.vehicleType : vehicleDetails?.vehicleType}
+                                        {thirdPartyUsername ? vehiceDetails?.vehicleType : vehiceDetails?.vehicleType}
                                     </td>
                                 </tr>
                             </tbody>
@@ -809,7 +809,7 @@ const OrderDetail = () => {
                     <div className="mt-3 d-flex justify-content-end gap-3">
                         {orderDetails.orderStatus === 'In Progress' && (
                             <>
-                                <img src={vehicleDetails?.imageUrl} alt={vehicleDetails?.vehicleType} width={40} />
+                                <img src={vehiceDetails?.imageUrl} alt={vehiceDetails?.vehicleType} width={40} />
                                 <button type="button" className="btn btn-dark p-2" onClick={() => { nearByRiderDetails() }}> Get Near By Rider</button>
                             </>
 
@@ -832,7 +832,7 @@ const OrderDetail = () => {
                                         <GoogleMap
                                             mapContainerStyle={mapContainerStyle}
                                             center={pickupLocation}
-                                            zoom={20}
+                                            zoom={10}
                                             onLoad={(map) => (mapRef.current = map)}
                                         >
                                             {riderNearLocation?.map((marker, index) => (
