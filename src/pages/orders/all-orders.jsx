@@ -351,6 +351,11 @@ const AllOrders = ({notificationCount}) => {
   };
   const sendNotification = () => {
     const token = localStorage.getItem('jwtToken');
+    if(!mobile || mobile.trim() === ''){
+      toast.error("Mobile Number Required");
+      setNotificationModel(true);
+      return
+    }
     try {
       if (mobile) {
         axiosInstance.get(`${BASE_URL}/order/v2/send-order-notification-particular-rider/${notificationid}/${mobile}`,{

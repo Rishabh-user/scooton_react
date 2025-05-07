@@ -372,9 +372,14 @@ const RiderDetail = () => {
         setRechargeModel(true);
     }
 
-    const handleViewClick = async (id) => {
-        navigate(`/order-detail/${id}`);
-    };
+    const handleViewClick = async (id, type) => {
+        if (type === 'THIRDPARTY') {
+          navigate(`/order-detail/ShipRocket/${id}`);
+        } else {
+            navigate(`/order-detail/${id}`);
+        }
+      };
+      
 
     const rechargeRiderWallet = async (amt, id) => {
         const token = localStorage.getItem("jwtToken");
@@ -1012,7 +1017,7 @@ const RiderDetail = () => {
                                                             </tr>
                                                         ) : (
                                                             riderOrderDetail?.map((order, index) => (
-                                                                <tr key={index} onClick={() => handleViewClick(order.order_Id)}>
+                                                                <tr key={index} onClick={() => handleViewClick(order.order_Id,order.orderType)}>
                                                                     <td className="table-td">{(orderHistoryCurrentPage * orderHistorypagesize) + index + 1}</td>
                                                                     <td className="table-td">{order.order_Id}</td>
                                                                     <td className="table-td">{order.orderStatus}</td>
