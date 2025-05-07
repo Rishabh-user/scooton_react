@@ -351,9 +351,10 @@ const AllOrders = ({notificationCount}) => {
   };
   const sendNotification = () => {
     const token = localStorage.getItem('jwtToken');
-    if(!mobile || mobile.trim() === ''){
-      toast.error("Mobile Number Required");
+    if(notification === 'INDIVIDUAL' &&(!mobile || mobile.trim() === '')){
       setNotificationModel(true);
+      toast.error("Mobile Number Required");
+      
       return
     }
     try {
@@ -366,6 +367,7 @@ const AllOrders = ({notificationCount}) => {
         .then((response) => {
           toast.success("Notification Sended Successfully")
           setNotification(false);
+          setNotificationModel(false);
         })
       } else {
         axiosInstance.get(`${BASE_URL}/order/v2/send-order-notification/${notificationid}`,{
@@ -376,6 +378,7 @@ const AllOrders = ({notificationCount}) => {
         .then((response) => {
           toast.success("Notification Sended Successfully")
           setNotification(false);
+          setNotificationModel(false);
         })
       }
 
@@ -1057,7 +1060,7 @@ const AllOrders = ({notificationCount}) => {
               <Button className="btn btn-outline-light" type="button" onClick={() => { setNotificationModel(false) }}>
                 Cancel
               </Button>
-              <Button className="btn btn-dark" type="button" onClick={() => { sendNotification(); setNotificationModel(false) }} >
+              <Button className="btn btn-dark" type="button" onClick={() => { sendNotification() }} >
                 Send Notification
               </Button>
             </div>
