@@ -39,6 +39,7 @@ import OrderDetail from "./pages/orders/order-detail";
 import RiderDetail from "./pages/riders/rider-detail";
 import HomepageList from "./pages/home-page/home-page-list";
 import Settings from "./pages/configuration/setting";
+import Configuration_Keys from "./pages/configuration/configuration-keys";
 import AddHomePage from "./pages/home-page/add-homepage";
 import Vendor from "./pages/orders/vendor-order";
 import ProtectedRoute from "./layout/ProtectedRoute";
@@ -125,7 +126,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           
           <Route path="profile" element={<Profile />} />
-         
+          
           <Route path="notifications" element={<NotificationPage />} />
 
           <Route path="user-list" element={<UserList />} />
@@ -150,10 +151,11 @@ function App() {
           <Route path="homepage-list" element={<HomepageList />} />
           <Route path = ":vendor" element={<Vendor notificationCount={notificationCount} />} />
           <Route element={<ProtectedRoute isAuthRoute={"ROLE_SUPER_ADMIN"} />}>
-            <Route path="setting" element={<Settings />} />
-            <Route path="role-list" element={<RoleList />} />
-            <Route path="add-role" element={<AddRole />} />
-          </Route>
+          <Route path="setting" element={<Settings />} />
+          <Route path="configuration-keys" element={<Configuration_Keys />} />
+          <Route path="role-list" element={<RoleList />} />
+          <Route path="add-role" element={<AddRole />} />
+        </Route>
             
           <Route path="*" element={<Navigate to="/404" />} />
         </Route>
