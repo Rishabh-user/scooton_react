@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Card from "@/components/ui/Card";
-import RevenueBarChart from "@/components/partials/widget/chart/revenue-bar-chart";
 import RadialsChart from "@/components/partials/widget/chart/radials";
 import SelectMonth from "@/components/partials/SelectMonth";
 import RecentCompletedOrders from "@/components/partials/Table/recent-completed-orders";
@@ -8,7 +7,8 @@ import HomeBredCurbs from "./HomeBredCurbs";
 import { BASE_URL } from "../../api";
 import OnRoleRiders from "../riders/on-role-riders";
 import axiosInstance from "../../api";
-import PolarAreaChart from "../../components/partials/widget/chart/polar-area-chart";
+import RiderAnalytics from "@/components/partials/widget/chart/rider-analytics";
+import OrderAnalytics from "../../components/partials/widget/chart/order-analytics";
 
 const Dashboard = () => {
   const [CompletedOrders, setCompletedOrders] = useState("");
@@ -122,28 +122,17 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="grid grid-cols-12 gap-4">
-        <div className="lg:col-span-8 col-span-12">
-          <Card title="All Vehicle types">
-            <div className="legend-ring">
-              <RevenueBarChart />
-            </div>
-          </Card>
+        <div className="lg:col-span-6 col-span-12">
+          <RiderAnalytics />
         </div>
-        <div className="lg:col-span-4 col-span-12">
+        <div className="lg:col-span-6 col-span-12">
+          <OrderAnalytics />
+        </div>
+        {/* <div className="lg:col-span-4 col-span-12">
           <Card title="Riders Count">
-            {/* <ul className="grid md:grid-cols-2 col-span-1 gap-2">
-              <li>
-                <strong>Total Riders:</strong>{totalRiders}</li>
-              <li>
-                <strong>Active Riders:</strong>{activeRiders}</li>
-              <li>
-                <strong>OnRole Riders:</strong>{onRoleRiders}</li>
-              <li>
-                <strong>Unregistered Riders:</strong>{unregisteredRiders}</li>
-            </ul> */}
             <RadialsChart />
           </Card>
-        </div>
+        </div> */}
         {/* <div className="lg:col-span-4 col-span-12">
           <Card title="Riders Count" >
             <PolarAreaChart />
