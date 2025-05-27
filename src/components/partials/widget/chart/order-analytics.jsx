@@ -80,6 +80,13 @@ const OrderAnalytics = ({ height = 400 }) => {
       curve: "smooth",
       width: 2,
     },
+    markers: {
+    size: 4,
+    strokeWidth: 2,
+      hover: {
+        size: 6,
+      },
+    },
     fill: {
       type: "solid",
       opacity: 0.1,
@@ -110,7 +117,7 @@ const OrderAnalytics = ({ height = 400 }) => {
     <Card>
       {/* Header Row: Title + Datepicker */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Order Analytics</h2>
+        <h2 className="text-lg font-semibold">Order Data</h2>
 
         <div className="graph-date-picker w-full max-w-xs">
           <Datepicker

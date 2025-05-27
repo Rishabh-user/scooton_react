@@ -319,24 +319,14 @@ const Vehicle_Settings = () => {
                         [key]: e.target.value,
                       }))
                     }
-                    disabled={key === "id" || (key === "imageUrl" && !isCreating)}
+                    disabled={key === "id" || (!isCreating && !["registrationFees", "platformChargesPercentage", "active", "imageUrl", "type", "isDisplay"].includes(key))}
                   />
                 )}
               </div>
             ))}
           </div>
           <hr className="mt-3" />
-          <div className="d-flex gap-2 justify-content-between mt-6">
-            <Button
-              className="btn btn-outline-light"
-              type="button"
-              onClick={() => {
-                setIsEditModal(false);
-                setIsCreating(false);
-              }}
-            >
-              Cancel
-            </Button>
+          <div className="d-flex gap-2 justify-content-end mt-6">
             <Button className="btn btn-dark" type="button" onClick={handleModalSave}>
               Save
             </Button>
