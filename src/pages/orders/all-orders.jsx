@@ -420,7 +420,7 @@ const AllOrders = ({notificationCount}) => {
   useEffect(() =>{
     if(rapf == true && search =='')
       fetchOrders(ordersType)
-  },[search])
+  },[search,currentPage,pagesizedata])
 
   const fetchOrders = (orderType) => {
     let searchtype
