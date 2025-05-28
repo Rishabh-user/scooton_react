@@ -212,30 +212,30 @@ const UserList = () => {
   const [totalCount, setTotalCount] = useState(0);
   const maxPagesToShow = 5;
 
-  useEffect(() => {
-    setLoading(true);
-    setSearch("");
-    const token = localStorage.getItem("jwtToken");
-    if (token) {
-      axiosInstance
-        .get(`${BASE_URL}/user/get-all?page=${currentPage}&size=${pagesizedata}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setUserData(response.data);
-          setTotalCount(Number(response.headers["x-total-count"]));
-          setPageCount(Number(response.headers["x-total-pages"]));
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-        })
-        .finally(() => {
-          setLoading(false); 
-        });
-    }
-  }, [currentPage,pagesizedata]);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   setSearch("");
+  //   const token = localStorage.getItem("jwtToken");
+  //   if (token) {
+  //     axiosInstance
+  //       .get(`${BASE_URL}/user/get-all?page=${currentPage}&size=${pagesizedata}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         setUserData(response.data);
+  //         setTotalCount(Number(response.headers["x-total-count"]));
+  //         setPageCount(Number(response.headers["x-total-pages"]));
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching user data:", error);
+  //       })
+  //       .finally(() => {
+  //         setLoading(false); 
+  //       });
+  //   }
+  // }, [currentPage,pagesizedata]);
   useEffect(() => {
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
