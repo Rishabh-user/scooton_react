@@ -187,7 +187,7 @@ const COLUMNS = [
       const navigate = useNavigate();
       const handleViewClick = async () => {
         const mobileno= row.row.original.mobileNumber
-        navigate(`/all-orders/${mobileno}/ALL ORDERS/MOBILE`);
+        navigate(`/all-orders/${mobileno}/ALL/MOBILE`);
       };
       return (
         <div className="flex space-x-3 rtl:space-x-reverse">
