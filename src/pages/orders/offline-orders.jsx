@@ -464,6 +464,7 @@ const OfflineOrders = () => {
   };
 
   useEffect(() => {
+    
     if(search == ''){
       setLoading(true);
       axiosInstance
@@ -474,6 +475,7 @@ const OfflineOrders = () => {
         )
         .then((response) => {
           setOrderData(response.data);
+          console.log("sdfghjasdfg")
           setTotalCount(Number(response.headers["x-total-count"])); 
           setPageCount(Number(response.headers["x-total-pages"]));
         })
@@ -484,6 +486,7 @@ const OfflineOrders = () => {
           setLoading(false);
         });
       }
+      
   },[search])
 
   // useEffect(() => {
@@ -605,7 +608,7 @@ const OfflineOrders = () => {
                 >
                   <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
                   <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
-                  <FormControlLabel value="PICKED" control={<Radio />} label="PICKED" />
+                  <FormControlLabel value="DISPATCHED" control={<Radio />} label="PICKED" />
                   <FormControlLabel value="COMPLETED" control={<Radio />} label="DELIVERED" />
                   <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
                   <FormControlLabel value="ALL" control={<Radio />} label="ALL ORDERS" />

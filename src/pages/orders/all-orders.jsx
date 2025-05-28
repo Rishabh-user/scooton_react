@@ -601,7 +601,7 @@ const AllOrders = ({notificationCount}) => {
       axiosInstance
         .post(
           `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=100`,
-          { "number": id.id, "orderType": id.ordertype, "searchType": id.search },
+          { "number": id.id, "orderStatus": id.ordertype, "searchType": id.search , "orderType": "ALL",},
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((response) => {

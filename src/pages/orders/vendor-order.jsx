@@ -372,35 +372,35 @@ const Vendor = ({ notificationCount }) => {
   const maxPagesToShow = 5;
   const id = useParams();
 
-  useEffect(() => {
-    try {
-      axiosInstance.get(`${BASE_URL}/thirdParty/get-all-thirdParty-client`).then((resp) => {
+  // useEffect(() => {
+  //   try {
+  //     axiosInstance.get(`${BASE_URL}/thirdParty/get-all-thirdParty-client`).then((resp) => {
 
-        setClientData(resp.data.jsonData);
-      });
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }, []);
+  //       setClientData(resp.data.jsonData);
+  //     });
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // }, []);
 
 
-  useEffect(() => {
-    if (clientData.length > 0) {
-      fetchClientid();
-    }
-  }, [clientData]);
+  // useEffect(() => {
+  //   if (clientData.length > 0) {
+  //     fetchClientid();
+  //   }
+  // }, [clientData]);
 
   useEffect(() => {
     fetchOrders(ordersType);
   }, [search, currentPage, pagesizedata]);
 
-  const fetchClientid = () => {
-    const foundClient = clientData.find((item) => item.userName === id.vendor);
-    if (foundClient) {
-      setClientId(foundClient.clientId);
-      setClientUserId(foundClient.id);
-    }
-  };
+  // const fetchClientid = () => {
+  //   const foundClient = clientData.find((item) => item.userName === id.vendor);
+  //   if (foundClient) {
+  //     setClientId(foundClient.clientId);
+  //     setClientUserId(foundClient.id);
+  //   }
+  // };
 
   const handleChange = async (event) => {
     setFilterBy(event.target.value);
@@ -414,12 +414,9 @@ const Vendor = ({ notificationCount }) => {
     setSearch(event.target.value);
   };
 
-  useEffect(() => {
-    if (clientId != '' && clientUserId != '' && ordersType) {
-      console.log("2")
-      fetchOrders(ordersType)
-    }
-  }, [clientId, clientUserId, currentPage, pagesizedata])
+  // useEffect(() => {
+  //   fetchOrders(ordersType)
+  // }, [ currentPage, pagesizedata])
 
   const fetchOrders = (orderType) => {
     setLoading(true);
@@ -429,7 +426,6 @@ const Vendor = ({ notificationCount }) => {
     } else {
       searchtype = filterby
     }
-    if (clientId == '' || clientUserId == "") return;
     const dataToSend = {
       "orderStatus": orderType,
       "orderType": "SHIPROCKET",
