@@ -631,78 +631,78 @@ const AllOrders = ({notificationCount}) => {
     }
   }, [id?.ordertype, currentPage,pagesizedata,rapf]);
 
-  useEffect (() => {
+  // useEffect (() => {
 
-    let searchtype
-    if(search == ''){
-      searchtype = 'NONE'
-    }else{
-      searchtype = filterby
-    }
-    const dataToSend ={
-      "orderType": ordersType, "searchType": searchtype.trim()
-    }
-    if (filterby && search) {
-      dataToSend.number = search; 
-    }
+  //   let searchtype
+  //   if(search == ''){
+  //     searchtype = 'NONE'
+  //   }else{
+  //     searchtype = filterby
+  //   }
+  //   const dataToSend ={
+  //     "orderType": ordersType, "searchType": searchtype.trim()
+  //   }
+  //   if (filterby && search) {
+  //     dataToSend.number = search; 
+  //   }
  
-    setLoading(true);
-    if(rapf == true){
-      axiosInstance
-        .post(
-          `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=${pagesizedata}`,
-          dataToSend 
-        )
-        .then((response) => {
-          setOrderData(response.data);
-          setTotalCount(Number(response.headers["x-total-count"])); 
-          setPageCount(Number(response.headers["x-total-pages"]));
-          console.log("4")
-        })
-        .catch((error) => {
-          console.error("Error fetching order data:", error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  },[currentPage,pagesizedata,rapf])
+  //   setLoading(true);
+  //   if(rapf == true){
+  //     axiosInstance
+  //       .post(
+  //         `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=${pagesizedata}`,
+  //         dataToSend 
+  //       )
+  //       .then((response) => {
+  //         setOrderData(response.data);
+  //         setTotalCount(Number(response.headers["x-total-count"])); 
+  //         setPageCount(Number(response.headers["x-total-pages"]));
+  //         console.log("4")
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching order data:", error);
+  //       })
+  //       .finally(() => {
+  //         setLoading(false);
+  //       });
+  //   }
+  // },[currentPage,pagesizedata,rapf])
 
-  useEffect (() => {
-    let searchtype
-    if(search == ''){
-      searchtype = 'NONE'
-    }else{
-      searchtype = filterby
-    }
-    const dataToSend ={
-      "orderType": "PLACED", "searchType": searchtype.trim()
-    }
-    if (filterby && search) {
-      dataToSend.number = search; 
-    }
+  // useEffect (() => {
+  //   let searchtype
+  //   if(search == ''){
+  //     searchtype = 'NONE'
+  //   }else{
+  //     searchtype = filterby
+  //   }
+  //   const dataToSend ={
+  //     "orderType": "PLACED", "searchType": searchtype.trim()
+  //   }
+  //   if (filterby && search) {
+  //     dataToSend.number = search; 
+  //   }
  
-    setLoading(true);
-    if(paramslength == 0 && rapf){
-      axiosInstance
-        .post(
-          `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=${pagesizedata}`,
-          dataToSend 
-        )
-        .then((response) => {
-          setOrderData(response.data);
-          setTotalCount(Number(response.headers["x-total-count"])); 
-          setPageCount(Number(response.headers["x-total-pages"]));
-          console.log("5")
-        })
-        .catch((error) => {
-          console.error("Error fetching order data:", error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  },[currentPage,pagesizedata,paramslength,rapf])
+  //   setLoading(true);
+  //   if(paramslength == 0 && rapf){
+  //     axiosInstance
+  //       .post(
+  //         `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=${pagesizedata}`,
+  //         dataToSend 
+  //       )
+  //       .then((response) => {
+  //         setOrderData(response.data);
+  //         setTotalCount(Number(response.headers["x-total-count"])); 
+  //         setPageCount(Number(response.headers["x-total-pages"]));
+  //         console.log("5")
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching order data:", error);
+  //       })
+  //       .finally(() => {
+  //         setLoading(false);
+  //       });
+  //   }
+  // },[currentPage,pagesizedata,paramslength,rapf])
   
 
   return (
