@@ -84,7 +84,7 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType, current
       return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br /><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },
-  ...(ordersType === "ALL ORDERS" ? [
+  ...(ordersType === "ALL" ? [
     {
       Header: "Status",
       accessor: "orderHistory.orderStatus",
@@ -378,7 +378,7 @@ const CityWideOrders = () => {
     }
     SetOrderType(orderType)
     const dataToSend = {
-      "orderType": orderType, "searchType": searchtype
+      "orderStatus": orderType, "searchType": searchtype , "orderType": "CWONLINE"
     }
     if (filterby && search) {
       dataToSend.number = search;
@@ -386,7 +386,7 @@ const CityWideOrders = () => {
     setLoading(true);
     axiosInstance
       .post(
-        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/false?page=${currentPage}&size=${pagesizedata}`,
+        `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=${pagesizedata}`,
         dataToSend
 
       )
@@ -417,8 +417,8 @@ const CityWideOrders = () => {
     setLoading(true);
     axiosInstance
       .post(
-        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/false?page=0&size=${pagesizedata}`,
-        { "number": search, "orderType": ordersType, "searchType": filterby },
+        `${BASE_URL}/order-history/get-order-listing/0?page=0&size=${pagesizedata}`,
+        { "number": search, "orderStatus": ordersType, "searchType": filterby ,"orderType": "CWONLINE"},
 
       )
       .then((response) => {
@@ -698,9 +698,9 @@ const CityWideOrders = () => {
                   <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
                   <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
                   <FormControlLabel value="DISPATCHED" control={<Radio />} label="PICKED" />
-                  <FormControlLabel value="DELIVERED" control={<Radio />} label="DELIVERED" />
+                  <FormControlLabel value="COMPLETED" control={<Radio />} label="DELIVERED" />
                   <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
-                  <FormControlLabel value="ALL ORDERS" control={<Radio />} label="ALL ORDERS" />
+                  <FormControlLabel value="ALL" control={<Radio />} label="ALL ORDERS" />
                 </RadioGroup>
               </FormControl>
             </div>

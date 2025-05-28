@@ -64,7 +64,7 @@ const COLUMNS = (openIsDeleteOrder,ordersType,currentPage,filterby,search,pagesi
       return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },  
-  ...(ordersType === "ALL ORDERS" ? [ 
+  ...(ordersType === "ALL" ? [ 
     {
       Header: "Status",
       accessor: "orderHistory.orderStatus",
@@ -270,7 +270,7 @@ const OfflineOrders = () => {
       searchtype = filterby
     }
     const dataToSend ={
-      "orderType": orderType, "searchType": searchtype
+      "orderStatus": orderType, "searchType": searchtype, "orderType": "CWOFFLINE",
     }
     
     if (filterby != 'NONE' && search != '') {
@@ -278,7 +278,7 @@ const OfflineOrders = () => {
     }
     axiosInstance
       .post(
-        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/true?page=${currentPage}&size=${pagesizedata}`,
+        `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=${pagesizedata}`,
         dataToSend,
 
       )
@@ -400,8 +400,8 @@ const OfflineOrders = () => {
     setLoading(true);
     axiosInstance
       .post(
-        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/true?page=0&size=${pagesizedata}`,
-        { "number": search, "orderType": ordersType, "searchType": filterby },
+        `${BASE_URL}/order-history/get-order-listing/0?page=0&size=${pagesizedata}`,
+        { "number": search, "orderStatus": ordersType, "searchType": filterby, "orderType": "CWOFFLINE"},
 
       )
       .then((response) => {
@@ -441,9 +441,10 @@ const OfflineOrders = () => {
         .post(
           `${BASE_URL}/order-history/search-city-wide-orders/${serviceAreaStatus}?page=${currentPage}&size=100`,
           {
-            orderType: "PLACED",
+            orderStatus: "PLACED",
             searchType: "NONE", 
-            number: 0,           
+            number: 0,     
+            "orderType": "CWOFFLINE"      
           },
           { headers: { Authorization: `Bearer ${token}` } },
         )
@@ -467,8 +468,8 @@ const OfflineOrders = () => {
       setLoading(true);
       axiosInstance
         .post(
-          `${BASE_URL}/order-history/search-city-wide-orders-all-service-area-isOfflineOrder/0/true?page=${currentPage}&size=${pagesizedata}`,
-          { "number": search, "orderType": ordersType, "searchType": 'NONE' },
+          `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=${pagesizedata}`,
+          { "number": search, "orderStatus": ordersType, "searchType": 'NONE',"orderType": "CWOFFLINE" },
 
         )
         .then((response) => {
@@ -605,9 +606,9 @@ const OfflineOrders = () => {
                   <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
                   <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
                   <FormControlLabel value="PICKED" control={<Radio />} label="PICKED" />
-                  <FormControlLabel value="DELIVERED" control={<Radio />} label="DELIVERED" />
+                  <FormControlLabel value="COMPLETED" control={<Radio />} label="DELIVERED" />
                   <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
-                  <FormControlLabel value="ALL ORDERS" control={<Radio />} label="ALL ORDERS" />
+                  <FormControlLabel value="ALL" control={<Radio />} label="ALL ORDERS" />
                 </RadioGroup>
               </FormControl>
             </div>

@@ -63,14 +63,14 @@ const OrderDetail = () => {
             try {
                 const token = localStorage.getItem('jwtToken');
                 if (thirdPartyUsername) {
-                    const response = await axiosInstance.post(`${BASE_URL}/thirdParty/get-third-party-orders/${orderId}?orderType=THIRDPARTY`, {
+                    const response = await axiosInstance.get(`${BASE_URL}/order/v2/get-order-details/${orderId}?orderType=THIRDPARTY`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     });
                     setOrderDetail(response.data.jsonData);
                 } else {
-                    const response = await axiosInstance.get(`${BASE_URL}/order/v2/orders/get-city-wide-order/${orderId}?orderType=CITYWIDE`, {
+                    const response = await axiosInstance.get(`${BASE_URL}/order/v2/get-order-details/${orderId}?orderType=CITYWIDE`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -311,15 +311,15 @@ const OrderDetail = () => {
 
                         <form className="d-flex gap-2" onSubmit={handleAssign}>
                             <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Rider ID"
-                            value={riderId}
-                            onChange={(e) => setRiderId(e.target.value)}
-                            required
+                                type="text"
+                                className="form-control"
+                                placeholder="Rider ID"
+                                value={riderId}
+                                onChange={(e) => setRiderId(e.target.value)}
+                                required
                             />
                             <button type="submit" className="btn btn-sm btn-dark py-1 px-2">
-                            Assign
+                                Assign
                             </button>
                         </form>
                     </div>
@@ -622,16 +622,18 @@ const OrderDetail = () => {
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className=" px-6 py-2"> Distance (KM) </td>
-                                    {thirdPartyUsername ? (
+                                    <td className=" px-6 py-2 text-end">{orderDetails?.distance}</td>
+
+                                    {/* {thirdPartyUsername ? (
                                         <td className=" px-6 py-2 text-end">{orderDetails?.distance?.text} , {orderDetails?.distance?.value} </td>
                                     ) : (
                                         <td className=" px-6 py-2 text-end">{orderDetails?.distance}</td>
-                                    )}
+                                    )} */}
 
                                 </tr>
 
 
-                                {thirdPartyUsername ? (
+                                {/* {thirdPartyUsername ? (
                                     <>
                                         <tr className="border-b border-slate-100 dark:border-slate-700">
                                             <td className=" px-6 py-2"> Pickup OTP </td>
@@ -643,18 +645,18 @@ const OrderDetail = () => {
                                         </tr>
                                     </>
 
-                                ) : (
-                                    <>
-                                        <tr className="border-b border-slate-100 dark:border-slate-700">
-                                            <td className=" px-6 py-2"> Pickup OTP </td>
-                                            <td className=" px-6 py-2 text-end">{orderDetails?.pickupOtp}</td>
-                                        </tr>
-                                        <tr className="border-b border-slate-100 dark:border-slate-700">
-                                            <td className=" px-6 py-2"> Delivery OTP</td>
-                                            <td className=" px-6 py-2 text-end">{orderDetails?.deliveryOtp}</td>
-                                        </tr>
-                                    </>
-                                )}
+                                ) : ( */}
+                                <>
+                                    <tr className="border-b border-slate-100 dark:border-slate-700">
+                                        <td className=" px-6 py-2"> Pickup OTP </td>
+                                        <td className=" px-6 py-2 text-end">{orderDetails?.pickupOtp}</td>
+                                    </tr>
+                                    <tr className="border-b border-slate-100 dark:border-slate-700">
+                                        <td className=" px-6 py-2"> Delivery OTP</td>
+                                        <td className=" px-6 py-2 text-end">{orderDetails?.deliveryOtp}</td>
+                                    </tr>
+                                </>
+
 
                                 {!thirdPartyUsername && (
                                     <>
@@ -811,7 +813,15 @@ const OrderDetail = () => {
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">MRP</td>
                                     <td className="text-end px-6 py-2">
-                                        {thirdPartyUsername ? orderDetails.orderAmount : orderDetails.orderAmount.mrp}
+                                        {orderDetails.orderAmount.mrp}
+                                        {/* {thirdPartyUsername ? orderDetails.orderAmount.mrp : orderDetails.orderAmount.mrp} */}
+                                    </td>
+                                </tr>
+                                <tr className="border-b border-slate-100 dark:border-slate-700">
+                                    <td className="px-6 py-2">Collective Amount</td>
+                                    <td className="text-end px-6 py-2">
+                                        {orderDetails?.orderAmount?.collectiveAmount}
+                                        {/* {thirdPartyUsername ? orderDetails.orderAmount.mrp : orderDetails.orderAmount.mrp} */}
                                     </td>
                                 </tr>
                                 {!thirdPartyUsername && (
@@ -842,7 +852,8 @@ const OrderDetail = () => {
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Total Amount Payable</td>
                                     <td className="text-end px-6 py-2">
-                                        {thirdPartyUsername ? orderDetails.orderAmount : orderDetails.orderAmount.finalPrice}
+                                        {orderDetails.orderAmount.finalPrice}
+                                        {/* {thirdPartyUsername ? orderDetails.orderAmount : orderDetails.orderAmount.finalPrice} */}
                                     </td>
                                 </tr>
                             </tbody>

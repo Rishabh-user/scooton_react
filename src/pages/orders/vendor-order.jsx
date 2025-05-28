@@ -119,7 +119,7 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType, current
       return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br /><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },
-  ...(ordersType === "ALL ORDERS" ? [
+  ...(ordersType === "ALL" ? [
     {
       Header: "Status",
       accessor: "thirdPartyOrders.orderStatus",
@@ -431,11 +431,9 @@ const Vendor = ({ notificationCount }) => {
     }
     if (clientId == '' || clientUserId == "") return;
     const dataToSend = {
-      "clientId": clientId,
-      "clientType": "THIRDPARTY",
-      "orderType": orderType,
+      "orderStatus": orderType,
+      "orderType": "SHIPROCKET",
       "searchType": searchtype,
-      "userId": clientUserId
     }
     if (filterby && search) {
       dataToSend.number = search;
@@ -444,7 +442,7 @@ const Vendor = ({ notificationCount }) => {
     SetOrderType(orderType)
     axiosInstance
       .post(
-        `${BASE_URL}/thirdParty/search-third-party-orders?page=${currentPage}&size=${pagesizedata}`,
+        `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=${pagesizedata}`,
         dataToSend
 
       )
@@ -651,9 +649,9 @@ const Vendor = ({ notificationCount }) => {
                   <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
                   <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
                   <FormControlLabel value="DISPATCHED" control={<Radio />} label="PICKED" />
-                  <FormControlLabel value="DELIVERED" control={<Radio />} label="DELIVERED" />
+                  <FormControlLabel value="COMPLETED" control={<Radio />} label="DELIVERED" />
                   <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
-                  <FormControlLabel value="ALL ORDERS" control={<Radio />} label="ALL ORDERS" />
+                  <FormControlLabel value="ALL" control={<Radio />} label="ALL ORDERS" />
                 </RadioGroup>
               </FormControl>
             </div>

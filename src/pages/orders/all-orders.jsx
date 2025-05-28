@@ -71,7 +71,7 @@ const COLUMNS = (openIsNotificationModel, openIsDeleteOrder, ordersType,currentP
       return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br/><span className="riderTime">{`${formattedTime}`}</span></div>;
     },
   },
-  ...(ordersType === "ALL ORDERS" ? [
+  ...(ordersType === "ALL" ? [
     {
       Header: "Status",
       accessor: "orderHistory.orderStatus",
@@ -430,7 +430,7 @@ const AllOrders = ({notificationCount}) => {
       searchtype = filterby
     }
     const dataToSend ={
-      "orderType": orderType, "searchType": searchtype.trim()
+      "orderType": 'ALL', "searchType": searchtype.trim(), "orderStatus": orderType
     }
     if (filterby && search) {
       dataToSend.number = search; 
@@ -442,7 +442,7 @@ const AllOrders = ({notificationCount}) => {
       if(rapf == true){
         axiosInstance
         .post(
-          `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
+          `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=${pagesizedata}`,
           dataToSend ,
           { headers: { Authorization: `Bearer ${token}` } },
         )
@@ -468,8 +468,8 @@ const AllOrders = ({notificationCount}) => {
     const token = localStorage.getItem("jwtToken");
     axiosInstance
       .post(
-        `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=0&size=${pagesizedata}`,
-        { "number": search, "orderType": ordersType, "searchType": filterby },
+        `${BASE_URL}/order-history/get-order-listing/0?page=0&size=${pagesizedata}`,
+        { "number": search, "orderType": "ALL", "orderStatus": ordersType, "searchType": filterby },
         { headers: { Authorization: `Bearer ${token}` } },
       )
       .then((response) => {
@@ -600,7 +600,7 @@ const AllOrders = ({notificationCount}) => {
       const token = localStorage.getItem("jwtToken");
       axiosInstance
         .post(
-          `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=100`,
+          `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=100`,
           { "number": id.id, "orderType": id.ordertype, "searchType": id.search },
           { headers: { Authorization: `Bearer ${token}` } },
         )
@@ -650,7 +650,7 @@ const AllOrders = ({notificationCount}) => {
     if(rapf == true){
       axiosInstance
         .post(
-          `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
+          `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=${pagesizedata}`,
           dataToSend 
         )
         .then((response) => {
@@ -686,7 +686,7 @@ const AllOrders = ({notificationCount}) => {
     if(paramslength == 0 && rapf){
       axiosInstance
         .post(
-          `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=${currentPage}&size=${pagesizedata}`,
+          `${BASE_URL}/order-history/get-order-listing/0?page=${currentPage}&size=${pagesizedata}`,
           dataToSend 
         )
         .then((response) => {
@@ -808,9 +808,9 @@ const AllOrders = ({notificationCount}) => {
                   <FormControlLabel value="PLACED" control={<Radio />} label="PLACED" />
                   <FormControlLabel value="ACCEPTED" control={<Radio />} label="ACCEPTED" />
                   <FormControlLabel value="DISPATCHED" control={<Radio />} label="PICKED" />
-                  <FormControlLabel value="DELIVERED" control={<Radio />} label="DELIVERED" />
+                  <FormControlLabel value="COMPLETED" control={<Radio />} label="DELIVERED" />
                   <FormControlLabel value="CANCELLED" control={<Radio />} label="CANCELLED" />
-                  <FormControlLabel value="ALL ORDERS" control={<Radio />} label="ALL ORDERS" />
+                  <FormControlLabel value="ALL" control={<Radio />} label="ALL ORDERS" />
                 </RadioGroup>
               </FormControl>
             </div>
