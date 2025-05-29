@@ -23,6 +23,17 @@ const Vehicle_Settings = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [modalFormValues, setModalFormValues] = useState({});
 
+  const fieldLabels = {
+    type: "Vehicle Type",
+    registrationFees: "Platform registration charges",
+    imageUrl: "Image URL",
+    categoryId: "Vehicle ID",
+    platformChargesPercentage: "Platform Charges(%)",
+    active: "Is Active",
+    isDisplay: "Show in List",
+    id: "Vehicle ID",
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
@@ -282,7 +293,7 @@ const Vehicle_Settings = () => {
         activeModal={isEditModal}
         uncontrol
         className="max-w-2xl"
-        title={isCreating ? "Add New Vehicle" : "Edit Vehicle Configuration"}
+        title={isCreating ? "Add New Vehicle" : "Vehicle Configuration"}
         onClose={() => {
           setIsEditModal(false);
           setIsCreating(false);
@@ -291,39 +302,53 @@ const Vehicle_Settings = () => {
       >
         <div>
           <div className="space-y-4 max-h-[60vh] overflow-y-auto px-2">
-            {Object.entries(modalFormValues).filter(([key]) => key !== "isDisplay").map(([key, value]) => (
-              <div key={key}>
-                <label className="block font-medium mb-1 capitalize">{key}</label>
-                {key === "active"  ? (
-                  <select
-                    className="w-full border px-3 py-2 rounded dark:bg-slate-700 dark:text-white"
-                    value={value ? "true" : "false"}
-                    onChange={(e) =>
-                      setModalFormValues((prev) => ({
-                        ...prev,
-                        [key]: e.target.value === "true",
-                      }))
-                    }
-                  >
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                  </select>
-                ) : (
-                  <input
-                    className="w-full border px-3 py-2 rounded dark:bg-slate-700 dark:text-white"
-                    type="text"
-                    value={value}
-                    onChange={(e) =>
-                      setModalFormValues((prev) => ({
-                        ...prev,
-                        [key]: e.target.value,
-                      }))
-                    }
-                    disabled={key === "id" || (!isCreating && !["registrationFees", "platformChargesPercentage", "active", "imageUrl", "type"].includes(key))}
-                  />
-                )}
-              </div>
-            ))}
+            {Object.entries(modalFormValues)
+              .filter(([key]) => key !== "isDisplay" && key in fieldLabels)
+              .map(([key, value]) => (
+                <div key={key}>
+                  <label className="block font-medium mb-1">
+                    {fieldLabels[key] || key}
+                  </label>
+                  {key === "active" ? (
+                    <select
+                      className="w-full border px-3 py-2 rounded dark:bg-slate-700 dark:text-white"
+                      value={value ? "true" : "false"}
+                      onChange={(e) =>
+                        setModalFormValues((prev) => ({
+                          ...prev,
+                          [key]: e.target.value === "true",
+                        }))
+                      }
+                    >
+                      <option value="true">Yes</option>
+                      <option value="false">No</option>
+                    </select>
+                  ) : (
+                    <input
+                      className="w-full border px-3 py-2 rounded dark:bg-slate-700 dark:text-white"
+                      type="text"
+                      value={value}
+                      onChange={(e) =>
+                        setModalFormValues((prev) => ({
+                          ...prev,
+                          [key]: e.target.value,
+                        }))
+                      }
+                      disabled={
+                        key === "id" ||
+                        (!isCreating &&
+                          ![
+                            "registrationFees",
+                            "platformChargesPercentage",
+                            "active",
+                            "imageUrl",
+                            "type",
+                          ].includes(key))
+                      }
+                    />
+                  )}
+                </div>
+              ))}
           </div>
           <hr className="mt-3" />
           <div className="d-flex gap-2 justify-content-end mt-6">
