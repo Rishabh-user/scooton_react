@@ -203,7 +203,7 @@ const Vehicle_Settings = () => {
                 categoryId: "",
                 platformChargesPercentage: "",
                 active: true,
-                isDisplay: true,
+                isDisplay: false,
               });
               setIsEditModal(true);
             }}
@@ -291,10 +291,10 @@ const Vehicle_Settings = () => {
       >
         <div>
           <div className="space-y-4 max-h-[60vh] overflow-y-auto px-2">
-            {Object.entries(modalFormValues).map(([key, value]) => (
+            {Object.entries(modalFormValues).filter(([key]) => key !== "isDisplay").map(([key, value]) => (
               <div key={key}>
                 <label className="block font-medium mb-1 capitalize">{key}</label>
-                {key === "active" || key === "isDisplay" ? (
+                {key === "active"  ? (
                   <select
                     className="w-full border px-3 py-2 rounded dark:bg-slate-700 dark:text-white"
                     value={value ? "true" : "false"}
@@ -319,7 +319,7 @@ const Vehicle_Settings = () => {
                         [key]: e.target.value,
                       }))
                     }
-                    disabled={key === "id" || (!isCreating && !["registrationFees", "platformChargesPercentage", "active", "imageUrl", "type", "isDisplay"].includes(key))}
+                    disabled={key === "id" || (!isCreating && !["registrationFees", "platformChargesPercentage", "active", "imageUrl", "type"].includes(key))}
                   />
                 )}
               </div>

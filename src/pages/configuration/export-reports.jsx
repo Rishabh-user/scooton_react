@@ -7,7 +7,7 @@ import { BASE_URL } from "../../api";
 import Loading from "../../components/Loading";
 import Button from "../../components/ui/Button";
 import Textinput from "@/components/ui/Textinput";
-import { toast,ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "../../components/ui/Modal";
 import { useNavigate } from "react-router-dom";
@@ -22,33 +22,42 @@ import axiosInstance from "../../api";
 
 const Export_Reports = () => {
     const navigate = useNavigate();
-    const[logoutAll, setLogoutAllList] = useState([]);
+    const [logoutAll, setLogoutAllList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [logoutDevice, setLogoutDevice] = useState();
-    const [isLogoutModal, setIsLogoutModal] = useState(false);   
+    const [isLogoutModal, setIsLogoutModal] = useState(false);
+    const [selectedFields, setSelectedFields] = useState([]);
 
     useEffect(() => {
-      const fetchLogoutAllList = async () => {
-        try {
-          const token = localStorage.getItem('jwtToken');
-          if (token) {
-            const response = await axiosInstance.get(`${BASE_URL}/auth/get-logout-details`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-            const validLogoutList = response.data.filter(item => !item.isExpired);
+        const fetchLogoutAllList = async () => {
+            try {
+                const token = localStorage.getItem('jwtToken');
+                if (token) {
+                    const response = await axiosInstance.get(`${BASE_URL}/auth/get-logout-details`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    const validLogoutList = response.data.filter(item => !item.isExpired);
 
-            setLogoutAllList(validLogoutList);
-          }
-        } catch (error) {
-          console.error('Error fetching order detail:', error);
-        } finally {
-            setLoading(false);
-        }
-      };  
-      fetchLogoutAllList();
+                    setLogoutAllList(validLogoutList);
+                }
+            } catch (error) {
+                console.error('Error fetching order detail:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchLogoutAllList();
     }, []);
+
+    const handleCheckboxChange = (e) => {
+        const { id, checked } = e.target;
+
+        setSelectedFields((prev) =>
+            checked ? [...prev, id] : prev.filter((item) => item !== id)
+        );
+    };
 
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
@@ -67,22 +76,22 @@ const Export_Reports = () => {
 
     const validateDateRange = (start, end) => {
         if (start && end) {
-        const differenceInDays = dayjs(end).diff(dayjs(start), "day") + 1;
-        setIsButtonDisabled(differenceInDays > 30 || differenceInDays <= 0);
+            const differenceInDays = dayjs(end).diff(dayjs(start), "day") + 1;
+            setIsButtonDisabled(differenceInDays > 30 || differenceInDays <= 0);
         } else {
-        setIsButtonDisabled(true);
+            setIsButtonDisabled(true);
         }
     };
 
     const exportRiderCsv = async () => {
-        try{
+        try {
             setLoadingCSV(true);
-            await axiosInstance.get(`${BASE_URL}/order/admin/registered-rider-details`).then((response)=> {
-             
+            await axiosInstance.get(`${BASE_URL}/order/admin/registered-rider-details`).then((response) => {
 
-                if(response.data.length == 0){
+
+                if (response.data.length == 0) {
                     toast.error("No data found");
-                    setLoadingCSV(false); 
+                    setLoadingCSV(false);
                     return;
                 }
 
@@ -100,35 +109,104 @@ const Export_Reports = () => {
                         "Registration Fee Status": item?.registrationFeesPaid || "N/A",
                         "No of Orders Delivered": item?.noOfDeliveredOrders || "N/A",
                     };
-                    
-                });   
-               
-                
+
+                });
+
+
                 const workbook = XLSX.utils.book_new();
                 const worksheet = XLSX.utils.json_to_sheet(csvData);
-        
+
                 XLSX.utils.book_append_sheet(workbook, worksheet, "Rider_Detail");
-        
+
                 XLSX.writeFile(
                     workbook,
                     `Rider_Detail.xlsx`
                 );
-                
+
             })
         } catch (error) {
             console.error("Error exporting CSV:", error);
             toast.error("Failed to export data. Please try again.");
         } finally {
-            setLoadingCSV(false); 
+            setLoadingCSV(false);
+        }
+    }
+
+    const exportRegRiderFilter = async () => {
+        const baseFields = [
+            "riderId",
+            "riderName",
+            "riderMobileNumber",
+            "walletBalance",
+        ];
+
+        const allFields = [...new Set([...baseFields, ...selectedFields])];
+
+        const fieldMap = {
+            riderId: "Rider ID",
+            riderName: "Rider Name",
+            riderMobileNumber: "Mobile Number",
+            riderCity: "City",
+            status: "Status",
+            vehicleType: "Vehicle Type",
+            walletBalance: "Wallet Balance",
+        };
+
+        const params = new URLSearchParams();
+        allFields.forEach(field => params.append('fields', field));
+
+        try {
+            setLoadingCSV(true);
+
+
+            const response = await axiosInstance.get(
+                `${BASE_URL}/api/v1/admin/report/registered-rider-details-filtered?${params.toString()}`
+            )
+                .then((response) => {
+
+
+                    if (response.data.length == 0) {
+                        toast.error("No data found");
+                        setLoadingCSV(false);
+                        return;
+                    }
+
+                    const riderDetails = response.data.jsonData;
+                    const csvData = riderDetails.map(item => {
+                        const row = {};
+                        allFields.forEach(field => {
+                            const header = fieldMap[field];
+                            row[header] = item?.[field] ?? "N/A";
+                        });
+                        return row;
+                    });
+
+
+                    const workbook = XLSX.utils.book_new();
+                    const worksheet = XLSX.utils.json_to_sheet(csvData);
+
+                    XLSX.utils.book_append_sheet(workbook, worksheet, "Rider_Detail");
+
+                    XLSX.writeFile(
+                        workbook,
+                        `Rider_Detail.xlsx`
+                    );
+
+                })
+        } catch (error) {
+            console.error("Error exporting CSV:", error);
+            toast.error("Failed to export data. Please try again.");
+        } finally {
+            setLoadingCSV(false);
         }
     }
 
     const exportCsv = async () => {
-        
-        if (!startDate || !endDate) return;    
+
+        if (!startDate || !endDate) return;
         const formattedFromDate = dayjs(startDate).format("MM-DD-YYYY");
-        const formattedToDate = dayjs(endDate).format("MM-DD-YYYY");   
-         
+        const formattedToDate = dayjs(endDate).format("MM-DD-YYYY");
+
         try {
             const token = localStorage.getItem("jwtToken");
             setLoadingCSV(true);
@@ -140,12 +218,12 @@ const Export_Reports = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 },
-                
+
             );
-    
+
             if (response.data?.length === 0) {
                 alert("No data found for the specified date range.");
-                setLoadingCSV(false); 
+                setLoadingCSV(false);
                 return;
             }
             const csvData = response.data.map((item) => {
@@ -169,14 +247,14 @@ const Export_Reports = () => {
                     "Vehicle Type": riderDetails?.vehicleType || "N/A",
                     "Rider Payout": riderDetails?.riderPayout || "N/A",
                 };
-                
-            });   
-            
+
+            });
+
             const workbook = XLSX.utils.book_new();
             const worksheet = XLSX.utils.json_to_sheet(csvData);
-    
+
             XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
-    
+
             XLSX.writeFile(
                 workbook,
                 `orders_${formattedFromDate}_to_${formattedToDate}.xlsx`
@@ -185,73 +263,99 @@ const Export_Reports = () => {
             setEndDate(null)
         } catch (error) {
             console.error("Error exporting data:", error);
-        }finally {
+        } finally {
             setLoadingCSV(false);
         }
     };
-    
+
     if (loading) {
         return <Loading />;
     }
-  return (
-    <>
-        <Card className="h-100">
-            <div className="card-header md:flex justify-between items-center mb-4 px-0 py-2">
-                <div className="flex items-center">
-                    <h4 className="card-title">Export Order Data</h4>
-                </div>
-            </div>
-            <div className="export-data">                        
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <div className="flex w-100 gap-3">
-                        <div className="">
-                            <DatePicker
-                                label="Start Date"
-                                value={startDate}
-                                onChange={handleStartDateChange}
-                                maxDate={dayjs()}
-                            />
-                        </div>
-                        <div className="">
-                            <DatePicker
-                                label="End Date"
-                                value={endDate}
-                                onChange={handleEndDateChange}
-                                maxDate={dayjs()}
-                            />
-                        </div>
-                        <button
-                            className={`btn btn-dark`}
-                            disabled={isButtonDisabled}
-                            onClick={exportCsv}
-                        >   Export</button>
+    return (
+        <>
+            <Card className="h-100">
+                <div className="card-header md:flex justify-between items-center mb-4 px-0 py-2">
+                    <div className="flex items-center">
+                        <h4 className="card-title">Export Order Data</h4>
                     </div>
-                    {loadingCSV && (
-                        <div className="loader-fixed">
-                        <span className="flex items-center gap-2">
-                            <Loading />                              
-                        </span>
+                </div>
+                <div className="export-data">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <div className="flex w-100 gap-3">
+                            <div className="">
+                                <DatePicker
+                                    label="Start Date"
+                                    value={startDate}
+                                    onChange={handleStartDateChange}
+                                    maxDate={dayjs()}
+                                />
+                            </div>
+                            <div className="">
+                                <DatePicker
+                                    label="End Date"
+                                    value={endDate}
+                                    onChange={handleEndDateChange}
+                                    maxDate={dayjs()}
+                                />
+                            </div>
+                            <button
+                                className={`btn btn-dark`}
+                                disabled={isButtonDisabled}
+                                onClick={exportCsv}
+                            >   Export</button>
                         </div>
-                    )}
-                </LocalizationProvider>                   
-            </div>
-            <div className="mt-4">
-                <p><strong>Note*</strong> <i>For every export,you can set the date limit to a maximum of 30 days.</i></p>
-            </div>
-            <div className="riderexport mt-3 pt-3 mb-3">
-                <div className="">
+                        {loadingCSV && (
+                            <div className="loader-fixed">
+                                <span className="flex items-center gap-2">
+                                    <Loading />
+                                </span>
+                            </div>
+                        )}
+                    </LocalizationProvider>
+                </div>
+                <div className="mt-4">
+                    <p><strong>Note*</strong> <i>For every export,you can set the date limit to a maximum of 30 days.</i></p>
+                </div>
+
+            </Card>
+            <Card className="h-100 mt-3">
+                <div className="card-header md:flex justify-between items-center mb-4 px-0 py-2">
                     <div className="flex items-center">
                         <h4 className="card-title">Export Rider Detail</h4>
                     </div>
                 </div>
-                <button
-                    className="btn btn-dark"
-                    onClick={exportRiderCsv}
-                >   Export</button>
-            </div>
-        </Card>
-    </>
-  );
+                <div className="export-data">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="riderCity" onChange={handleCheckboxChange} />
+                        <label class="form-check-label" for="riderCity">
+                            Rider City
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="vehicleType" onChange={handleCheckboxChange} />
+                        <label class="form-check-label" for="vehicleType">
+                            Vehicle Type
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="status" onChange={handleCheckboxChange} />
+                        <label class="form-check-label" for="status">
+                            Status
+                        </label>
+                    </div>
+
+                </div>
+
+                <div className="riderexport mt-3 pt-3 mb-3">
+
+                    <button
+                        className="btn btn-dark"
+                        onClick={exportRegRiderFilter}
+                    >   Export</button>
+                </div>
+            </Card>
+        </>
+    );
 };
 
 export default Export_Reports;
