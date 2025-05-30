@@ -4,7 +4,7 @@ import { useTable, useRowSelect, useSortBy, usePagination } from "react-table";
 import Card from "../../components/ui/Card";
 import { BASE_URL } from "../../api";
 import Tooltip from "@/components/ui/Tooltip";
-import Loading from "../../components/Loading";
+import Loading from "@/components/Loading";
 import { toast } from "react-toastify";
 import axiosInstance from "../../api";
 import { Badge } from "react-bootstrap";
@@ -165,6 +165,22 @@ const Vehicle_Settings = () => {
   }, [pageIndex]);
 
   const handleModalSave = async () => {
+    // Validation for platform charges fields
+    if (modalFormValues.registrationFees < 0) {
+      toast.error("Platform registration charges cannot be negative");
+      return;
+    }
+
+    if (modalFormValues.platformChargesPercentage < 0) {
+      toast.error("Platform Charges (%) cannot be negative");
+      return;
+    }
+
+    if (modalFormValues.platformChargesPercentage > 100) {
+      toast.error("Platform Charges (%) cannot exceed 100");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("jwtToken");
       await axiosInstance.post(
@@ -323,6 +339,32 @@ const Vehicle_Settings = () => {
                       <option value="true">Yes</option>
                       <option value="false">No</option>
                     </select>
+                  ) : key === "registrationFees" || key === "platformChargesPercentage" ? (
+                    <input
+                      className="w-full border px-3 py-2 rounded dark:bg-slate-700 dark:text-white"
+                      type="number"
+                      value={value}
+                      onChange={(e) => {
+                        const newValue = Number(e.target.value);
+                        if (newValue >= 0 && (key !== "platformChargesPercentage" || newValue <= 100)) {
+                          setModalFormValues((prev) => ({
+                            ...prev,
+                            [key]: newValue,
+                          }));
+                        }
+                      }}
+                      disabled={
+                        key === "id" ||
+                        (!isCreating &&
+                          ![
+                            "registrationFees",
+                            "platformChargesPercentage",
+                            "active",
+                            "imageUrl",
+                            "type",
+                          ].includes(key))
+                      }
+                    />
                   ) : (
                     <input
                       className="w-full border px-3 py-2 rounded dark:bg-slate-700 dark:text-white"

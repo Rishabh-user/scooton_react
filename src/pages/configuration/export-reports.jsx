@@ -28,6 +28,9 @@ const Export_Reports = () => {
     const [isLogoutModal, setIsLogoutModal] = useState(false);
     const [selectedFields, setSelectedFields] = useState([]);
 
+    // Define the state for orderType
+    const [orderType, setOrderType] = useState("CITYWIDE"); // Default to "CITYWIDE"
+
     useEffect(() => {
         const fetchLogoutAllList = async () => {
             try {
@@ -88,7 +91,6 @@ const Export_Reports = () => {
             setLoadingCSV(true);
             await axiosInstance.get(`${BASE_URL}/order/admin/registered-rider-details`).then((response) => {
 
-
                 if (response.data.length == 0) {
                     toast.error("No data found");
                     setLoadingCSV(false);
@@ -108,10 +110,10 @@ const Export_Reports = () => {
                         "Wallet Balance": item?.walletBalance || "N/A",
                         "Registration Fee Status": item?.registrationFeesPaid || "N/A",
                         "No of Orders Delivered": item?.noOfDeliveredOrders || "N/A",
+                        "On role riders": item?.onRoleRider || "N/A",
+                        "Last activity": item?.lastActivity || "N/A",
                     };
-
                 });
-
 
                 const workbook = XLSX.utils.book_new();
                 const worksheet = XLSX.utils.json_to_sheet(csvData);
@@ -150,6 +152,8 @@ const Export_Reports = () => {
             status: "Status",
             vehicleType: "Vehicle Type",
             walletBalance: "Wallet Balance",
+            onRoleRider: "On role riders",
+            lastActivity: "Last activity",
         };
 
         const params = new URLSearchParams();
@@ -158,12 +162,10 @@ const Export_Reports = () => {
         try {
             setLoadingCSV(true);
 
-
             const response = await axiosInstance.get(
                 `${BASE_URL}/api/v1/admin/report/registered-rider-details-filtered?${params.toString()}`
             )
                 .then((response) => {
-
 
                     if (response.data.length == 0) {
                         toast.error("No data found");
@@ -180,7 +182,6 @@ const Export_Reports = () => {
                         });
                         return row;
                     });
-
 
                     const workbook = XLSX.utils.book_new();
                     const worksheet = XLSX.utils.json_to_sheet(csvData);
@@ -202,7 +203,6 @@ const Export_Reports = () => {
     }
 
     const exportCsv = async () => {
-
         if (!startDate || !endDate) return;
         const formattedFromDate = dayjs(startDate).format("MM-DD-YYYY");
         const formattedToDate = dayjs(endDate).format("MM-DD-YYYY");
@@ -211,7 +211,7 @@ const Export_Reports = () => {
             const token = localStorage.getItem("jwtToken");
             setLoadingCSV(true);
             const response = await axiosInstance.get(
-                `${BASE_URL}/order/v2/orders/get-city-wide-orders-by-date?from_date=${formattedFromDate}&to_date=${formattedToDate}`,
+                `${BASE_URL}/order/v2/orders/get-city-wide-orders-by-date?from_date=${formattedFromDate}&to_date=${formattedToDate}&orderType=${orderType}`, // Include orderType here
                 {
                     responseType: "json",
                     headers: {
@@ -279,7 +279,7 @@ const Export_Reports = () => {
                         <h4 className="card-title">Export Order Data</h4>
                     </div>
                 </div>
-                <div className="export-data">
+                <div className="export-data mb-4">
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div className="flex w-100 gap-3">
                             <div className="">
@@ -298,6 +298,15 @@ const Export_Reports = () => {
                                     maxDate={dayjs()}
                                 />
                             </div>
+                            
+                            <div class="flex items-center">
+                                <input id="CITYWIDE" type="radio" name="orderType" value="CITYWIDE" checked={orderType === "CITYWIDE"} onChange={() => setOrderType("CITYWIDE")} className="form-check-input"/>
+                                <label for="CITYWIDE" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Citywide</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="THIRDPARTY" type="radio" name="orderType" value="THIRDPARTY" checked={orderType === "THIRDPARTY"} onChange={() => setOrderType("THIRDPARTY")} className="form-check-input"/>
+                                <label for="THIRDPARTY" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shiprocket</label>
+                            </div>
                             <button
                                 className={`btn btn-dark`}
                                 disabled={isButtonDisabled}
@@ -313,18 +322,24 @@ const Export_Reports = () => {
                         )}
                     </LocalizationProvider>
                 </div>
-                <div className="mt-4">
-                    <p><strong>Note*</strong> <i>For every export,you can set the date limit to a maximum of 30 days.</i></p>
+                <hr></hr>
+                <div className="mt-3">
+                    <p className="mb-2"><strong>Note*</strong></p>
+                    <ol className="list-decimal ms-3">
+                        <li>For every export, you can set the date limit to a maximum of 30 days.</li>
+                        <li>On Citywide selection, you will get all orders.</li>
+                        <li>On Shiprocket selection, you will get all orders, except cancelled & which are not rider assinged.</li>
+                    </ol>
                 </div>
-
             </Card>
+
             <Card className="h-100 mt-3">
                 <div className="card-header md:flex justify-between items-center mb-4 px-0 py-2">
                     <div className="flex items-center">
                         <h4 className="card-title">Export Rider Detail</h4>
                     </div>
                 </div>
-                <div className="export-data">
+                <div className="export-data flex space-x-4">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="riderCity" onChange={handleCheckboxChange} />
                         <label class="form-check-label" for="riderCity">
@@ -343,15 +358,35 @@ const Export_Reports = () => {
                             Status
                         </label>
                     </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="onRoleRider" onChange={handleCheckboxChange} />
+                        <label class="form-check-label" for="onRoleRider">
+                            On role riders
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="lastActivity" onChange={handleCheckboxChange} />
+                        <label class="form-check-label" for="lastActivity">
+                            Last activity
+                        </label>
+                    </div>
 
                 </div>
 
-                <div className="riderexport mt-3 pt-3 mb-3">
-
+                <div className="mt-3 pt-3 mb-3">
                     <button
                         className="btn btn-dark"
                         onClick={exportRegRiderFilter}
                     >   Export</button>
+                </div>
+                <hr></hr>
+                <div className="mt-3">
+                    <p className="mb-2"><strong>Note*</strong></p>
+                    <ol className="list-decimal ms-3">
+                        <li>By default you will get Rider Id, Rider Name, Rider Mobile No., WalletBalance.</li>
+                        <li>Select checkbox for adding column in the export report. </li>
+                        <li>In this export you will get only register riders which has done at least one order wheather it's cancelled.</li>
+                    </ol>
                 </div>
             </Card>
         </>
