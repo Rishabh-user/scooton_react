@@ -304,8 +304,8 @@ const Export_Reports = () => {
                                 <label for="CITYWIDE" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Citywide</label>
                             </div>
                             <div class="flex items-center">
-                                <input id="THIRDPARTY" type="radio" name="orderType" value="THIRDPARTY" checked={orderType === "THIRDPARTY"} onChange={() => setOrderType("THIRDPARTY")} className="form-check-input"/>
-                                <label for="THIRDPARTY" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shiprocket</label>
+                                <input id="SHIPROCKET" type="radio" name="orderType" value="SHIPROCKET" checked={orderType === "SHIPROCKET"} onChange={() => setOrderType("SHIPROCKET")} className="form-check-input"/>
+                                <label for="SHIPROCKET" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shiprocket</label>
                             </div>
                             <button
                                 className={`btn btn-dark`}
