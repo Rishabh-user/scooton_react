@@ -2,71 +2,63 @@ import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import axios from "axios";
 import { format, differenceInDays, parseISO } from "date-fns";
-import Datepicker from "react-tailwindcss-datepicker";
 import Card from "@/components/ui/Card";
 import { BASE_URL } from "../../../../api";
 
-const RiderAnalytics = ({ height = 400 }) => {
+const RiderAnalytics = ({ dateRange, onDateRangeChange, height = 400 }) => {
   const [series, setSeries] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  // Tailwind datepicker range state
-  const [dateRange, setDateRange] = useState({
-    startDate: format(new Date(new Date().setDate(new Date().getDate() - 6)), "yyyy-MM-dd"),
-    endDate: format(new Date(), "yyyy-MM-dd"),
-  });
-
   const fetchAnalytics = async (start, end) => {
-  const token = localStorage.getItem("jwtToken");
-  try {
-    const response = await axios.get(
-      `${BASE_URL}/api/v1/admin/dashboard/rider-analytics?startDate=${start}&endDate=${end}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const token = localStorage.getItem("jwtToken");
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/api/v1/admin/dashboard/rider-analytics?startDate=${start}&endDate=${end}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    const data = response.data.jsonData;
-    const dateKeys = Object.keys(data).sort();
-    const vehicleTypesSet = new Set();
+      const data = response.data.jsonData;
+      const dateKeys = Object.keys(data).sort();
+      const vehicleTypesSet = new Set();
 
-    dateKeys.forEach((date) => {
-      data[date].forEach((item) => {
-        vehicleTypesSet.add(item.vehicleType);
+      dateKeys.forEach((date) => {
+        data[date].forEach((item) => {
+          vehicleTypesSet.add(item.vehicleType);
+        });
       });
-    });
 
-    const vehicleTypes = Array.from(vehicleTypesSet);
+      const vehicleTypes = Array.from(vehicleTypesSet);
 
-    const formattedSeries = vehicleTypes.map((vehicleType) => ({
-      name: vehicleType,
-      data: dateKeys.map((date) => {
-        const match = data[date].find((item) => item.vehicleType === vehicleType);
-        return match ? match.onlineRiders : 0;
-      }),
-    }));
+      const formattedSeries = vehicleTypes.map((vehicleType) => ({
+        name: vehicleType,
+        data: dateKeys.map((date) => {
+          const match = data[date].find((item) => item.vehicleType === vehicleType);
+          return match ? match.onlineRiders : 0;
+        }),
+      }));
 
-    // Add Total Rider Series
-    const totalRiderSeries = {
-      name: "Total Riders",
-      data: dateKeys.map((date) =>
-        data[date].reduce((sum, item) => sum + item.onlineRiders, 0)
-      ),
-    };
+      // Add Total Rider Series
+      const totalRiderSeries = {
+        name: "Total Riders",
+        data: dateKeys.map((date) =>
+          data[date].reduce((sum, item) => sum + item.onlineRiders, 0)
+        ),
+      };
 
-    setCategories(dateKeys);
-    setSeries([...formattedSeries, totalRiderSeries]);
-  } catch (error) {
-    console.error("Error fetching rider analytics:", error);
-  }
-};
-
+      setCategories(dateKeys);
+      setSeries([...formattedSeries, totalRiderSeries]);
+    } catch (error) {
+      console.error("Error fetching rider analytics:", error);
+    }
+  };
 
   useEffect(() => {
     fetchAnalytics(dateRange.startDate, dateRange.endDate);
-  }, []);
+  }, [dateRange]);
 
   const handleDateChange = (newRange) => {
     const start = parseISO(newRange.startDate);
@@ -78,7 +70,7 @@ const RiderAnalytics = ({ height = 400 }) => {
       return;
     }
 
-    setDateRange(newRange);
+    onDateRangeChange(newRange); // Pass the new date range to the parent
     fetchAnalytics(newRange.startDate, newRange.endDate);
   };
 
@@ -92,8 +84,8 @@ const RiderAnalytics = ({ height = 400 }) => {
       width: 2,
     },
     markers: {
-    size: 4,
-    strokeWidth: 2,
+      size: 4,
+      strokeWidth: 2,
       hover: {
         size: 6,
       },
@@ -129,17 +121,6 @@ const RiderAnalytics = ({ height = 400 }) => {
       {/* Header Row: Title + Datepicker */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">Rider Data</h2>
-
-        <div className="graph-date-picker w-full max-w-xs">
-          <Datepicker
-            value={dateRange}
-            onChange={handleDateChange}
-            displayFormat={"DD/MM/YYYY"}
-            maxDate={new Date()}
-            primaryColor={"red"}
-            showShortcuts={true}
-          />
-        </div>
       </div>
 
       {/* Chart */}
@@ -147,7 +128,6 @@ const RiderAnalytics = ({ height = 400 }) => {
         <Chart options={options} series={series} type="area" height={height} />
       </div>
     </Card>
-
   );
 };
 

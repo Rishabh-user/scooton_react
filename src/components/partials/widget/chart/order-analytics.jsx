@@ -6,53 +6,46 @@ import Datepicker from "react-tailwindcss-datepicker";
 import Card from "@/components/ui/Card";
 import { BASE_URL } from "../../../../api";
 
-const OrderAnalytics = ({ height = 400 }) => {
+const OrderAnalytics = ({ dateRange, onDateRangeChange, height = 400 }) => {
   const [series, setSeries] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  // Default last 7 days
-  const [dateRange, setDateRange] = useState({
-    startDate: format(new Date(new Date().setDate(new Date().getDate() - 6)), "yyyy-MM-dd"),
-    endDate: format(new Date(), "yyyy-MM-dd"),
-  });
-
   const fetchAnalytics = async (start, end) => {
-  const token = localStorage.getItem("jwtToken");
-  try {
-    const response = await axios.get(
-      `${BASE_URL}/api/v1/admin/dashboard/order-analytics?startDate=${start}&endDate=${end}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const token = localStorage.getItem("jwtToken");
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/api/v1/admin/dashboard/order-analytics?startDate=${start}&endDate=${end}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    const data = response.data.jsonData;
-    const dateKeys = Object.keys(data).sort();
+      const data = response.data.jsonData;
+      const dateKeys = Object.keys(data).sort();
 
-    const totalOrders = [];
-    const srOrders = [];
-    const cityWideOrders = [];
+      const totalOrders = [];
+      const srOrders = [];
+      const cityWideOrders = [];
 
-    dateKeys.forEach((date) => {
-      const item = data[date]?.[0];
-      totalOrders.push(item ? item.totalOrdersCount : 0);
-      srOrders.push(item ? item.srOrdersCount : 0);
-      cityWideOrders.push(item ? item.cityWideOrdersCount : 0);
-    });
+      dateKeys.forEach((date) => {
+        const item = data[date]?.[0];
+        totalOrders.push(item ? item.totalOrdersCount : 0);
+        srOrders.push(item ? item.srOrdersCount : 0);
+        cityWideOrders.push(item ? item.cityWideOrdersCount : 0);
+      });
 
-    setCategories(dateKeys);
-    setSeries([
-      { name: "Total Orders", data: totalOrders },
-      { name: "SR Orders", data: srOrders },
-      { name: "City-Wide Orders", data: cityWideOrders },
-    ]);
-  } catch (error) {
-    console.error("Error fetching order analytics:", error);
-  }
-};
-
+      setCategories(dateKeys);
+      setSeries([
+        { name: "Total Orders", data: totalOrders },
+        { name: "SR Orders", data: srOrders },
+        { name: "City-Wide Orders", data: cityWideOrders },
+      ]);
+    } catch (error) {
+      console.error("Error fetching order analytics:", error);
+    }
+  };
 
   useEffect(() => {
     fetchAnalytics(dateRange.startDate, dateRange.endDate);
@@ -68,7 +61,7 @@ const OrderAnalytics = ({ height = 400 }) => {
       return;
     }
 
-    setDateRange(newRange);
+    onDateRangeChange(newRange); // Update the parent with the new date range
   };
 
   const options = {
@@ -81,8 +74,8 @@ const OrderAnalytics = ({ height = 400 }) => {
       width: 2,
     },
     markers: {
-    size: 4,
-    strokeWidth: 2,
+      size: 4,
+      strokeWidth: 2,
       hover: {
         size: 6,
       },
@@ -118,17 +111,6 @@ const OrderAnalytics = ({ height = 400 }) => {
       {/* Header Row: Title + Datepicker */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">Order Data</h2>
-
-        <div className="graph-date-picker w-full max-w-xs">
-          <Datepicker
-            value={dateRange}
-            onChange={handleDateChange}
-            displayFormat={"DD/MM/YYYY"}
-            maxDate={new Date()}
-            primaryColor={"red"}
-            showShortcuts={true}
-          />
-        </div>
       </div>
 
       {/* Chart */}
