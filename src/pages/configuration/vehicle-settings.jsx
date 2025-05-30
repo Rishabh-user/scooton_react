@@ -22,6 +22,7 @@ const Vehicle_Settings = () => {
   const [isEditModal, setIsEditModal] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [modalFormValues, setModalFormValues] = useState({});
+  const [fieldErrors, setFieldErrors] = useState([]);
 
   const fieldLabels = {
     type: "Vehicle Type",
@@ -121,6 +122,7 @@ const Vehicle_Settings = () => {
                   setIsCreating(false);
                   setModalFormValues({ ...row.original });
                   setIsEditModal(true);
+                  setFieldErrors([]); // Clear errors when opening the modal
                 }}
               >
                 <Icon icon="heroicons:pencil-square" />
@@ -165,6 +167,32 @@ const Vehicle_Settings = () => {
   }, [pageIndex]);
 
   const handleModalSave = async () => {
+    // Clear previous errors
+    setFieldErrors([]);
+
+    // Validation for required fields
+    const errors = [];
+    if (!modalFormValues.categoryId) {
+      errors.push({ fieldName: "categoryId", fieldError: "Category ID is required" });
+    }
+    if (!modalFormValues.type) {
+      errors.push({ fieldName: "type", fieldError: "Vehicle type is required" });
+    }
+    if (modalFormValues.platformChargesPercentage === "") {
+      errors.push({ fieldName: "platformChargesPercentage", fieldError: "Platform charges percentage is required" });
+    }
+    if (!modalFormValues.imageUrl) {
+      errors.push({ fieldName: "imageUrl", fieldError: "Image URL is required" });
+    }
+    if (modalFormValues.registrationFees === "") {
+      errors.push({ fieldName: "registrationFees", fieldError: "Registration fees is required" });
+    }
+
+    if (errors.length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+
     // Validation for platform charges fields
     if (modalFormValues.registrationFees < 0) {
       toast.error("Platform registration charges cannot be negative");
@@ -233,6 +261,7 @@ const Vehicle_Settings = () => {
                 isDisplay: false,
               });
               setIsEditModal(true);
+              setFieldErrors([]); // Clear errors when opening the modal
             }}
           >
             + New Vehicle Add
@@ -313,6 +342,7 @@ const Vehicle_Settings = () => {
         onClose={() => {
           setIsEditModal(false);
           setIsCreating(false);
+          setFieldErrors([]); // Clear errors when closing the modal
         }}
         centered
       >
@@ -353,17 +383,7 @@ const Vehicle_Settings = () => {
                           }));
                         }
                       }}
-                      disabled={
-                        key === "id" ||
-                        (!isCreating &&
-                          ![
-                            "registrationFees",
-                            "platformChargesPercentage",
-                            "active",
-                            "imageUrl",
-                            "type",
-                          ].includes(key))
-                      }
+                      disabled={key === "id" || (!isCreating && !["registrationFees", "platformChargesPercentage", "active", "imageUrl", "type"].includes(key))}
                     />
                   ) : (
                     <input
@@ -376,18 +396,13 @@ const Vehicle_Settings = () => {
                           [key]: e.target.value,
                         }))
                       }
-                      disabled={
-                        key === "id" ||
-                        (!isCreating &&
-                          ![
-                            "registrationFees",
-                            "platformChargesPercentage",
-                            "active",
-                            "imageUrl",
-                            "type",
-                          ].includes(key))
-                      }
+                      disabled={key === "id" || (!isCreating && !["registrationFees", "platformChargesPercentage", "active", "imageUrl", "type"].includes(key))}
                     />
+                  )}
+                  {fieldErrors.some((error) => error.fieldName === key) && (
+                    <div className="text-red-600 text-sm">
+                      {fieldErrors.find((error) => error.fieldName === key)?.fieldError}
+                    </div>
                   )}
                 </div>
               ))}
