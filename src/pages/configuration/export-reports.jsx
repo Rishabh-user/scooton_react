@@ -211,44 +211,81 @@ const Export_Reports = () => {
             const token = localStorage.getItem("jwtToken");
             setLoadingCSV(true);
             const response = await axiosInstance.get(
-                `${BASE_URL}/order/v2/orders/get-city-wide-orders-by-date?from_date=${formattedFromDate}&to_date=${formattedToDate}&orderType=${orderType}`, // Include orderType here
+                `${BASE_URL}/order/v2/orders/get-city-wide-orders-by-date?from_date=${formattedFromDate}&to_date=${formattedToDate}&orderType=${orderType}`,
                 {
                     responseType: "json",
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
-                },
-
+                }
             );
 
-            if (response.data?.length === 0) {
+            if (!response.data || response.data.length === 0) {
                 alert("No data found for the specified date range.");
                 setLoadingCSV(false);
                 return;
             }
-            const csvData = response.data.map((item) => {
-                const { orderDetails = {}, customerDetails = {}, riderDetails = {} } = item.jsonData || {};
-                return {
-                    "Order ID": orderDetails?.orderId || "N/A",
-                    "Order Date": orderDetails?.orderDateTime || "N/A",
-                    "User Mobile": orderDetails?.userMobileNumber || "N/A",
-                    "User Name": orderDetails?.userName?.trim() || "N/A",
-                    "Order Amount (MRP)": orderDetails?.orderAmount?.mrp || 0,
-                    "Order Amount (Discount)": orderDetails?.orderAmount?.discount || 0,
-                    "Order Amount (Final Price)": orderDetails?.orderAmount?.finalPrice || 0,
-                    "Order Status": orderDetails?.orderStatus || "N/A",
-                    "Delivery DateTime": orderDetails?.deliveryDateTime || "N/A",
-                    "Pickup Address": customerDetails?.pickupAddress || "N/A",
-                    "Delivery Address": customerDetails?.deliveryAddress || "N/A",
-                    "Delivery Contact": customerDetails?.deliveryContact || "N/A",
-                    "Rider ID": riderDetails?.riderId || "N/A",
-                    "Rider Name": riderDetails?.riderName || "N/A",
-                    "Rider Contact": riderDetails?.riderContact || "N/A",
-                    "Vehicle Type": riderDetails?.vehicleType || "N/A",
-                    "Rider Payout": riderDetails?.riderPayout || "N/A",
-                };
 
-            });
+            let csvData;
+            if (orderType === "CITYWIDE") {
+                // Existing mapping
+                csvData = response.data.map((item) => {
+                    const { orderDetails = {}, customerDetails = {}, riderDetails = {} } = item.jsonData || {};
+                    return {
+                        "Order ID": orderDetails?.orderId || "N/A",
+                        "Order Date": orderDetails?.orderDateTime || "N/A",
+                        "User Mobile": orderDetails?.userMobileNumber || "N/A",
+                        "User Name": orderDetails?.userName?.trim() || "N/A",
+                        "Fare Amount": orderDetails?.orderAmount?.mrp || 0,
+                        "Discount": orderDetails?.orderAmount?.discount || 0,
+                        "Toll tax": orderDetails?.orderAmount?.tollTax || 0,
+                        "MCD tax": orderDetails?.orderAmount?.mcdTax || 0,
+                        "State tax": orderDetails?.orderAmount?.stateTax || 0,
+                        "Order Status": orderDetails?.orderStatus || "N/A",
+                        "Delivery DateTime": orderDetails?.deliveryDateTime || "N/A",
+                        "Pickup Address": customerDetails?.pickupAddress || "N/A",
+                        "Delivery Address": customerDetails?.deliveryAddress || "N/A",
+                        "Delivery Contact": customerDetails?.deliveryContact || "N/A",
+                        "Rider ID": riderDetails?.riderId || "N/A",
+                        "Rider Name": riderDetails?.riderName || "N/A",
+                        "Rider Contact": riderDetails?.riderContact || "N/A",
+                        "Vehicle Type": riderDetails?.vehicleType || "N/A",
+                        "Rider Payout": riderDetails?.riderPayout || "N/A",
+                    };
+                });
+            } else if (orderType === "SHIPROCKET") {
+                // NEW SHIPROCKET MAPPING
+                csvData = response.data.map((item) => {
+                    return {
+                        "Order ID": item?.orderId || "N/A",
+                        "Order Date": item?.orderDate || "N/A",
+                        "User Mobile": item?.userInfo?.mobileNumber || "N/A",
+                        "User Name": item?.userInfo?.userName?.trim() || "N/A",
+
+                        "Fare Amount": item?.mrp || 0,
+                        "Discount": item?.discount || 0,
+                        "Toll tax": item?.tollTax || 0,
+                        "MCD tax": item?.mcdTax || 0,
+                        "State tax": item?.stateTax || 0,
+                        "Collective Amount": item?.freightAmount || 0,
+
+                        "Order Status": item?.orderStatus || "N/A",
+                        "Delivery DateTime": item?.deliveredDateTime || "N/A",
+                        "Pickup Address": item?.pickupAddressDetails?.addressLine1 || "N/A",
+                        "Delivery Address": item?.deliveryAddressDetails?.addressLine1 || "N/A",
+                        "Delivery Contact": item?.deliveryAddressDetails?.userInfo?.mobileNumber || "N/A",
+                        "Rider ID": item?.riderId || "N/A",
+                        "Rider Name": item?.riderName || "N/A",
+                        "Rider Contact": item?.riderContact || "N/A",
+                        "Vehicle Type": item?.vehicleType || "N/A",
+                        "Rider Payout": item?.riderPayout || "N/A",
+                    };
+
+
+                });
+            } else {
+                csvData = []; // Fallback: empty if unknown orderType
+            }
 
             const workbook = XLSX.utils.book_new();
             const worksheet = XLSX.utils.json_to_sheet(csvData);
@@ -257,16 +294,17 @@ const Export_Reports = () => {
 
             XLSX.writeFile(
                 workbook,
-                `orders_${formattedFromDate}_to_${formattedToDate}.xlsx`
+                `orders_${orderType}_${formattedFromDate}_to_${formattedToDate}.xlsx`
             );
             setStartDate(null);
-            setEndDate(null)
+            setEndDate(null);
         } catch (error) {
             console.error("Error exporting data:", error);
         } finally {
             setLoadingCSV(false);
         }
     };
+
 
     if (loading) {
         return <Loading />;

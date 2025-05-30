@@ -554,7 +554,7 @@ const OrderDetail = () => {
                     </ul>
                 </div>
             </div>
-            <div className="row">
+            <div className="row order-detail-list">
                 <div className="col-lg-6">
                     <div className="mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
                         <h6 className="text-scooton-500 p-3 border-bottom">Order Info</h6>
@@ -790,69 +790,42 @@ const OrderDetail = () => {
                                         <td className="text-end px-6 py-2">{orderDetails?.paymentStatus}</td>
                                     </tr>
                                 )}
-                                {(orderDetails.paymentMode === 'PREPAID') && (
-                                    <tr className="border-b border-slate-100 dark:border-slate-700">
-                                        <td className="px-6 py-2">Refund Message</td>
-                                        {/* <td className="text-end px-6 py-2">Cancelled</td> */}
-                                        <td className="text-end px-6 py-2">{orderDetails?.refundStatus || ""}</td>
-                                    </tr>
-                                )}
-                                {/* {orderDetails.paymentMode === 'PREPAID' && (
-                                    <tr className="border-b border-slate-100 dark:border-slate-700">
-                                        <td className="px-6 py-2">Refund Message</td>
-                                        <td className="text-end px-6 py-2">{orderDetails.refundStatus}</td>
-                                    </tr>
-                                )} */}
-
-                                {/* {(orderDetails.orderStatus === 'In Progress' && orderDetails.paymentMode === 'PREPAID') && (
-                                    <tr className="border-b border-slate-100 dark:border-slate-700">
-                                        <td className="px-6 py-2">Payment Status</td>
-                                        <td className="text-end px-6 py-2">{orderDetails?.paymentStatus}</td>
-                                    </tr>
-                                )} */}
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                                    <td className="px-6 py-2">MRP</td>
+                                    <td className="px-6 py-2">Applied Promocode</td>
+                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.promoCode}</td>
+                                </tr>
+                                <tr className="border-b border-slate-100 dark:border-slate-700">
+                                    <td className="px-6 py-2">Fare Amount <small>(As per tariff)</small></td>
                                     <td className="text-end px-6 py-2">
                                         {orderDetails.orderAmount.mrp}
                                         {/* {thirdPartyUsername ? orderDetails.orderAmount.mrp : orderDetails.orderAmount.mrp} */}
                                     </td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                                    <td className="px-6 py-2">Collective Amount</td>
-                                    <td className="text-end px-6 py-2">
-                                        {orderDetails?.orderAmount?.collectiveAmount}
-                                        {/* {thirdPartyUsername ? orderDetails.orderAmount.mrp : orderDetails.orderAmount.mrp} */}
-                                    </td>
+                                    <td className="px-6 py-2">Discount</td>
+                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.discount}</td>
                                 </tr>
-                                {!thirdPartyUsername && (
-                                    <>
-                                        <tr className="border-b border-slate-100 dark:border-slate-700">
-                                            <td className="px-6 py-2">Discount</td>
-                                            <td className="text-end px-6 py-2">{orderDetails.orderAmount.discount}</td>
-                                        </tr>
-                                        <tr className="border-b border-slate-100 dark:border-slate-700">
-                                            <td className="px-6 py-2">MCD Tax</td>
-                                            <td className="text-end px-6 py-2">{orderDetails?.orderAmount?.mcdTax?.toFixed(3)}</td>
-                                        </tr>
-                                        <tr className="border-b border-slate-100 dark:border-slate-700">
-                                            <td className="px-6 py-2">State Tax</td>
-                                            <td className="text-end px-6 py-2">{orderDetails.orderAmount.stateTax?.toFixed(3)}</td>
-                                        </tr>
-                                        <tr className="border-b border-slate-100 dark:border-slate-700">
-                                            <td className="px-6 py-2">Toll Tax</td>
-                                            <td className="text-end px-6 py-2">{orderDetails.orderAmount.tollTax?.toFixed(3)}</td>
-                                        </tr>
-                                        <tr className="border-b border-slate-100 dark:border-slate-700">
-                                            <td className="px-6 py-2">Applied Promocode</td>
-                                            <td className="text-end px-6 py-2">{orderDetails.orderAmount.promoCode}</td>
-                                        </tr>
-                                    </>
-                                )}
+                                <tr className="border-b border-slate-100 dark:border-slate-700">
+                                    <td className="px-6 py-2">MCD Tax</td>
+                                    <td className="text-end px-6 py-2">{orderDetails?.orderAmount?.mcdTax?.toFixed(3)}</td>
+                                </tr>
+                                <tr className="border-b border-slate-100 dark:border-slate-700">
+                                    <td className="px-6 py-2">State Tax</td>
+                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.stateTax?.toFixed(3)}</td>
+                                </tr>
+                                <tr className="border-b border-slate-100 dark:border-slate-700">
+                                    <td className="px-6 py-2">Toll Tax</td>
+                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.tollTax?.toFixed(3)}</td>
+                                </tr>
+                                <tr className="border-b border-slate-100 dark:border-slate-700">
+                                    <td className="px-6 py-2">Order Amount <small>(Fare - Discount + MCD + state + Toll tax)</small></td>
+                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.tollTax?.toFixed(3)}</td>
+                                </tr>
 
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                                    <td className="px-6 py-2">Total Amount Payable</td>
+                                    <td className="px-6 py-2">Total Amount Payable <small>(Collactive Amount)</small></td>
                                     <td className="text-end px-6 py-2">
-                                        {orderDetails.orderAmount.finalPrice}
+                                        {orderDetails?.orderAmount?.collectiveAmount}
                                         {/* {thirdPartyUsername ? orderDetails.orderAmount : orderDetails.orderAmount.finalPrice} */}
                                     </td>
                                 </tr>
