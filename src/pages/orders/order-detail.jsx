@@ -275,19 +275,19 @@ const OrderDetail = () => {
                             <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                         </Link> */}
                         {customRadio && pagenumber ? (
-                            orders == 'ALL' ? (
+                            orders == 'ALLCITYWIDE' ? (
                                 <Link to={`/all-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=ALL&pagesizedata=${pagesizedata}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link>
-                            ) : orders == 'citywide' ? (
+                            ) : orders == 'CITYWIDE' ? (
                                 <Link to={`/citywide-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=citywide&pagesizedata=${pagesizedata}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link>
-                            ) : orders == 'offline' ? (
+                            ) : orders.trim() == 'OFFLINE' ? (
                                 <Link to={`/offline-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=offline&pagesizedata=${pagesizedata}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link>
-                            ) : orders == 'SparksPlus' || orders == 'ShipRocket' ? (
+                            ) : orders == 'THIRDPARTY' || orders == 'ShipRocket' ? (
                                 <Link to={`/${orders}?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=${orders}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link>
