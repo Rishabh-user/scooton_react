@@ -237,7 +237,7 @@ const Vehicle_Settings = () => {
       setIsCreating(false);
     } catch (error) {
       console.error("Error submitting vehicle config:", error);
-      toast.error("Failed to submit vehicle config");
+      toast.error(error.response.data.details? error.response.data.details : error.response.data.message);
     }
   };
 

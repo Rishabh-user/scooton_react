@@ -262,6 +262,14 @@ const OrderDetail = () => {
         address: customerDetails?.deliveryAddress,
         name: "Drop Location"
     }
+    const mrp = orderDetails?.orderAmount?.mrp || 0;
+    const discount = orderDetails?.orderAmount?.discount || 0;
+    const mcdTax = orderDetails?.orderAmount?.mcdTax || 0;
+    const stateTax = orderDetails?.orderAmount?.stateTax || 0;
+    const tollTax = orderDetails?.orderAmount?.tollTax || 0;
+
+    const calculatedAmount = mrp - discount + mcdTax + stateTax + tollTax;
+
 
     return (
         <Card>
@@ -280,14 +288,14 @@ const OrderDetail = () => {
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link>
                             ) : orders == 'CITYWIDE' ? (
-                                <Link to={`/citywide-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=citywide&pagesizedata=${pagesizedata}`}>
+                                <Link to={`/offline-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=citywide&pagesizedata=${pagesizedata}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link>
-                            ) : orders.trim() == 'OFFLINE' ? (
-                                <Link to={`/offline-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=offline&pagesizedata=${pagesizedata}`}>
+                            ) : orders.trim() == 'CITYWIDEON' ? (
+                                <Link to={`/citywide-orders?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=CITYWIDEON&pagesizedata=${pagesizedata}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link>
-                            ) : orders == 'THIRDPARTY' || orders == 'ShipRocket' ? (
+                            ) : orders == 'THIRDPARTY' || orders == 'SHIPROCKET' ? (
                                 <Link to={`/${orders}?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=${orders}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link>
@@ -818,10 +826,13 @@ const OrderDetail = () => {
                                     <td className="text-end px-6 py-2">{orderDetails.orderAmount.tollTax?.toFixed(3)}</td>
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
-                                    <td className="px-6 py-2">Order Amount <small>(Fare - Discount + MCD + state + Toll tax)</small></td>
-                                    <td className="text-end px-6 py-2">{orderDetails.orderAmount.tollTax?.toFixed(3)}</td>
+                                    <td className="px-6 py-2">
+                                        Order Amount <small>(Fare - Discount + MCD + State + Toll tax)</small>
+                                    </td>
+                                    <td className="text-end px-6 py-2">
+                                        {calculatedAmount}
+                                    </td>
                                 </tr>
-
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">Total Amount Payable <small>(Collactive Amount)</small></td>
                                     <td className="text-end px-6 py-2">

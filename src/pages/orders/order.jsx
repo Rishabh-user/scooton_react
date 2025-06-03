@@ -273,13 +273,12 @@ const COLUMNS = (thirdPartyVendorName, orderCategory, isOfflineOrder, openIsNoti
                 const orderId = row.row.original.orderId;
                 if (thirdPartyVendorName) {
                     // navigate(`/order-detail/${thirdPartyVendorName}/${orderId}`);
-                    navigate(`/order-detail/${thirdPartyVendorName}/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${orderCategory}`);
-                } else if (!isOfflineOrder) {
+                    navigate(`/order-detail/${thirdPartyVendorName}/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${thirdPartyVendorName}`);
+                } else if (isOfflineOrder == 'true') {
                     navigate(`/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${orderCategory}`);
                 } else {
-                    navigate(`/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=OFFLINE`);
+                    navigate(`/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=CITYWIDEON`);
                 }
-
             };
             return (
                 <div className="flex space-x-3 rtl:space-x-reverse">
@@ -318,16 +317,18 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
     const [cancelReason, setCancelReason] = useState("");
     const [searchParams] = useSearchParams();
     const [paramslength, setParamLength] = useState(0);
-    const [rapf, setRapf] = useState(false)
+    const [rapf, setRapf] = useState('')
     const [paramCurrentPage, setParamCurrentPage] = useState(0);
+    const { mobileid } = useParams();
+    const { mobileordertype } = useParams();
+    const { mobilesearch } = useParams();
 
     useEffect(() => {
         setParamLength([...searchParams.entries()].length);
-        const customRadio = decodeURIComponent(searchParams.get("customRadio") || "PLACED");
+        
         const searchId = searchParams.get("searchId") || "NONE";
         const searchText = searchParams.get("searchText") || "";
         const pageFromUrl = searchParams.get("page") || "0";
-        SetOrderType(customRadio);
         setFilterBy(searchId);
         setSearch(searchText);
         setParamCurrentPage(pageFromUrl)
@@ -378,13 +379,27 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
     ]
 
     const maxPagesToShow = 5;
-    const id = useParams();
-
-
-
+    
     useEffect(() => {
-        fetchOrders(ordersType);
-    }, [search, currentPage, pagesizedata]);
+        const customRadio = decodeURIComponent(searchParams.get("customRadio") || "PLACED");
+        if (mobileordertype) {
+            SetOrderType(mobileordertype);
+            setFilterBy(mobileid);
+            setSearch(mobilesearch);
+        } else {
+            SetOrderType(customRadio);
+        }
+    }, [mobileordertype]); 
+    useEffect(() => {
+        if (ordersType) {
+            const timer = setTimeout(() => {
+                fetchOrders(ordersType);
+            }, 500);
+
+            return () => clearTimeout(timer); 
+        }
+    }, [ search, currentPage, pagesizedata]);
+
 
 
     const handleChange = async (event) => {
@@ -398,15 +413,15 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
         setSearch(event.target.value);
     };
 
-    const fetchOrders = (orderType) => {
+    const fetchOrders = async (orderType) => {
         setLoading(true);
 
-        let searchtype
-        if (search == '') {
-            searchtype = 'NONE'
-        } else {
-            searchtype = filterby
-        }
+        // let searchtype
+        // if (search == '') {
+        //     searchtype = 'NONE'
+        // } else {
+        //     searchtype = filterby
+        // }
 
         const params = new URLSearchParams();
         params.append('page', currentPage);
