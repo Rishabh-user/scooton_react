@@ -827,7 +827,7 @@ const OrderDetail = () => {
                                 </tr>
                                 <tr className="border-b border-slate-100 dark:border-slate-700">
                                     <td className="px-6 py-2">
-                                        Order Amount <small>(Fare - Discount + MCD + State + Toll tax)</small>
+                                        Order Amount <small>(Fare - Discount + MCD + State + Toll Tax)</small>
                                     </td>
                                     <td className="text-end px-6 py-2">
                                         {calculatedAmount}
