@@ -420,6 +420,11 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
 
     const handleChange = async (event) => {
         setFilterBy(event.target.value);
+
+        if (event.target.value !== 'NONE') {
+            setSelectedVehicleType("0");
+        }
+
         if (event.target.value == 'NONE') {
             setSearch("");
         }
@@ -444,8 +449,8 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
         params.append('size', pagesizedata);
         params.append('sort', 'orderId');
         params.append('orderStatus', orderType);
-        params.append('searchType', filterby);
-        params.append('searchTypeValue', search.trim());
+        //params.append('searchType', filterby);
+        //params.append('searchTypeValue', search.trim());
         params.append('orderType', orderCategory);
         params.append("isOfflineOrder", isOfflineOrder)
 
@@ -453,6 +458,17 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
             params.append('thirdPartyVendorName', thirdPartyVendorName);
         }
 
+        // NEW LOGIC
+        if (filterby !== 'NONE' && search.trim() !== '') {
+            params.append('searchType', filterby);
+            params.append('searchTypeValue', search.trim());
+        } else if (selectedVehicleType !== "0") {
+            params.append('searchType', 'VEHICLE');
+            params.append('searchTypeValue', selectedVehicleType);
+        } else {
+            params.append('searchType', 'NONE');
+            params.append('searchTypeValue', '');
+        }
 
 
         SetOrderType(orderType)
@@ -669,7 +685,8 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
             try {
                 const response = await axiosInstance.get(`${BASE_URL}/api/v1/admin/config/vehicles`);
                 const data = response.data?.jsonData || [];
-                setVehicleList(data.filter((v) => v.isDisplay));
+                // Removed the .filter() to show the complete list
+                setVehicleList(data);
             } catch (error) {
                 console.error("Error fetching vehicle data:", error);
             }
@@ -677,6 +694,17 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
 
         fetchVehicles();
     }, []);
+
+
+    useEffect(() => {
+    if (selectedVehicleType !== "0" || search || filterby !== 'NONE') {
+        const timer = setTimeout(() => {
+        fetchOrders(ordersType);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }
+    }, [selectedVehicleType]);
 
 
 
@@ -724,12 +752,18 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
                             <FormControl className="">
                                 <label className="text-sm mb-1">Vehicle Type</label>
                                 <Select
+                                    className="w-48"
                                     value={selectedVehicleType}
-                                    onChange={(e) => setSelectedVehicleType(e.target.value)}
+                                    onChange={(e) => {
+                                    setSelectedVehicleType(e.target.value);
+                                    // Reset other filters
+                                    setFilterBy('NONE');
+                                    setSearch('');
+                                    }}
                                 >
                                     <MenuItem value="0">ALL</MenuItem>
                                     {vehicleList.map((vehicle) => (
-                                    <MenuItem key={vehicle.id} value={vehicle.id}>
+                                    <MenuItem key={vehicle.categoryId} value={vehicle.categoryId}>
                                         {vehicle.type}
                                     </MenuItem>
                                     ))}
