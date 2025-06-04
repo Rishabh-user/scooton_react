@@ -39,6 +39,10 @@ const COLUMNS = (thirdPartyVendorName, orderCategory, isOfflineOrder, openIsNoti
         Header: "Order ID",
         accessor: "orderId",
     },
+    {
+        Header: "Order Count",
+        accessor: (row) => `${row.deliveredOrders} / ${row.totalOrders}`,
+    },
     // {
     //   Header: "Client Order ID",
     //   accessor: "thirdPartyOrders.clientOrderId",
@@ -95,18 +99,26 @@ const COLUMNS = (thirdPartyVendorName, orderCategory, isOfflineOrder, openIsNoti
         accessor: "orderDate",
         Cell: ({ cell }) => {
             const date = new Date(cell.value);
-            const formattedDate = date.toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "2-digit"
-            });
-            const formattedTime = date.toLocaleTimeString("en-US", {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: true
-            });
-            return <div className="rider-datetime"><span className="riderDate">{`${formattedDate}`}</span><br /><span className="riderTime">{`${formattedTime}`}</span></div>;
+
+            // Use UTC-based date formatting
+            const day = String(date.getUTCDate()).padStart(2, '0');
+            const month = date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' });
+            const year = date.getUTCFullYear();
+
+            const hours = date.getUTCHours() % 12 || 12;
+            const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+            const ampm = date.getUTCHours() >= 12 ? 'PM' : 'AM';
+
+            const formattedDate = `${day}-${month}-${year}`;
+            const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
+
+            return (
+                <div className="rider-datetime">
+                    <span className="riderDate">{formattedDate}</span><br />
+                    <span className="riderTime">{formattedTime}</span>
+                </div>
+            );
         },
     },
     ...(ordersType === "ALL" ? [
@@ -322,6 +334,10 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
     const { mobileid } = useParams();
     const { mobileordertype } = useParams();
     const { mobilesearch } = useParams();
+
+    const [vehicleList, setVehicleList] = useState([]);
+    const [selectedVehicleType, setSelectedVehicleType] = useState("0");
+
 
     useEffect(() => {
         setParamLength([...searchParams.entries()].length);
@@ -648,6 +664,21 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
         setIsVisible(!isVisible);
     };
 
+    useEffect(() => {
+        const fetchVehicles = async () => {
+            try {
+                const response = await axiosInstance.get(`${BASE_URL}/api/v1/admin/config/vehicles`);
+                const data = response.data?.jsonData || [];
+                setVehicleList(data.filter((v) => v.isDisplay));
+            } catch (error) {
+                console.error("Error fetching vehicle data:", error);
+            }
+        };
+
+        fetchVehicles();
+    }, []);
+
+
 
 
     return (
@@ -689,7 +720,22 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
                                 </RadioGroup>
                             </FormControl>
                         </div>
-                        <div>
+                        <div className="flex gap-3">
+                            <FormControl className="">
+                                <label className="text-sm mb-1">Vehicle Type</label>
+                                <Select
+                                    value={selectedVehicleType}
+                                    onChange={(e) => setSelectedVehicleType(e.target.value)}
+                                >
+                                    <MenuItem value="0">ALL</MenuItem>
+                                    {vehicleList.map((vehicle) => (
+                                    <MenuItem key={vehicle.id} value={vehicle.id}>
+                                        {vehicle.type}
+                                    </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+
                             <FormControl >
                                 <label className="text-sm mb-1">Filter By</label>
                                 <div className="filterbyRider">
