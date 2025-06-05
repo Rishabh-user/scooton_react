@@ -341,7 +341,7 @@ const OrderDetail = () => {
                             <div className="multistep-item">Order Placed hyg</div>
                         </li> */}
                         <li className="multistep-list active">
-                            <span>{thirdPartyUsername ? new Date(orderDetails.orderDateTime).toLocaleString("en-US", {
+                            {/* <span>{thirdPartyUsername ? new Date(orderDetails.orderDateTime).toLocaleString("en-US", {
                                 year: "numeric",
                                 month: "short",
                                 day: "2-digit",
@@ -350,7 +350,8 @@ const OrderDetail = () => {
                                 second: "2-digit",
                                 hour12: true,
                                 timeZone: "UTC"
-                            }) : orderDetails.orderDateTime}</span>
+                            }) : orderDetails.orderDateTime}</span> */}
+                            <span>{orderDetails.orderDateTime}</span>
                             <div className="multistep-item">Order Placed</div>
                         </li>
 
