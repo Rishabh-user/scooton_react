@@ -279,29 +279,55 @@ const COLUMNS = (thirdPartyVendorName, orderCategory, isOfflineOrder, openIsNoti
     {
         Header: "Action",
         accessor: "action",
+        // Cell: (row) => {
+        //     const navigate = useNavigate();
+        //     const handleViewClick = () => {
+        //         const orderId = row.row.original.orderId;
+        //         if (thirdPartyVendorName) {
+        //             // navigate(`/order-detail/${thirdPartyVendorName}/${orderId}`);
+        //             navigate(`/order-detail/${thirdPartyVendorName}/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${thirdPartyVendorName}`);
+        //         } else if (isOfflineOrder == 'true') {
+        //             navigate(`/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${orderCategory}`);
+        //         } else {
+        //             navigate(`/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=CITYWIDEON`);
+        //         }
+        //     };
+        //     return (
+        //         <div className="flex space-x-3 rtl:space-x-reverse">
+        //             <Tooltip content="View" placement="top" arrow animation="shift-away">
+        //                 <button className="action-btn bg-scooton" type="button" onClick={handleViewClick}>
+        //                     <Icon icon="heroicons:eye" />
+        //                 </button>
+        //             </Tooltip>
+        //         </div>
+        //     );
+        // },
         Cell: (row) => {
-            const navigate = useNavigate();
-            const handleViewClick = () => {
-                const orderId = row.row.original.orderId;
-                if (thirdPartyVendorName) {
-                    // navigate(`/order-detail/${thirdPartyVendorName}/${orderId}`);
-                    navigate(`/order-detail/${thirdPartyVendorName}/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${thirdPartyVendorName}`);
-                } else if (isOfflineOrder == 'true') {
-                    navigate(`/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${orderCategory}`);
-                } else {
-                    navigate(`/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=CITYWIDEON`);
-                }
-            };
-            return (
-                <div className="flex space-x-3 rtl:space-x-reverse">
-                    <Tooltip content="View" placement="top" arrow animation="shift-away">
-                        <button className="action-btn bg-scooton" type="button" onClick={handleViewClick}>
-                            <Icon icon="heroicons:eye" />
-                        </button>
-                    </Tooltip>
-                </div>
-            );
-        },
+        const handleViewClick = () => {
+            const orderId = row.row.original.orderId;
+            let url = '';
+
+            if (thirdPartyVendorName) {
+                url = `/order-detail/${thirdPartyVendorName}/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${thirdPartyVendorName}`;
+            } else if (isOfflineOrder == 'true') {
+                url = `/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${orderCategory}`;
+            } else {
+                url = `/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=CITYWIDEON`;
+            }
+            window.open(url, '_blank');
+        };
+
+        return (
+            <div className="flex space-x-3 rtl:space-x-reverse">
+                <Tooltip content="View" placement="top" arrow animation="shift-away">
+                    <button className="action-btn bg-scooton" type="button" onClick={handleViewClick}>
+                        <Icon icon="heroicons:eye" />
+                    </button>
+                </Tooltip>
+            </div>
+        );
+    }
+
     },
 
 ];
