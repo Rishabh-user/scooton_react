@@ -722,6 +722,18 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
     }, [selectedVehicleType]);
 
 
+    const getOrderTitle = (orderCategory, isOfflineOrder, thirdPartyVendorName = '') => {
+    const vendor = thirdPartyVendorName.toUpperCase();
+        if (orderCategory === 'ALLCITYWIDE') return 'All Orders';
+        if (orderCategory === 'CITYWIDE' && isOfflineOrder === 'false') return 'Citywide Orders';
+        if (orderCategory === 'CITYWIDE' && isOfflineOrder === 'true') return 'Offline Orders';
+        if (orderCategory === 'THIRDPARTY') {
+            if (vendor === 'SHIPROCKET') return 'ShipRocket';
+            if (vendor === 'DAAKIT') return 'Daakit';
+        }
+        return '';
+    };
+
 
 
     return (
@@ -732,12 +744,7 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
                     <div className=" mb-6">
                         <div className="md:flex justify-between items-center mb-2">
                             <h4 className="card-title mb-0">
-                                {orderCategory == 'ALLCITYWIDE' ? 'All Orders'
-                                    : isOfflineOrder == 'false' && orderCategory == 'CITYWIDE' ? 'Citywide Orders'
-                                    : orderCategory == 'THIRDPARTY' ? 'ShipRocket'
-                                    : orderCategory == 'THIRDPARTY' ? 'DAAKIT'
-                                    : isOfflineOrder == 'true' && orderCategory == 'CITYWIDE' ? 'Offline Orders' : ''
-                                }
+                                {getOrderTitle(orderCategory, isOfflineOrder, thirdPartyVendorName)}
                             </h4>
                             <div className="rider-filter">
                                 <div className="d-flex justify-content-end">

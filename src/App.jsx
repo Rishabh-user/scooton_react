@@ -50,6 +50,7 @@ import Vehicle_Settings from "./pages/configuration/vehicle-settings";
 
 import AddHomePage from "./pages/home-page/add-homepage";
 import Vendor from "./pages/orders/vendor-order";
+import Daakit from "./pages/orders/daakit";
 import ProtectedRoute from "./layout/ProtectedRoute";
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
@@ -158,6 +159,7 @@ function App() {
           <Route path="add-homepage" element={<AddHomePage />} />
           <Route path="homepage-list" element={<HomepageList />} />
           <Route path = ":vendor" element={<Vendor notificationCount={notificationCount} />} />
+          <Route path="daakit" element={<Daakit />} />
           <Route element={<ProtectedRoute isAuthRoute={"ROLE_SUPER_ADMIN"} />}>
           <Route path="setting" element={<Settings />} />
 

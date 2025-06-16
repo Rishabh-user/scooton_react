@@ -183,6 +183,8 @@ const Export_Reports = () => {
         }
     }
 
+    const [vendorName, setVendorName] = useState("SHIPROCKET");
+
     const exportCsv = async () => {
     if (!startDate || !endDate) return;
     const formattedFromDate = dayjs(startDate).format("YYYY-MM-DD");
@@ -193,7 +195,7 @@ const Export_Reports = () => {
         setLoadingCSV(true);
 
         const response = await axiosInstance.get(
-        `${BASE_URL}/api/v1/admin/report/get-reports?from_date=${formattedFromDate}&to_date=${formattedToDate}&order_type=${orderType}&vendor_name=SHIPROCKET`,
+        `${BASE_URL}/api/v1/admin/report/get-reports?from_date=${formattedFromDate}&to_date=${formattedToDate}&order_type=${orderType}&vendor_name=${vendorName}`,
         {
             responseType: "json",
             headers: {
@@ -287,7 +289,7 @@ const Export_Reports = () => {
                                 />
                             </div>
                             
-                            <div class="flex items-center">
+                            {/* <div class="flex items-center">
                                 <input id="CITYWIDE" type="radio" name="orderType" value="CITYWIDE" checked={orderType === "CITYWIDE"} onChange={() => setOrderType("CITYWIDE")} className="form-check-input"/>
                                 <label for="CITYWIDE" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Citywide</label>
                             </div>
@@ -296,9 +298,59 @@ const Export_Reports = () => {
                                 <label for="THIRDPARTY" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shiprocket</label>
                             </div>
                             <div class="flex items-center">
-                                <input id="DAAKIT" type="radio" name="orderType" value="DAAKIT" checked={orderType === "DAAKIT"} onChange={() => setOrderType("DAAKIT")} className="form-check-input"/>
-                                <label for="DAAKIT" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">DAAKIT</label>
+                                <input id="THIRDPARTY" type="radio" name="orderType" value="THIRDPARTY" checked={orderType === "THIRDPARTY"} onChange={() => setOrderType("THIRDPARTY")} className="form-check-input"/>
+                                <label for="THIRDPARTY" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">DAAKIT</label>
+                            </div> */}
+
+                            <div className="flex items-center">
+                                <input
+                                    id="CITYWIDE"
+                                    type="radio"
+                                    name="orderType"
+                                    value="CITYWIDE"
+                                    checked={orderType === "CITYWIDE"}
+                                    onChange={() => {
+                                    setOrderType("CITYWIDE");
+                                    setVendorName(""); // No vendor for CITYWIDE
+                                    }}
+                                    className="form-check-input"
+                                />
+                                <label htmlFor="CITYWIDE" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Citywide</label>
                             </div>
+
+                            <div className="flex items-center">
+                                <input
+                                    id="THIRDPARTY_SHIPROCKET"
+                                    type="radio"
+                                    name="orderType"
+                                    value="THIRDPARTY"
+                                    checked={orderType === "THIRDPARTY" && vendorName === "SHIPROCKET"}
+                                    onChange={() => {
+                                    setOrderType("THIRDPARTY");
+                                    setVendorName("SHIPROCKET");
+                                    }}
+                                    className="form-check-input"
+                                />
+                                <label htmlFor="THIRDPARTY_SHIPROCKET" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shiprocket</label>
+                            </div>
+
+                            <div className="flex items-center">
+                                <input
+                                    id="THIRDPARTY_DAAKIT"
+                                    type="radio"
+                                    name="orderType"
+                                    value="THIRDPARTY"
+                                    checked={orderType === "THIRDPARTY" && vendorName === "DAAKIT"}
+                                    onChange={() => {
+                                    setOrderType("THIRDPARTY");
+                                    setVendorName("DAAKIT");
+                                    }}
+                                    className="form-check-input"
+                                />
+                                <label htmlFor="THIRDPARTY_DAAKIT" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Daakit</label>
+                            </div>
+
+
                             <button
                                 className={`btn btn-dark`}
                                 disabled={isButtonDisabled}
