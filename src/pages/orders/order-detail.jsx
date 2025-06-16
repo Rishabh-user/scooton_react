@@ -299,6 +299,10 @@ const OrderDetail = () => {
                                 <Link to={`/${orders}?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=${orders}`}>
                                     <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
                                 </Link>
+                            ) : orders == 'THIRDPARTY' || orders == 'DAAKIT' ? (
+                                <Link to={`/${orders}?customRadio=${customRadio}&page=${pagenumber || 0}&searchId=${searchId || ''}&searchText=${searchText || ''}&orders=${orders}`}>
+                                    <Icon icon="heroicons:arrow-left-circle" className="text-xl font-bold text-scooton-500" />
+                                </Link>
                             ) : null
 
                         ) : null}

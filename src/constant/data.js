@@ -45,6 +45,11 @@ export const menuItems = [
             childlink: "ShipRocket",
             childicon: "heroicons:presentation-chart-line",
           },
+          {
+            childtitle: "DAAKIT",
+            childlink: "DAAKIT",
+            childicon: "heroicons:presentation-chart-line",
+          },
          
         ],
       }

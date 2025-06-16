@@ -734,8 +734,9 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
                             <h4 className="card-title mb-0">
                                 {orderCategory == 'ALLCITYWIDE' ? 'All Orders'
                                     : isOfflineOrder == 'false' && orderCategory == 'CITYWIDE' ? 'Citywide Orders'
-                                        : orderCategory == 'THIRDPARTY' ? 'ShipRocket'
-                                            : isOfflineOrder == 'true' && orderCategory == 'CITYWIDE' ? 'Offline Orders' : ''
+                                    : orderCategory == 'THIRDPARTY' ? 'ShipRocket'
+                                    : orderCategory == 'THIRDPARTY' ? 'DAAKIT'
+                                    : isOfflineOrder == 'true' && orderCategory == 'CITYWIDE' ? 'Offline Orders' : ''
                                 }
                             </h4>
                             <div className="rider-filter">

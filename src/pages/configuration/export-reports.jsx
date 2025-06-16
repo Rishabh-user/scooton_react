@@ -295,6 +295,10 @@ const Export_Reports = () => {
                                 <input id="THIRDPARTY" type="radio" name="orderType" value="THIRDPARTY" checked={orderType === "THIRDPARTY"} onChange={() => setOrderType("THIRDPARTY")} className="form-check-input"/>
                                 <label for="THIRDPARTY" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shiprocket</label>
                             </div>
+                            <div class="flex items-center">
+                                <input id="DAAKIT" type="radio" name="orderType" value="DAAKIT" checked={orderType === "DAAKIT"} onChange={() => setOrderType("DAAKIT")} className="form-check-input"/>
+                                <label for="DAAKIT" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">DAAKIT</label>
+                            </div>
                             <button
                                 className={`btn btn-dark`}
                                 disabled={isButtonDisabled}
