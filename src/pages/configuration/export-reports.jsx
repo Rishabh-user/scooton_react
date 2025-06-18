@@ -296,20 +296,8 @@ const Export_Reports = () => {
                                     maxDate={dayjs()}
                                 />
                             </div>
-
-                            {/* <div class="flex items-center">
-                                <input id="CITYWIDE" type="radio" name="orderType" value="CITYWIDE" checked={orderType === "CITYWIDE"} onChange={() => setOrderType("CITYWIDE")} className="form-check-input"/>
-                                <label for="CITYWIDE" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Citywide</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="THIRDPARTY" type="radio" name="orderType" value="THIRDPARTY" checked={orderType === "THIRDPARTY"} onChange={() => setOrderType("THIRDPARTY")} className="form-check-input"/>
-                                <label for="THIRDPARTY" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shiprocket</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="THIRDPARTY" type="radio" name="orderType" value="THIRDPARTY" checked={orderType === "THIRDPARTY"} onChange={() => setOrderType("THIRDPARTY")} className="form-check-input"/>
-                                <label for="THIRDPARTY" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">DAAKIT</label>
-                            </div> */}
-
+                        </div>
+                        <div className="flex flex-col md:flex-row gap-3 my-3">
                             <div className="flex items-center">
                                 <input
                                     id="CITYWIDE"
@@ -325,38 +313,6 @@ const Export_Reports = () => {
                                 />
                                 <label htmlFor="CITYWIDE" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Citywide</label>
                             </div>
-
-                            {/* <div className="flex items-center">
-                                <input
-                                    id="THIRDPARTY_SHIPROCKET"
-                                    type="radio"
-                                    name="orderType"
-                                    value="THIRDPARTY"
-                                    checked={orderType === "THIRDPARTY" && vendorName === "SHIPROCKET"}
-                                    onChange={() => {
-                                        setOrderType("THIRDPARTY");
-                                        setVendorName("SHIPROCKET");
-                                    }}
-                                    className="form-check-input"
-                                />
-                                <label htmlFor="THIRDPARTY_SHIPROCKET" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Shiprocket</label>
-                            </div>
-
-                            <div className="flex items-center">
-                                <input
-                                    id="THIRDPARTY_DAAKIT"
-                                    type="radio"
-                                    name="orderType"
-                                    value="THIRDPARTY"
-                                    checked={orderType === "THIRDPARTY" && vendorName === "DAAKIT"}
-                                    onChange={() => {
-                                        setOrderType("THIRDPARTY");
-                                        setVendorName("DAAKIT");
-                                    }}
-                                    className="form-check-input"
-                                />
-                                <label htmlFor="THIRDPARTY_DAAKIT" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Daakit</label>
-                            </div> */}
 
                             {Vendors.map((vendor) => (
                                 <div key={vendor.id} className="flex items-center">
@@ -380,14 +336,13 @@ const Export_Reports = () => {
                                     </label>
                                 </div>
                             ))}
-
-
-                            <button
-                                className={`btn btn-dark`}
-                                disabled={isButtonDisabled}
-                                onClick={exportCsv}
-                            >   Export</button>
                         </div>
+                        <button
+                            className={`btn btn-dark`}
+                            disabled={isButtonDisabled}
+                            onClick={exportCsv}
+                        >Export</button>
+
                         {loadingCSV && (
                             <div className="loader-fixed">
                                 <span className="flex items-center gap-2">
