@@ -40,16 +40,16 @@ export const menuItems = [
         childlink: "create-orders",
         childicon: "heroicons:presentation-chart-line",
         child: [
-          {
-            childtitle: "ShipRocket",
-            childlink: "ShipRocket",
-            childicon: "heroicons:presentation-chart-line",
-          },
-          {
-            childtitle: "DAAKIT",
-            childlink: "DAAKIT",
-            childicon: "heroicons:presentation-chart-line",
-          },
+          // {
+          //   childtitle: "ShipRocket",
+          //   childlink: "ShipRocket",
+          //   childicon: "heroicons:presentation-chart-line",
+          // },
+          // {
+          //   childtitle: "DAAKIT",
+          //   childlink: "DAAKIT",
+          //   childicon: "heroicons:presentation-chart-line",
+          // },
          
         ],
       }

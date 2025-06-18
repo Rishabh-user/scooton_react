@@ -19,9 +19,11 @@ import dayjs from "dayjs";
 import * as XLSX from "xlsx";
 import CircularProgress from "@mui/material/CircularProgress";
 import axiosInstance from "../../api";
+import useVendors from "../../store/vendorContext";
 
 const Export_Reports = () => {
     const navigate = useNavigate();
+    const { Vendors } = useVendors();
     const [logoutAll, setLogoutAllList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [logoutDevice, setLogoutDevice] = useState();
@@ -30,7 +32,13 @@ const Export_Reports = () => {
 
     // Define the state for orderType
     const [orderType, setOrderType] = useState("CITYWIDE"); // Default to "CITYWIDE"
-    
+
+    useEffect(() => {
+        if (Vendors && Vendors.length > 0) {
+            setLoading(false);
+        }
+    }, [Vendors]);
+
     useEffect(() => {
         setLoading(false);
     }, []);
@@ -186,74 +194,74 @@ const Export_Reports = () => {
     const [vendorName, setVendorName] = useState("SHIPROCKET");
 
     const exportCsv = async () => {
-    if (!startDate || !endDate) return;
-    const formattedFromDate = dayjs(startDate).format("YYYY-MM-DD");
-    const formattedToDate = dayjs(endDate).format("YYYY-MM-DD");
+        if (!startDate || !endDate) return;
+        const formattedFromDate = dayjs(startDate).format("YYYY-MM-DD");
+        const formattedToDate = dayjs(endDate).format("YYYY-MM-DD");
 
-    try {
-        const token = localStorage.getItem("jwtToken");
-        setLoadingCSV(true);
+        try {
+            const token = localStorage.getItem("jwtToken");
+            setLoadingCSV(true);
 
-        const response = await axiosInstance.get(
-        `${BASE_URL}/api/v1/admin/report/get-reports?from_date=${formattedFromDate}&to_date=${formattedToDate}&order_type=${orderType}&vendor_name=${vendorName}`,
-        {
-            responseType: "json",
-            headers: {
-            Authorization: `Bearer ${token}`,
-            },
-        }
-        );
+            const response = await axiosInstance.get(
+                `${BASE_URL}/api/v1/admin/report/get-reports?from_date=${formattedFromDate}&to_date=${formattedToDate}&order_type=${orderType}&vendor_name=${vendorName}`,
+                {
+                    responseType: "json",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
-        const reportData = response.data?.jsonData || [];
-        if (reportData.length === 0) {
-        alert("No data found for the specified date range.");
-        setLoadingCSV(false);
-        return;
-        }
-
-        // Dynamically get all keys from the first record
-        const allKeys = Array.from(
-        new Set(reportData.flatMap(item => Object.keys(item)))
-        );
-
-        // Map data for Excel export dynamically
-        const csvData = reportData.map(item => {
-        const row = {};
-        allKeys.forEach(key => {
-            let value = item[key];
-
-            // Special handling for userName
-            if (key === "userName" && (value === "null " || value === null)) {
-            value = "N/A";
-            } else if (typeof value === "string" && value.trim() === "null") {
-            value = "N/A";
-            } else if (value === null || value === undefined) {
-            value = "N/A";
+            const reportData = response.data?.jsonData || [];
+            if (reportData.length === 0) {
+                alert("No data found for the specified date range.");
+                setLoadingCSV(false);
+                return;
             }
 
-            row[key] = value;
-        });
-        return row;
-        });
+            // Dynamically get all keys from the first record
+            const allKeys = Array.from(
+                new Set(reportData.flatMap(item => Object.keys(item)))
+            );
 
-        // Create Excel file
-        const workbook = XLSX.utils.book_new();
-        const worksheet = XLSX.utils.json_to_sheet(csvData);
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+            // Map data for Excel export dynamically
+            const csvData = reportData.map(item => {
+                const row = {};
+                allKeys.forEach(key => {
+                    let value = item[key];
 
-        XLSX.writeFile(
-        workbook,
-        `orders_${orderType}_${formattedFromDate}_to_${formattedToDate}.xlsx`
-        );
+                    // Special handling for userName
+                    if (key === "userName" && (value === "null " || value === null)) {
+                        value = "N/A";
+                    } else if (typeof value === "string" && value.trim() === "null") {
+                        value = "N/A";
+                    } else if (value === null || value === undefined) {
+                        value = "N/A";
+                    }
 
-        // setStartDate(null);
-        // setEndDate(null);
-    } catch (error) {
-        console.error("Error exporting data:", error);
-        toast.error("Failed to export data. Please try again.");
-    } finally {
-        setLoadingCSV(false);
-    }
+                    row[key] = value;
+                });
+                return row;
+            });
+
+            // Create Excel file
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.json_to_sheet(csvData);
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+
+            XLSX.writeFile(
+                workbook,
+                `orders_${orderType}_${formattedFromDate}_to_${formattedToDate}.xlsx`
+            );
+
+            // setStartDate(null);
+            // setEndDate(null);
+        } catch (error) {
+            console.error("Error exporting data:", error);
+            toast.error("Failed to export data. Please try again.");
+        } finally {
+            setLoadingCSV(false);
+        }
     };
 
 
@@ -288,7 +296,7 @@ const Export_Reports = () => {
                                     maxDate={dayjs()}
                                 />
                             </div>
-                            
+
                             {/* <div class="flex items-center">
                                 <input id="CITYWIDE" type="radio" name="orderType" value="CITYWIDE" checked={orderType === "CITYWIDE"} onChange={() => setOrderType("CITYWIDE")} className="form-check-input"/>
                                 <label for="CITYWIDE" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Citywide</label>
@@ -310,15 +318,15 @@ const Export_Reports = () => {
                                     value="CITYWIDE"
                                     checked={orderType === "CITYWIDE"}
                                     onChange={() => {
-                                    setOrderType("CITYWIDE");
-                                    setVendorName(""); // No vendor for CITYWIDE
+                                        setOrderType("CITYWIDE");
+                                        setVendorName(""); // No vendor for CITYWIDE
                                     }}
                                     className="form-check-input"
                                 />
                                 <label htmlFor="CITYWIDE" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Citywide</label>
                             </div>
 
-                            <div className="flex items-center">
+                            {/* <div className="flex items-center">
                                 <input
                                     id="THIRDPARTY_SHIPROCKET"
                                     type="radio"
@@ -326,8 +334,8 @@ const Export_Reports = () => {
                                     value="THIRDPARTY"
                                     checked={orderType === "THIRDPARTY" && vendorName === "SHIPROCKET"}
                                     onChange={() => {
-                                    setOrderType("THIRDPARTY");
-                                    setVendorName("SHIPROCKET");
+                                        setOrderType("THIRDPARTY");
+                                        setVendorName("SHIPROCKET");
                                     }}
                                     className="form-check-input"
                                 />
@@ -342,13 +350,36 @@ const Export_Reports = () => {
                                     value="THIRDPARTY"
                                     checked={orderType === "THIRDPARTY" && vendorName === "DAAKIT"}
                                     onChange={() => {
-                                    setOrderType("THIRDPARTY");
-                                    setVendorName("DAAKIT");
+                                        setOrderType("THIRDPARTY");
+                                        setVendorName("DAAKIT");
                                     }}
                                     className="form-check-input"
                                 />
                                 <label htmlFor="THIRDPARTY_DAAKIT" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Daakit</label>
-                            </div>
+                            </div> */}
+
+                            {Vendors.map((vendor) => (
+                                <div key={vendor.id} className="flex items-center">
+                                    <input
+                                        id={`THIRDPARTY_${vendor.userName}`}
+                                        type="radio"
+                                        name="orderType"
+                                        value="THIRDPARTY"
+                                        checked={orderType === "THIRDPARTY" && vendorName === vendor.userName}
+                                        onChange={() => {
+                                            setOrderType("THIRDPARTY");
+                                            setVendorName(vendor.userName);
+                                        }}
+                                        className="form-check-input"
+                                    />
+                                    <label
+                                        htmlFor={`THIRDPARTY_${vendor.userName}`}
+                                        className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    >
+                                        {vendor.userName}
+                                    </label>
+                                </div>
+                            ))}
 
 
                             <button

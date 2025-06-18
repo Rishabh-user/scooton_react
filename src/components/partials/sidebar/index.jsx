@@ -6,62 +6,97 @@ import SimpleBar from "simplebar-react";
 import useSidebar from "@/hooks/useSidebar";
 import useSemiDark from "@/hooks/useSemiDark";
 import useSkin from "@/hooks/useSkin";
-import svgRabitImage from "@/assets/images/svg/rabit.svg";
+import useVendors from "../../../store/vendorContext";
 
 const Sidebar = () => {
-  const scrollableNodeRef = useRef();
+  const { Vendors, loading } = useVendors(); 
   const [scroll, setScroll] = useState(false);
+  const scrollableNodeRef = useRef();
+
+  const [collapsed, setMenuCollapsed] = useSidebar();
+  const [menuHover, setMenuHover] = useState(false);
+  const [dynamicMenu, setDynamicMenu] = useState(menuItems);
+
+  const [isSemiDark] = useSemiDark();
+  const [skin] = useSkin();
+
+  const handleVendorList = async () => {
+    debugger
+    if (!loading && Vendors.length > 0) {
+      const vendorChildItems = Vendors.map((vendor) => ({
+        childtitle: vendor.userName || vendor.title || "Vendor",
+        childlink: vendor.userName?.toLowerCase() || "vendor",
+        childicon: "heroicons:presentation-chart-line",
+      }));
+
+      const updatedMenu = menuItems.map((item) => {
+        if (item.title === "Orders") {
+          const updatedChild = item.child.map((subItem) => {
+            if (subItem.childtitle === "Vendor") {
+              return {
+                ...subItem,
+                child: vendorChildItems,
+              };
+            }
+            return subItem;
+          });
+          return { ...item, child: updatedChild };
+        }
+        return item;
+      });
+
+      setDynamicMenu(updatedMenu);
+    
+      debugger
+    }
+  }
+
+  useEffect(() => {
+   
+    if(Vendors.length > 0){
+       console.log("Vendors",Vendors)
+       handleVendorList();
+    }
+  }, [Vendors]);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (scrollableNodeRef.current.scrollTop > 0) {
+      if (scrollableNodeRef.current?.scrollTop > 0) {
         setScroll(true);
       } else {
         setScroll(false);
       }
     };
-    scrollableNodeRef.current.addEventListener("scroll", handleScroll);
-  }, [scrollableNodeRef]);
 
-  const [collapsed, setMenuCollapsed] = useSidebar();
-  const [menuHover, setMenuHover] = useState(false);
+    const node = scrollableNodeRef.current;
+    node?.addEventListener("scroll", handleScroll);
+    return () => node?.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  // semi dark option
-  const [isSemiDark] = useSemiDark();
-  // skin
-  const [skin] = useSkin();
   return (
     <div className={isSemiDark ? "dark" : ""}>
       <div
-        className={`sidebar-wrapper bg-white dark:bg-slate-800     ${
+        className={`sidebar-wrapper bg-white dark:bg-slate-800 ${
           collapsed ? "w-[72px] close_sidebar" : "w-[248px]"
-        }
-      ${menuHover ? "sidebar-hovered" : ""}
-      ${
-        skin === "bordered"
-          ? "border-r border-slate-200 dark:border-slate-700"
-          : "shadow-base"
-      }
-      `}
-        onMouseEnter={() => {
-          setMenuHover(true);
-        }}
-        onMouseLeave={() => {
-          setMenuHover(false);
-        }}
+        } ${menuHover ? "sidebar-hovered" : ""} ${
+          skin === "bordered"
+            ? "border-r border-slate-200 dark:border-slate-700"
+            : "shadow-base"
+        }`}
+        onMouseEnter={() => setMenuHover(true)}
+        onMouseLeave={() => setMenuHover(false)}
       >
         <SidebarLogo menuHover={menuHover} />
         <div
-          className={`h-[60px]  absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none ${
-            scroll ? " opacity-100" : " opacity-0"
+          className={`h-[60px] absolute top-[80px] nav-shadow z-[1] w-full transition-all duration-200 pointer-events-none ${
+            scroll ? "opacity-100" : "opacity-0"
           }`}
-        ></div>
-
+        />
         <SimpleBar
           className="sidebar-menu px-4 h-[calc(100%-80px)]"
           scrollableNodeProps={{ ref: scrollableNodeRef }}
         >
-          <Navmenu menus={menuItems} />
+          <Navmenu menus={dynamicMenu} />
         </SimpleBar>
       </div>
     </div>
