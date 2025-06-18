@@ -93,6 +93,11 @@ export const menuItems = [
         childicon: "heroicons:presentation-chart-line",
       },
       {
+        childtitle: "Add Promocode2",
+        childlink: "add-promocode2",
+        childicon: "heroicons:presentation-chart-line",
+      },
+      {
         childtitle: "Promocode List",
         childlink: "promocode-list",
         childicon: "heroicons:presentation-chart-line",

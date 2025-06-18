@@ -35,6 +35,7 @@ import CityWideOrders from "./pages/orders/citywide-orders";
 import OfflineOrders from "./pages/orders/offline-orders";
 import CreateOrder from "./pages/orders/create-order";
 import AddPromocode from "./pages/promocode/add-promocode";
+import AddPromocode2 from "./pages/promocode/add-promocode2";
 import OrderDetail from "./pages/orders/order-detail";
 import RiderDetail from "./pages/riders/rider-detail";
 import HomepageList from "./pages/home-page/home-page-list";
@@ -143,6 +144,7 @@ function App() {
           <Route path="add-service-area" element={<AddServiceArea />} />
           <Route path="promocode-list" element={<PromocodeList />} />
           <Route path="add-promocode" element={<AddPromocode />} />
+          <Route path="add-promocode2" element={<AddPromocode2 />} />
           <Route path="all-riders" element={<AllRiders />} />
           <Route path="registered-riders" element={<RegisteredRiders />} />
           <Route path="non-registered-riders" element={<NonRegisteredRiders />} />
