@@ -921,11 +921,7 @@ const RiderDetail = () => {
                             <div className="mb-5">
                                 <h6 className="mt-4 mb-3">Reject Details</h6>
                                 <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
-                                    {/* <Textinput
-                                    label="Rejected Type"
-                                    id="rejected_type"
-                                    type="text"
-                                /> */}
+                               
                                     <Select
                                         label="Rejected Type"
                                         id="rejectedType"
@@ -933,12 +929,7 @@ const RiderDetail = () => {
                                         value={documentRejectDetails?.rejectedType || ""}
                                         onChange={handleDocumentRejection}
                                     />
-                                    {/* <Textarea
-                                    label="Rejected Reason"
-                                    id="rejected_reason"
-                                    type="text"
-                                    value={documentRejectDetails?.rejectedReason || ""}
-                                />  */}
+                              
                                     <div>
                                         <label className="form-label">Rejected Reason</label>
                                         <textarea
@@ -956,13 +947,7 @@ const RiderDetail = () => {
                             <div className="mb-5">
                                 <h6 className="mt-4 mb-3">Account Details</h6>
                                 <div className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
-                                    {/* <TextField
-                                        label="UPI"
-                                        id="upi"
-                                        type="text"
-                                        placeholder="UPI"
-
-                                    /> */}
+                                 
                                         <TextField
                                             label="Account Type"
                                             id="accountType"

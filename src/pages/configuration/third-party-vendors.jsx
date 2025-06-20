@@ -80,11 +80,7 @@ const Third_Party_Vendors = (vendorlist) => {
       {
         Header: "ID",
         accessor: "id",
-        // Cell: ({ value }) => (
-        //   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-        //     {value}
-        //   </span>
-        // )
+    
       },
       {
         Header: "User Name",
@@ -134,15 +130,6 @@ const Third_Party_Vendors = (vendorlist) => {
           </Badge>
         ),
       },
-      // {
-      //   Header: "Is Display",
-      //   accessor: "isDisplay",
-      //   Cell: ({ value }) => (
-      //     <Badge bg={value ? "primary" : "secondary"}>
-      //       {value ? "Yes" : "No"}
-      //     </Badge>
-      //   ),
-      // },
       {
         Header: "Action",
         accessor: "action",
@@ -201,10 +188,8 @@ const Third_Party_Vendors = (vendorlist) => {
   }, [pageIndex]);
 
   const handleModalSave = async () => {
-    // Clear previous errors
     setFieldErrors([]);
 
-    // Validation for required fields
     const errors = [];
     if (!modalFormValues.userName) {
       errors.push({ fieldName: "userName", fieldError: "User Name is required" });
@@ -287,7 +272,7 @@ const Third_Party_Vendors = (vendorlist) => {
                 isDeliveryOtpEnabled: true,
               });
               setIsEditModal(true);
-              setFieldErrors([]); // Clear errors when opening the modal
+              setFieldErrors([]); 
             }}
           >
             + Third Party Vendors

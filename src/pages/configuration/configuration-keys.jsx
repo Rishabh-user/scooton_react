@@ -52,11 +52,10 @@ const ConfigurationKeys = () => {
     setModalKeyValue(newValue);
   };
 
-  // Handle save button click to update only Key Value
   const handleSaveKeyValue = async () => {
     const token = localStorage.getItem("jwtToken");
-    const updatedValue = modalKeyValue; // This is the value from the modal input
-    const keyName = modalKeyName; // This is the key name you're updating
+    const updatedValue = modalKeyValue; 
+    const keyName = modalKeyName;
 
     if (!updatedValue || !keyName) {
       toast.error("Missing key name or value");

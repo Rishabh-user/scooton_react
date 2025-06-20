@@ -31,7 +31,7 @@ const Export_Reports = () => {
     const [selectedFields, setSelectedFields] = useState([]);
 
     // Define the state for orderType
-    const [orderType, setOrderType] = useState("CITYWIDE"); // Default to "CITYWIDE"
+    const [orderType, setOrderType] = useState("CITYWIDE"); 
 
     useEffect(() => {
         if (Vendors && Vendors.length > 0) {

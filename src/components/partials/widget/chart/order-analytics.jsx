@@ -78,7 +78,7 @@ const OrderAnalytics = ({ dateRange, onDateRangeChange, height = 400 }) => {
       return;
     }
 
-    onDateRangeChange(newRange); // Update the parent with the new date range
+    onDateRangeChange(newRange); 
   };
 
   const options = {
