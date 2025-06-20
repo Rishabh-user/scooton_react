@@ -12,10 +12,9 @@ import { Badge } from "react-bootstrap";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import Sidebar from "../../components/partials/sidebar";
-import useVendors from "../../store/vendorContext";
 
 const Third_Party_Vendors = (vendorlist) => {
-  const { Vendors } = useVendors();
+  
   const [loading, setLoading] = useState(true);
   const [roleList, setRoleList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -29,42 +28,47 @@ const Third_Party_Vendors = (vendorlist) => {
   const [fieldErrors, setFieldErrors] = useState([]);
 
   const fieldLabels = {
-    type: "Vehicle Type",
-    registrationFees: "Platform registration charges",
-    imageUrl: "Image URL",
-    categoryId: "Vehicle ID",
-    platformChargesPercentage: "Platform Charges(%)",
-    active: "Is Active",
-    isDisplay: "Show in List",
-    id: "Vehicle ID",
+    userName: "Name",
+    email: "Email",
+    mobileNumber: "Mobile Number",
+    clientId: "ClientId",
+    createdDate: "createdDate",
+    active: 'Active',
+    deleted: 'Deleted',
+    billingAddress: "Billing Address",
+    shippingAddress: "Shipping Address",
+    gstNo: "GST Number",
+    tds: "TDS",
+    pan: "PAN",
+    thirdPartyEnum: "ThirdParty Enum",
+    fcmId: "FCMID",
+    deviceOs: "DeviceOs",
+    isPickupOtpEnabled: 'Pickup Otp Enabled',
+    isDeliveryOtpEnabled: 'Delivery Otp Enabled',
+    id: "Id",
   };
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("jwtToken");
-  //   if (token) {
-  //     setLoading(true);
-  //     axiosInstance
-  //       .get(`${BASE_URL}/api/v1/admin/third-party-users`)
-  //       .then((response) => {
-
-  //         console.log("response", response)
-  //         setRoleList(response.data || []);
-  //         setTotalCount(response.data.length);
-
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching config data:", error);
-  //       })
-  //       .finally(() => {
-  //         setLoading(false);
-  //       });
-  //   }
-  // }, [currentPage, pagesizedata]);
   useEffect(() => {
-    if (Vendors && Vendors.length > 0) {
-      setLoading(false);
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      setLoading(true);
+      axiosInstance
+        .get(`${BASE_URL}/api/v1/admin/third-party-users`)
+        .then((response) => {
+
+          console.log("response", response)
+          setRoleList(response.data || []);
+          setTotalCount(response.data.length);
+
+        })
+        .catch((error) => {
+          console.error("Error fetching config data:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
-  }, [Vendors]);
+  }, [currentPage, pagesizedata]);
 
 
   const columns = useMemo(
@@ -125,7 +129,7 @@ const Third_Party_Vendors = (vendorlist) => {
         Header: "Status",
         accessor: "active",
         Cell: ({ value }) => (
-          <Badge bg={value ? "success" : "danger"}>
+          <Badge bg={value == true ? "success" : "danger"}>
             {value ? "Active" : "Inactive"}
           </Badge>
         ),
@@ -168,7 +172,7 @@ const Third_Party_Vendors = (vendorlist) => {
   const tableInstance = useTable(
     {
       columns,
-      data: Vendors,
+      data: roleList,
       initialState: {
         pageIndex: currentPage,
         pageSize: pagesizedata,
@@ -202,20 +206,18 @@ const Third_Party_Vendors = (vendorlist) => {
 
     // Validation for required fields
     const errors = [];
-    if (!modalFormValues.categoryId) {
-      errors.push({ fieldName: "categoryId", fieldError: "Category ID is required" });
+    if (!modalFormValues.userName) {
+      errors.push({ fieldName: "userName", fieldError: "User Name is required" });
     }
-    if (!modalFormValues.type) {
-      errors.push({ fieldName: "type", fieldError: "Vehicle type is required" });
+    if (!modalFormValues.email) {
+      errors.push({ fieldName: "email", fieldError: "Email Id is required" });
     }
-    if (modalFormValues.platformChargesPercentage === "") {
-      errors.push({ fieldName: "platformChargesPercentage", fieldError: "Platform charges percentage is required" });
+    if (!modalFormValues.clientId) {
+      errors.push({ fieldName: "clientId", fieldError: "ClientId Id is required" });
     }
-    if (!modalFormValues.imageUrl) {
-      errors.push({ fieldName: "imageUrl", fieldError: "Image URL is required" });
-    }
-    if (modalFormValues.registrationFees === "") {
-      errors.push({ fieldName: "registrationFees", fieldError: "Registration fees is required" });
+
+    if (!modalFormValues.mobileNumber) {
+      errors.push({ fieldName: "mobileNumber", fieldError: "Mobile Number is required" });
     }
 
     if (errors.length > 0) {
@@ -223,44 +225,30 @@ const Third_Party_Vendors = (vendorlist) => {
       return;
     }
 
-    // Validation for platform charges fields
-    if (modalFormValues.registrationFees < 0) {
-      toast.error("Platform registration charges cannot be negative");
-      return;
-    }
 
-    if (modalFormValues.platformChargesPercentage < 0) {
-      toast.error("Platform Charges (%) cannot be negative");
-      return;
-    }
-
-    if (modalFormValues.platformChargesPercentage > 100) {
-      toast.error("Platform Charges (%) cannot exceed 100");
-      return;
-    }
 
     try {
-      const token = localStorage.getItem("jwtToken");
       await axiosInstance.post(
-        `${BASE_URL}/api/v1/admin/config/vehicle`,
-        modalFormValues,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `${BASE_URL}/api/v1/admin/third-party-users`,
+        modalFormValues
       );
 
       toast.success(
-        isCreating ? "Vehicle added successfully!" : "Vehicle updated successfully!"
+        isCreating ? "Third Party Vendors added successfully!" : "Third Party Vendors updated successfully!"
       );
 
       if (isCreating) {
+        debugger
         setRoleList((prev) => [...prev, modalFormValues]);
+        debugger
       } else {
+        debugger
         setRoleList((prev) =>
           prev.map((item) =>
             item.id === modalFormValues.id ? modalFormValues : item
           )
         );
+        debugger
       }
 
       setIsEditModal(false);
@@ -282,13 +270,21 @@ const Third_Party_Vendors = (vendorlist) => {
             onClick={() => {
               setIsCreating(true);
               setModalFormValues({
-                type: "",
-                registrationFees: "",
-                imageUrl: "",
-                categoryId: "",
-                platformChargesPercentage: "",
+                userName: "",
+                email: "",
+                mobileNumber: "",
+                clientId: "",
                 active: true,
-                isDisplay: false,
+                billingAddress: "",
+                shippingAddress: "",
+                gstNo: "",
+                tds: "",
+                pan: "",
+                thirdPartyEnum: "THIRD_PARTY_USER",
+                fcmId: "",
+                deviceOs: "",
+                isPickupOtpEnabled: true,
+                isDeliveryOtpEnabled: true,
               });
               setIsEditModal(true);
               setFieldErrors([]); // Clear errors when opening the modal
@@ -368,24 +364,23 @@ const Third_Party_Vendors = (vendorlist) => {
         activeModal={isEditModal}
         uncontrol
         className="max-w-2xl"
-        title={isCreating ? "Add New Vehicle" : "Vehicle Configuration"}
+        title={isCreating ? "Add Third Party Vendors" : "Third Party Vendors"}
         onClose={() => {
           setIsEditModal(false);
           setIsCreating(false);
-          setFieldErrors([]); // Clear errors when closing the modal
+          setFieldErrors([]);
         }}
         centered
       >
         <div>
           <div className="space-y-4 max-h-[60vh] overflow-y-auto px-2">
             {Object.entries(modalFormValues)
-              .filter(([key]) => key !== "isDisplay" && key in fieldLabels)
               .map(([key, value]) => (
                 <div key={key}>
                   <label className="block font-medium mb-1">
                     {fieldLabels[key] || key}
                   </label>
-                  {key === "active" ? (
+                  {key === "active" || key === "isPickupOtpEnabled" || key === "isDeliveryOtpEnabled" ? (
                     <select
                       className="w-full border px-3 py-2 rounded dark:bg-slate-700 dark:text-white"
                       value={value ? "true" : "false"}
@@ -399,22 +394,6 @@ const Third_Party_Vendors = (vendorlist) => {
                       <option value="true">Yes</option>
                       <option value="false">No</option>
                     </select>
-                  ) : key === "registrationFees" || key === "platformChargesPercentage" ? (
-                    <input
-                      className="w-full border px-3 py-2 rounded dark:bg-slate-700 dark:text-white"
-                      type="number"
-                      value={value}
-                      onChange={(e) => {
-                        const newValue = Number(e.target.value);
-                        if (newValue >= 0 && (key !== "platformChargesPercentage" || newValue <= 100)) {
-                          setModalFormValues((prev) => ({
-                            ...prev,
-                            [key]: newValue,
-                          }));
-                        }
-                      }}
-                      disabled={key === "id" || (!isCreating && !["registrationFees", "platformChargesPercentage", "active", "imageUrl", "type"].includes(key))}
-                    />
                   ) : (
                     <input
                       className="w-full border px-3 py-2 rounded dark:bg-slate-700 dark:text-white"
@@ -426,7 +405,7 @@ const Third_Party_Vendors = (vendorlist) => {
                           [key]: e.target.value,
                         }))
                       }
-                      disabled={key === "id" || (!isCreating && !["registrationFees", "platformChargesPercentage", "active", "imageUrl", "type"].includes(key))}
+                      disabled={key === "id" || (!isCreating && !["userName", "email", "mobileNumber", "clientId", "billingAddress", "shippingAddress", "gstNo", "tds", "pan", "thirdPartyEnum", "fcmId"].includes(key))}
                     />
                   )}
                   {fieldErrors.some((error) => error.fieldName === key) && (

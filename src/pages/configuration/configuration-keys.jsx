@@ -17,9 +17,10 @@ const ConfigurationKeys = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [pagesizedata, setpagesizedata] = useState(10);
   const [editedValues, setEditedValues] = useState({});
-  const [isEditModal, setIsEditModal] = useState(false); // State for modal visibility
-  const [modalKeyName, setModalKeyName] = useState(""); // State for modal Key Name
-  const [modalKeyValue, setModalKeyValue] = useState(""); // State for modal Key Value
+  const [isEditModal, setIsEditModal] = useState(false);
+  const [modalKeyName, setModalKeyName] = useState("");
+  const [modalKeyValue, setModalKeyValue] = useState("");
+  const [modaldataType, setModaldataType] = useState("");
 
   // Fetch config keys
   useEffect(() => {
@@ -47,7 +48,6 @@ const ConfigurationKeys = () => {
     }
   }, [currentPage, pagesizedata]);
 
-  // Handle input change for Key Value
   const handleKeyValueChange = (newValue) => {
     setModalKeyValue(newValue);
   };
@@ -124,7 +124,8 @@ const ConfigurationKeys = () => {
               type="button"
               onClick={() => {
                 setModalKeyName(row.original.keyName); // Set key name to modal (readonly)
-                setModalKeyValue(row.original.keyValue); // Set key value to modal (editable)
+                setModalKeyValue(row.original.keyValue);
+                setModaldataType(row.original.datatype)
                 setIsEditModal(true); // Open modal
               }}
             >
@@ -266,10 +267,26 @@ const ConfigurationKeys = () => {
               <label className="block font-medium mb-1">Key Value</label>
               <input
                 className="w-full border px-3 py-2 rounded dark:bg-slate-700 dark:text-white"
-                type="text"
+                type={modaldataType}
+                value={modalKeyValue}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  if (modaldataType === 'number') {
+                    if (inputValue === '' || Number(inputValue) >= 0) {
+                      handleKeyValueChange(inputValue);
+                    }
+                  } else {
+                    handleKeyValueChange(inputValue);
+                  }
+                }}
+              />
+
+              {/* <input
+                className="w-full border px-3 py-2 rounded dark:bg-slate-700 dark:text-white"
+                type={modaldataType}
                 value={modalKeyValue}
                 onChange={(e) => handleKeyValueChange(e.target.value)} // Allow value update
-              />
+              /> */}
             </div>
           </div>
           <hr className="mt-3" />

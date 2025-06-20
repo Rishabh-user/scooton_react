@@ -97,6 +97,7 @@ const RiderDetail = () => {
     const [earningCurrentPage, setEarningCurrentPage] = useState(0);
     const [earningpagesize, setEarningPageSize] = useState(30);
     const [earningpageCount, setEarningPageCount] = useState(0);
+    const [accountDetails, setAccountDetails] = useState(null);
 
 
 
@@ -116,7 +117,10 @@ const RiderDetail = () => {
                 const token = localStorage.getItem('jwtToken');
                 if (token) {
 
-                    const documentResponse = await axiosInstance.get(`${BASE_URL}/login/get-rider-full-details/${riderId}`, {
+                    const documentResponse = await axiosInstance.post(`${BASE_URL}/rider/get-rider-details/${riderId}`, {
+                        "context": {},
+                        "location": {}
+                    }, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -125,7 +129,7 @@ const RiderDetail = () => {
 
                     // setDocumentDetail(documentResponse.data.jsonData.documentDetails || []);
                     setDocumentDetail(
-                        (documentResponse.data.jsonData.documentDetails || []).map(order => ({
+                        (documentResponse.data.jsonData.documents || []).map(order => ({
                             ...order,
                             filteredStatus:
                                 order.status === "Approve" || order.status === "Reject"
@@ -134,15 +138,16 @@ const RiderDetail = () => {
                         }))
                     );
 
-                    setDeviceDetails(documentResponse.data.jsonData.deviceDetails);
-                    setVehicleDetails(documentResponse.data.jsonData.vehicleDetails);
-                    setDriverDetails(documentResponse.data.jsonData.driverDetails)
+                    setDeviceDetails(documentResponse.data.jsonData);
+                    setVehicleDetails(documentResponse.data.jsonData);
+                    setDriverDetails(documentResponse.data.jsonData)
                     setDocumentRejectDetails(documentResponse.data.jsonData.rejectDetails)
                     setLanguage(documentResponse.data.jsonData)
-                    const fetchedDriverDetails = documentResponse.data.jsonData.driverDetails;
-                    setIsDriverActive(fetchedDriverDetails?.active || false);
+                    const fetchedDriverDetails = documentResponse.data.jsonData;
+                    setIsDriverActive(fetchedDriverDetails?.isRiderOnline || false);
                     setDriverRegistrationFee(fetchedDriverDetails?.isRegistrationFeesPaid || false);
-                    setDriverRole(fetchedDriverDetails?.isOnRoleRider || false);
+                    setDriverRole(fetchedDriverDetails?.isOnGoingTrip || false);
+                    setAccountDetails(documentResponse.data.jsonData.accountDetails)
 
 
                 }
@@ -169,6 +174,10 @@ const RiderDetail = () => {
     const handledeviceDetails = (e) => {
         const { name, value } = e.target;
         setDeviceDetails((prev) => ({ ...prev, [name]: value }));
+    };
+    const handleAccountDetails = (e) => {
+        const { name, value } = e.target;
+        setAccountDetails((prev) => ({ ...prev, [name]: value }));
     };
     const handleLanguage = (e) => {
         const { name, value } = e.target;
@@ -337,10 +346,10 @@ const RiderDetail = () => {
             ownerName: vehicleDetails?.ownerName,
             ownerMobileNumber: vehicleDetails?.ownerMobileNumber,
             vehicleType: vehicleDetails?.vehicleType,
-            driverName: driverDetails?.driverName,
-            city: driverDetails?.driverCity,
-            state: driverDetails?.driverState,
-            driverMobileNumber: driverDetails?.driverMobileNumber,
+            driverName: driverDetails?.riderName,
+            city: driverDetails?.city,
+            state: driverDetails?.state,
+            driverMobileNumber: driverDetails?.riderMobileNumber,
             riderReferralCode: driverDetails?.riderReferralCode,
             fcmId: driverDetails?.fcmId,
             documentDetails: documentDetail,
@@ -374,12 +383,12 @@ const RiderDetail = () => {
 
     const handleViewClick = async (id, type) => {
         if (type === 'THIRDPARTY') {
-          navigate(`/order-detail/ShipRocket/${id}`);
+            navigate(`/order-detail/ShipRocket/${id}`);
         } else {
             navigate(`/order-detail/${id}`);
         }
-      };
-      
+    };
+
 
     const rechargeRiderWallet = async (amt, id) => {
         const token = localStorage.getItem("jwtToken");
@@ -759,34 +768,34 @@ const RiderDetail = () => {
                                 <div className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
                                     <TextField
                                         label="Driver Name"
-                                        id="driverName"
+                                        id="riderName"
                                         type="text"
-                                        name="driverName"
-                                        value={driverDetails?.driverName || ""}
+                                        name="riderName"
+                                        value={driverDetails?.riderName || ""}
                                         onChange={handleDriverDetails}
                                     />
                                     <TextField
                                         label="Driver Mobile Number"
-                                        id="driverMobileNumber"
+                                        id="riderMobileNumber"
                                         type="text"
-                                        name="driverMobileNumber"
-                                        value={driverDetails?.driverMobileNumber || ""}
+                                        name="riderMobileNumber"
+                                        value={driverDetails?.riderMobileNumber || ""}
                                         onChange={handleDriverDetails}
                                     />
                                     <TextField
                                         label="City"
-                                        id="driverCity"
+                                        id="city"
                                         type="text"
-                                        name="driverCity"
-                                        value={driverDetails?.driverCity || ""}
+                                        name="city"
+                                        value={driverDetails?.city || ""}
                                         onChange={handleDriverDetails}
                                     />
                                     <TextField
                                         label="State"
-                                        id="driverState"
+                                        id="state"
                                         type="text"
-                                        name="driverState"
-                                        value={driverDetails?.driverState || ""}
+                                        name="state"
+                                        value={driverDetails?.state || ""}
                                         onChange={handleDriverDetails}
                                     />
                                     <TextField
@@ -946,14 +955,54 @@ const RiderDetail = () => {
                             </div>
                             <div className="mb-5">
                                 <h6 className="mt-4 mb-3">Account Details</h6>
-                                <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
-                                    <TextField
+                                <div className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
+                                    {/* <TextField
                                         label="UPI"
                                         id="upi"
                                         type="text"
                                         placeholder="UPI"
 
-                                    />
+                                    /> */}
+                                        <TextField
+                                            label="Account Type"
+                                            id="accountType"
+                                            type="text"
+                                            name="accountType"
+                                            value={accountDetails?.accountType || ""}
+                                            onChange={handleAccountDetails}
+                                        />
+                                        <TextField
+                                            label="Account IFSC Code"
+                                            id="accountIFSCCode"
+                                            type="text"
+                                            name="accountIFSCCode"
+                                            value={accountDetails?.accountIFSCCode || ""}
+                                            onChange={handleAccountDetails}
+                                        />
+                                        <TextField
+                                            label="Account Number"
+                                            id="accountNumber"
+                                            type="text"
+                                            name="accountNumber"
+                                            value={accountDetails?.accountNumber || ""}
+                                            onChange={handleAccountDetails}
+                                        />
+                                        <TextField
+                                            label="UPI ID"
+                                            id="upiID"
+                                            type="text"
+                                            name="upiID"
+                                            value={accountDetails?.upiID || ""}
+                                            onChange={handleAccountDetails}
+                                        />
+                                        <TextField
+                                            label="Account HolderName"
+                                            id="accountHolderName"
+                                            type="text"
+                                            name="accountHolderName"
+                                            value={accountDetails?.accountHolderName || ""}
+                                            onChange={handleAccountDetails}
+                                        />
                                 </div>
                             </div>
                             <div className="mb-5">
@@ -1017,7 +1066,7 @@ const RiderDetail = () => {
                                                             </tr>
                                                         ) : (
                                                             riderOrderDetail?.map((order, index) => (
-                                                                <tr key={index} onClick={() => handleViewClick(order.order_Id,order.orderType)}>
+                                                                <tr key={index} onClick={() => handleViewClick(order.order_Id, order.orderType)}>
                                                                     <td className="table-td">{(orderHistoryCurrentPage * orderHistorypagesize) + index + 1}</td>
                                                                     <td className="table-td">{order.order_Id}</td>
                                                                     <td className="table-td">{order.orderStatus}</td>
@@ -1215,7 +1264,7 @@ const RiderDetail = () => {
                                                                                     {status}
                                                                                 </p>
                                                                             );
-                                                                        }else if (status === 'NO_PAY' || status === 'NO_PAY') {
+                                                                        } else if (status === 'NO_PAY' || status === 'NO_PAY') {
                                                                             return (
                                                                                 <p className="inline-block text-[0.875rem] px-2 text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-red-500 bg-red-200">
                                                                                     CANCELLED

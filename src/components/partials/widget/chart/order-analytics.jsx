@@ -10,6 +10,7 @@ const OrderAnalytics = ({ dateRange, onDateRangeChange, height = 400 }) => {
   const [series, setSeries] = useState([]);
   const [categories, setCategories] = useState([]);
 
+
   const fetchAnalytics = async (start, end) => {
     const token = localStorage.getItem("jwtToken");
     try {
@@ -28,19 +29,35 @@ const OrderAnalytics = ({ dateRange, onDateRangeChange, height = 400 }) => {
       const totalOrders = [];
       const srOrders = [];
       const cityWideOrders = [];
+      const vendorOrderData = {};
 
       dateKeys.forEach((date) => {
         const item = data[date]?.[0];
         totalOrders.push(item ? item.totalOrdersCount : 0);
-        srOrders.push(item ? item.srOrdersCount : 0);
         cityWideOrders.push(item ? item.cityWideOrdersCount : 0);
+        const vendorCounts = item?.vendorOrderCounts || {};
+        Object?.keys(vendorCounts)?.forEach(vendor => {
+          if (!vendorOrderData[vendor]) {
+            vendorOrderData[vendor] = [];
+          }
+          vendorOrderData[vendor].push(vendorCounts[vendor]);
+        });
+
+        Object?.keys(vendorOrderData).forEach(vendor => {
+          if (!vendorCounts || vendorCounts[vendor] === undefined) {
+            vendorOrderData[vendor].push(0);
+          }
+        });
       });
 
       setCategories(dateKeys);
       setSeries([
         { name: "Total Orders", data: totalOrders },
-        { name: "SR Orders", data: srOrders },
         { name: "City-Wide Orders", data: cityWideOrders },
+        ...Object.keys(vendorOrderData).map(vendor => ({
+          name: vendor,
+          data: vendorOrderData[vendor],
+        }))
       ]);
     } catch (error) {
       console.error("Error fetching order analytics:", error);
@@ -110,7 +127,7 @@ const OrderAnalytics = ({ dateRange, onDateRangeChange, height = 400 }) => {
     <Card>
       {/* Header Row: Title + Datepicker */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Order Data</h2>
+        <h2 className="text-lg font-semibold">Order Data  sdfgh</h2>
       </div>
 
       {/* Chart */}
