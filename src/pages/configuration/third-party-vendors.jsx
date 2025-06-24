@@ -12,6 +12,7 @@ import { Badge } from "react-bootstrap";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import Sidebar from "../../components/partials/sidebar";
+import { format } from "date-fns";
 
 const Third_Party_Vendors = (vendorlist) => {
   
@@ -107,16 +108,7 @@ const Third_Party_Vendors = (vendorlist) => {
         Header: "Created Date",
         accessor: "createdDate",
         Cell: ({ cell }) => {
-          const formattedDate = new Date(cell.value).toLocaleString("en-US", {
-            timeZone: "UTC",
-            year: "numeric",
-            month: "short",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: true,
-          });
+          const formattedDate = format(new Date(cell.value), "MMM dd, yyyy h:mm:ss a");
 
           return <div className="rider-datetime">{formattedDate}</div>;
         },

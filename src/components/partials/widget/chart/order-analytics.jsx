@@ -127,7 +127,7 @@ const OrderAnalytics = ({ dateRange, onDateRangeChange, height = 400 }) => {
     <Card>
       {/* Header Row: Title + Datepicker */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Order Data  sdfgh</h2>
+        <h2 className="text-lg font-semibold">Order Data</h2>
       </div>
 
       {/* Chart */}

@@ -147,7 +147,8 @@ const RiderDetail = () => {
                     setIsDriverActive(fetchedDriverDetails?.isRiderOnline || false);
                     setDriverRegistrationFee(fetchedDriverDetails?.isRegistrationFeesPaid || false);
                     setDriverRole(fetchedDriverDetails?.isOnGoingTrip || false);
-                    setAccountDetails(documentResponse.data.jsonData.accountDetails)
+                    setAccountDetails(documentResponse.data.jsonData.accountInfo[0])
+                    console.log("documentResponse.data.jsonData.accountInfo",documentResponse.data.jsonData.accountInfo[0])
 
 
                 }

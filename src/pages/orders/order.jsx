@@ -27,6 +27,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useLocation, useParams } from "react-router-dom";
 import axiosInstance from "../../api";
 import OfflineOrders from "./offline-orders";
+import { format } from "date-fns";
 
 
 
@@ -98,25 +99,11 @@ const COLUMNS = (thirdPartyVendorName, orderCategory, isOfflineOrder, openIsNoti
         Header: "Order Date",
         accessor: "orderDate",
         Cell: ({ cell }) => {
-            const date = new Date(cell.value);
-
-            // Use UTC-based date formatting
-            const day = String(date.getUTCDate()).padStart(2, '0');
-            const month = date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' });
-            const year = date.getUTCFullYear();
-
-            const hours = date.getUTCHours() % 12 || 12;
-            const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-            const seconds = String(date.getUTCSeconds()).padStart(2, '0');
-            const ampm = date.getUTCHours() >= 12 ? 'PM' : 'AM';
-
-            const formattedDate = `${day}-${month}-${year}`;
-            const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
+            const formattedDate = format(new Date(cell.value), "MMM dd, yyyy h:mm:ss a");
 
             return (
                 <div className="rider-datetime">
-                    <span className="riderDate">{formattedDate}</span><br />
-                    <span className="riderTime">{formattedTime}</span>
+                    <span className="riderDate">{formattedDate}</span>
                 </div>
             );
         },
@@ -303,30 +290,30 @@ const COLUMNS = (thirdPartyVendorName, orderCategory, isOfflineOrder, openIsNoti
         //     );
         // },
         Cell: (row) => {
-        const handleViewClick = () => {
-            const orderId = row.row.original.orderId;
-            let url = '';
+            const handleViewClick = () => {
+                const orderId = row.row.original.orderId;
+                let url = '';
 
-            if (thirdPartyVendorName) {
-                url = `/order-detail/${thirdPartyVendorName}/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${thirdPartyVendorName}`;
-            } else if (isOfflineOrder == 'true') {
-                url = `/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${orderCategory}`;
-            } else {
-                url = `/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=CITYWIDEON`;
-            }
-            window.open(url, '_blank');
-        };
+                if (thirdPartyVendorName) {
+                    url = `/order-detail/${thirdPartyVendorName}/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${thirdPartyVendorName}`;
+                } else if (isOfflineOrder == 'true') {
+                    url = `/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=${orderCategory}`;
+                } else {
+                    url = `/order-detail/${orderId}?customRadio=${ordersType}&page=${currentPage || 0}&searchId=${filterby || ''}&searchText=${search || ''}&orders=CITYWIDEON`;
+                }
+                window.open(url, '_blank');
+            };
 
-        return (
-            <div className="flex space-x-3 rtl:space-x-reverse">
-                <Tooltip content="View" placement="top" arrow animation="shift-away">
-                    <button className="action-btn bg-scooton" type="button" onClick={handleViewClick}>
-                        <Icon icon="heroicons:eye" />
-                    </button>
-                </Tooltip>
-            </div>
-        );
-    }
+            return (
+                <div className="flex space-x-3 rtl:space-x-reverse">
+                    <Tooltip content="View" placement="top" arrow animation="shift-away">
+                        <button className="action-btn bg-scooton" type="button" onClick={handleViewClick}>
+                            <Icon icon="heroicons:eye" />
+                        </button>
+                    </Tooltip>
+                </div>
+            );
+        }
 
     },
 
@@ -367,7 +354,7 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
 
     useEffect(() => {
         setParamLength([...searchParams.entries()].length);
-        
+
         const searchId = searchParams.get("searchId") || "NONE";
         const searchText = searchParams.get("searchText") || "";
         const pageFromUrl = searchParams.get("page") || "0";
@@ -421,7 +408,7 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
     ]
 
     const maxPagesToShow = 5;
-    
+
     useEffect(() => {
         const customRadio = decodeURIComponent(searchParams.get("customRadio") || "PLACED");
         if (mobileordertype) {
@@ -431,16 +418,16 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
         } else {
             SetOrderType(customRadio);
         }
-    }, [mobileordertype]); 
+    }, [mobileordertype]);
     useEffect(() => {
         if (ordersType) {
             const timer = setTimeout(() => {
                 fetchOrders(ordersType);
             }, 500);
 
-            return () => clearTimeout(timer); 
+            return () => clearTimeout(timer);
         }
-    }, [ search, currentPage, pagesizedata]);
+    }, [search, currentPage, pagesizedata]);
 
 
 
@@ -461,46 +448,46 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
     };
 
     const fetchOrders = async (orderType) => {
-    setLoading(true);
+        setLoading(true);
 
-    const params = new URLSearchParams();
-    params.append('page', currentPage);
-    params.append('size', pagesizedata);
-    params.append('sort', 'orderId');
-    params.append('orderStatus', orderType);
-    params.append('orderType', orderCategory);
-    params.append("isOfflineOrder", isOfflineOrder);
+        const params = new URLSearchParams();
+        params.append('page', currentPage);
+        params.append('size', pagesizedata);
+        params.append('sort', 'orderId');
+        params.append('orderStatus', orderType);
+        params.append('orderType', orderCategory);
+        params.append("isOfflineOrder", isOfflineOrder);
 
-    if (thirdPartyVendorName) {
-        params.append('thirdPartyVendorName', thirdPartyVendorName);
-    }
+        if (thirdPartyVendorName) {
+            params.append('thirdPartyVendorName', thirdPartyVendorName);
+        }
 
-    if (filterby !== 'NONE' && search.trim() !== '') {
-        params.append('searchType', filterby);
-        params.append('searchTypeValue', search.trim());
-    } else if (selectedVehicleType !== "0") {
-        params.append('searchType', 'VEHICLE');
-        params.append('searchTypeValue', selectedVehicleType);
-    } else {
-        params.append('searchType', 'NONE');
-        params.append('searchTypeValue', '');
-    }
+        if (filterby !== 'NONE' && search.trim() !== '') {
+            params.append('searchType', filterby);
+            params.append('searchTypeValue', search.trim());
+        } else if (selectedVehicleType !== "0") {
+            params.append('searchType', 'VEHICLE');
+            params.append('searchTypeValue', selectedVehicleType);
+        } else {
+            params.append('searchType', 'NONE');
+            params.append('searchTypeValue', '');
+        }
 
-    const url = `${BASE_URL}/api/v1/admin/orders/get-list?${params.toString()}`;
-    console.log("API Request URL:", url);
+        const url = `${BASE_URL}/api/v1/admin/orders/get-list?${params.toString()}`;
+        console.log("API Request URL:", url);
 
-    SetOrderType(orderType);
+        SetOrderType(orderType);
 
-    try {
-        const response = await axiosInstance.get(url);
-        setOrderData(response.data.jsonData.list);
-        setTotalCount(Number(response.data.jsonData.headers["x-total-count"]));
-        setPageCount(Number(response.data.jsonData.headers["x-total-pages"]));
-    } catch (error) {
-        console.error("Error fetching order data:", error);
-    } finally {
-        setLoading(false);
-    }
+        try {
+            const response = await axiosInstance.get(url);
+            setOrderData(response.data.jsonData.list);
+            setTotalCount(Number(response.data.jsonData.headers["x-total-count"]));
+            setPageCount(Number(response.data.jsonData.headers["x-total-pages"]));
+        } catch (error) {
+            console.error("Error fetching order data:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
 
@@ -712,18 +699,18 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
 
 
     useEffect(() => {
-    if (selectedVehicleType !== "0" || search || filterby !== 'NONE') {
-        const timer = setTimeout(() => {
-        fetchOrders(ordersType);
-        }, 500);
+        if (selectedVehicleType !== "0" || search || filterby !== 'NONE') {
+            const timer = setTimeout(() => {
+                fetchOrders(ordersType);
+            }, 500);
 
-        return () => clearTimeout(timer);
-    }
+            return () => clearTimeout(timer);
+        }
     }, [selectedVehicleType]);
 
 
     const getOrderTitle = (orderCategory, isOfflineOrder, thirdPartyVendorName = '') => {
-    const vendor = thirdPartyVendorName.toUpperCase();
+        const vendor = thirdPartyVendorName.toUpperCase();
         if (orderCategory === 'ALLCITYWIDE') return 'All Orders';
         if (orderCategory === 'CITYWIDE' && isOfflineOrder === 'false') return 'Citywide Orders';
         if (orderCategory === 'CITYWIDE' && isOfflineOrder === 'true') return 'Offline Orders';
@@ -775,21 +762,21 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
                             <FormControl className="">
                                 <label className="text-sm mb-1">Vehicle Type</label>
                                 <Select
-                                className="w-48"
-                                value={selectedVehicleType}
-                                onChange={(e) => {
-                                    const selectedId = e.target.value;
-                                    setSelectedVehicleType(selectedId);
-                                    setFilterBy('NONE');
-                                    setSearch('');
-                                }}
+                                    className="w-48"
+                                    value={selectedVehicleType}
+                                    onChange={(e) => {
+                                        const selectedId = e.target.value;
+                                        setSelectedVehicleType(selectedId);
+                                        setFilterBy('NONE');
+                                        setSearch('');
+                                    }}
                                 >
-                                <MenuItem value="0">ALL</MenuItem>
-                                {vehicleList.map((vehicle) => (
-                                    <MenuItem key={vehicle.id} value={vehicle.id}>
-                                    {vehicle.type}
-                                    </MenuItem>
-                                ))}
+                                    <MenuItem value="0">ALL</MenuItem>
+                                    {vehicleList.map((vehicle) => (
+                                        <MenuItem key={vehicle.id} value={vehicle.id}>
+                                            {vehicle.type}
+                                        </MenuItem>
+                                    ))}
                                 </Select>
                             </FormControl>
 

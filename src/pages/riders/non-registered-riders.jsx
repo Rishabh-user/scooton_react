@@ -18,6 +18,7 @@ import campion from "../../assets/images/icon/Champion.png";
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@/components/ui/Tooltip";
 import axiosInstance from "../../api";
+import { format } from "date-fns";
 
 const COLUMNS = ({ currentPage, documentstatus, riderstatus, vehicleid,pagesizedata }) => [
   {
@@ -70,16 +71,7 @@ const COLUMNS = ({ currentPage, documentstatus, riderstatus, vehicleid,pagesized
     Header: "Created Date",
     accessor: "riderInfo.createdDate",
     Cell: ({ cell }) => {
-      const formattedDate = new Date(cell.value).toLocaleString("en-US", {
-        timeZone: "UTC",
-        year: "numeric",  
-        month: "short",   
-        day: "2-digit",   
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,     
-      });
+      const formattedDate = format(new Date(cell.value), "MMM dd, yyyy h:mm:ss a");
   
       return <div className="rider-datetime">{formattedDate}</div>;
     },
@@ -88,16 +80,7 @@ const COLUMNS = ({ currentPage, documentstatus, riderstatus, vehicleid,pagesized
     Header: "Last Activity Date",
     accessor: "riderInfo.lastActivity",
     Cell: ({ cell }) => {
-      const formattedDate = new Date(cell.value).toLocaleString("en-US", {
-        timeZone: "UTC",
-        year: "numeric",  
-        month: "short",  
-        day: "2-digit",   
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,    
-      });
+      const formattedDate = format(new Date(cell.value), "MMM dd, yyyy h:mm:ss a");
   
       return <div className="rider-datetime">{formattedDate}</div>;
     },
