@@ -1,0 +1,14 @@
+image: node:22.0.0
+
+pipelines:
+  branches:
+    release_beta:
+      - step:
+          name: Install, Build, Deploy to Beta
+          caches:
+            - node
+          script:
+            - npm install
+            - npm install firebase-tools@latest --save-dev
+            - npm run build
+            - npx firebase deploy --project $FIREBASE_DEV_PROJECT_ID --token $FIREBASE_TOKEN --only hosting
