@@ -21,7 +21,6 @@ const Sidebar = () => {
   const [skin] = useSkin();
 
   const handleVendorList = async () => {
-    debugger
     if (!loading && Vendors.length > 0) {
       const vendorChildItems = Vendors.map((vendor) => ({
         childtitle: vendor.userName || vendor.title || "Vendor",
@@ -46,15 +45,12 @@ const Sidebar = () => {
       });
 
       setDynamicMenu(updatedMenu);
-    
-      debugger
     }
   }
 
   useEffect(() => {
    
     if(Vendors.length > 0){
-       console.log("Vendors",Vendors)
        handleVendorList();
     }
   }, [Vendors]);

@@ -29,7 +29,7 @@ const Third_Party_Vendors = (vendorlist) => {
   const [fieldErrors, setFieldErrors] = useState([]);
 
   const fieldLabels = {
-    userName: "Name",
+    userName: "Vendor Name",
     email: "Email",
     mobileNumber: "Mobile Number",
     clientId: "ClientId",
@@ -56,8 +56,6 @@ const Third_Party_Vendors = (vendorlist) => {
       axiosInstance
         .get(`${BASE_URL}/api/v1/admin/third-party-users`)
         .then((response) => {
-
-          console.log("response", response)
           setRoleList(response.data || []);
           setTotalCount(response.data.length);
 
@@ -215,21 +213,20 @@ const Third_Party_Vendors = (vendorlist) => {
       );
 
       if (isCreating) {
-        debugger
         setRoleList((prev) => [...prev, modalFormValues]);
-        debugger
       } else {
-        debugger
         setRoleList((prev) =>
           prev.map((item) =>
             item.id === modalFormValues.id ? modalFormValues : item
           )
         );
-        debugger
       }
 
       setIsEditModal(false);
       setIsCreating(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (error) {
       console.error("Error submitting vehicle config:", error);
       toast.error(error.response.data.details ? error.response.data.details : error.response.data.message);
@@ -252,14 +249,7 @@ const Third_Party_Vendors = (vendorlist) => {
                 mobileNumber: "",
                 clientId: "",
                 active: true,
-                billingAddress: "",
-                shippingAddress: "",
-                gstNo: "",
-                tds: "",
-                pan: "",
                 thirdPartyEnum: "THIRD_PARTY_USER",
-                fcmId: "",
-                deviceOs: "",
                 isPickupOtpEnabled: true,
                 isDeliveryOtpEnabled: true,
               });
@@ -382,7 +372,7 @@ const Third_Party_Vendors = (vendorlist) => {
                           [key]: e.target.value,
                         }))
                       }
-                      disabled={key === "id" || (!isCreating && !["userName", "email", "mobileNumber", "clientId", "billingAddress", "shippingAddress", "gstNo", "tds", "pan", "thirdPartyEnum", "fcmId"].includes(key))}
+                      disabled={key === "id" || (!isCreating && !["userName", "email", "mobileNumber", "clientId", "thirdPartyEnum", "fcmId"].includes(key))}
                     />
                   )}
                   {fieldErrors.some((error) => error.fieldName === key) && (

@@ -486,7 +486,6 @@ const AllRiders = () => {
   // }, [serviceAreaStatus, currentPage]);
 
   const serviceAreaStatusFilter = (event) => {
-    console.log("s event,",event)
     setServiceAreaStatus(event.target.value);
   };
   // Clear the search input field

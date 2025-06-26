@@ -37,7 +37,6 @@ const Dashboard = () => {
       const token = localStorage.getItem("jwtToken");
       try {
         const responseCompleted = await axiosInstance.post(`${BASE_URL}/order-history/orders/count-total/city-wide`,).then((response) => {
-          console.log("resp", response.data.data.CompletedOrders)
           setCompletedOrders(response.data.data.CompletedOrders);
           setIncomingOrders(response.data.data.IncomingOrders);
           setcashPaymentOrders(response.data.data.cashPaymentOrders);

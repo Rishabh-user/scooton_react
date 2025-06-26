@@ -35,67 +35,6 @@ const RevenueBarChart = ({ height = 400 }) => {
   const [series, setSeries] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("jwtToken");
-  //   const fetchOrderData = async () => {
-  //     try {
-  //       const response = await axiosInstance.post(
-  //         `${BASE_URL}/order-history/search-city-wide-orders-all-service-area/0?page=0&size=10`,
-  //         { orderType: "ALL ORDERS", searchType: "NONE" },
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`
-  //           }
-  //         }
-  //       );
-  //       const orders = response.data;
-
-  //       // Get the first date of the last month
-  //       // const today = new Date();
-  //       // const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-  //       // const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
-
-  //       // const filteredOrders = orders.filter(order => {
-  //       //   const orderDate = new Date(order.orderHistory.orderDate);
-  //       //   return orderDate >= lastMonthStart && orderDate <= lastMonthEnd;
-  //       // });
-  //       const today = new Date();
-  //       const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-
-  //       const filteredOrders = orders.filter(order => {
-  //         const orderDate = new Date(order.orderHistory.orderDate);
-  //         return orderDate >= currentMonthStart && orderDate <= today;
-  //       });
-
-  //       const ordersByDay = filteredOrders.reduce(
-  //         (acc, order) => {
-  //           const day = new Date(order.orderHistory.orderDate).toLocaleDateString('en-US');
-  //           acc[day] = acc[day] || { ACCEPTED: 0, CANCEL: 0, COMPLETED: 0 };
-  //           acc[day][order.orderHistory.orderStatus]++;
-  //           return acc;
-  //         },
-  //         {}
-  //       );
-
-  //       const categories = Object.keys(ordersByDay);
-  //       const acceptedOrders = categories.map(day => ordersByDay[day].ACCEPTED);
-  //       const cancelledOrders = categories.map(day => ordersByDay[day].CANCEL);
-  //       const completedOrders = categories.map(day => ordersByDay[day].COMPLETED);
-
-
-  //       setCategories(categories);
-  //       setSeries([
-  //         { name: 'Accepted Orders', data: acceptedOrders },
-  //         { name: 'Cancelled Orders', data: cancelledOrders },
-  //         { name: 'Completed Orders', data: completedOrders }
-  //       ]);
-  //     } catch (error) {
-  //       console.error('Error fetching order data:', error);
-  //     }
-  //   };
-
-  //   fetchOrderData();
-  // }, []);
 
   useEffect(() => {
     // Extract months for categories

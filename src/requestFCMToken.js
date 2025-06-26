@@ -11,8 +11,6 @@ const requestFCMToken = async (userId) => {
       });
 
       if (token) {
-        console.log("FCM Token:", token);
-        // Send the token to the backend
         await sendTokenToServer(userId, token);
       } else {
         console.log("No FCM token available");

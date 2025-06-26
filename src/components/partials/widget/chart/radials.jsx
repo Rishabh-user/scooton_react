@@ -20,8 +20,6 @@ const RadialsChart = () => {
           `${BASE_URL}/order-history/orders/get-all-riders-count`
         );
 
-        console.log("API Response:", response.data.data);
-
         setActiveRiders(response.data.data.activeRiders || 0);
         setOnRoleRiders(response.data.data.onRoleRiders || 0);
         setTotalRiders(response.data.data.totalRiders || 0);
@@ -35,7 +33,6 @@ const RadialsChart = () => {
   }, []);
 
   const total = activeRiders + onRoleRiders + unregisteredRiders;
-  console.log("totaltotal",total)
 
   const series = [ onRoleRiders, unregisteredRiders, activeRiders,totalRiders];
   const options = {

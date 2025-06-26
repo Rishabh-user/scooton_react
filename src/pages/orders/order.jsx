@@ -474,7 +474,7 @@ const Order = ({ thirdPartyVendorName, orderCategory, isOfflineOrder }) => {
         }
 
         const url = `${BASE_URL}/api/v1/admin/orders/get-list?${params.toString()}`;
-        console.log("API Request URL:", url);
+     
 
         SetOrderType(orderType);
 

@@ -20,7 +20,7 @@ const ForgotPass = () => {
   });
 
   const onSubmit = (data) => {
-   // console.log(data);
+
   };
 
   return (

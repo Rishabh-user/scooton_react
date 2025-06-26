@@ -148,8 +148,6 @@ const RiderDetail = () => {
                     setDriverRegistrationFee(fetchedDriverDetails?.isRegistrationFeesPaid || false);
                     setDriverRole(fetchedDriverDetails?.isOnGoingTrip || false);
                     setAccountDetails(documentResponse.data.jsonData.accountInfo[0])
-                    console.log("documentResponse.data.jsonData.accountInfo",documentResponse.data.jsonData.accountInfo[0])
-
 
                 }
             } catch (error) {
@@ -274,7 +272,6 @@ const RiderDetail = () => {
     }
 
     const handleStatusChange = (newStatus) => {
-        debugger
         if (selectedOrderIndex !== null) {
             setDocumentDetail((prevDetails) => {
                 const updatedDetails = [...prevDetails];
@@ -283,14 +280,11 @@ const RiderDetail = () => {
                 }
                 return updatedDetails;
             });
-            console.log("documentDetaildocumentDetail", documentDetail)
         }
-        debugger
         setIsDocumentModel(false);
     };
 
     const handleDocumentStatus = (event, index) => {
-        debugger
         const newStatus = event.target.value;
         setDocumentDetail((prevDetails) => {
             const updatedDetails = [...prevDetails];
@@ -299,7 +293,6 @@ const RiderDetail = () => {
             }
             return updatedDetails;
         });
-        debugger
         const allApproved = documentDetail.every(order => order.status !== "Reject");
         setApproved(allApproved);
     };
@@ -481,7 +474,6 @@ const RiderDetail = () => {
         await axiosInstance.get(`${BASE_URL}/rider/get-rider-orders/${riderId}?endDate=${formattedFromDate}&page=${orderHistoryCurrentPage}&size=${orderHistorypagesize}&startDate=2022-12-01`, {
         }).then((response) => {
 
-            console.log("response", response)
             setOrderHistoryTotalCount(response?.data?.jsonData?.totalCount);
             setOrderHistoryPageCount(response?.data?.jsonData?.totalPages);
             setRiderOrderDetail(response?.data?.jsonData?.orderDetails);
@@ -505,7 +497,6 @@ const RiderDetail = () => {
         setLoading(true);
         await axiosInstance.get(`${BASE_URL}/rider/v2/get-rider-wallet/${riderId}?page=${currentPage}&size=${pagesize}`, {
         }).then((response) => {
-            console.log("response", response)
             setTotalCount(response?.data?.jsonData?.totalCount);
             setPageCount(response?.data?.jsonData?.totalPages);
             setRiderWalletDetail(response?.data?.jsonData?.walletTxn);
@@ -528,7 +519,6 @@ const RiderDetail = () => {
         setLoading(true);
         await axiosInstance.get(`${BASE_URL}/rider/get-rider-earning/${riderId}?endDate=${formattedFromDate}&page=${earningCurrentPage}&size=${earningpagesize}&startDate=2022-12-01`, {
         }).then((response) => {
-            console.log("response", response)
             setEarningTotalCount(response?.data?.jsonData?.totalCount);
             setEarningPageCount(response?.data?.jsonData?.totalPages);
             setRiderTripDetail(response?.data?.jsonData?.tripDetails);

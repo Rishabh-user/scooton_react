@@ -11,7 +11,6 @@ const firebaseConfig = {
   appId: `${appId}`,
 }
 
-console.log("apiKey",apiKey)
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);

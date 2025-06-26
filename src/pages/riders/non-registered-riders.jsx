@@ -186,11 +186,8 @@ const NonRegisteredRiders = () => {
     setRiderStatus(statusFromUrl);
     setDocumentStatus(docStatusFromUrl);
     setVehicleId(vehicleIdFromUrl);
-    console.log("pageFromUrl",pageFromUrl)
-    // setCurrentPage(pageFromUrl);
     setParamCurrentPage(pageFromUrl);
     setpagesizedata(Number(pagesizedata1) || 10); 
-    console.log("paramCurrentPage,",paramCurrentPage)
     setRapf(true);
   
   }, [searchParams]);
@@ -213,7 +210,6 @@ const NonRegisteredRiders = () => {
 
 
   const fetchRegisterOrder = () =>{
-    console.log("currentPage",currentPage)
     setLoading(true);
     const token = localStorage.getItem("jwtToken");
     if (token) {
@@ -226,7 +222,6 @@ const NonRegisteredRiders = () => {
           })
           .then((response) => {
             setRiderData(response.data);
-            console.log("1")
             setTotalCount(Number(response.headers["x-total-count"])); 
             setPageCount(Number(response.headers["x-total-pages"]));
           })
@@ -282,7 +277,6 @@ const NonRegisteredRiders = () => {
           setRiderData(response.data?.riders || response.data); 
           setTotalCount(Number(response.headers["x-total-count"] || 0));
           setPageCount(Number(response.headers["x-total-pages"] || 1));
-          console.log("qq")
         } catch (err) {
           console.error("Error processing response:", err);
         }
@@ -335,7 +329,6 @@ const NonRegisteredRiders = () => {
           setRiderData(response.data);
           setTotalCount(Number(response.headers["x-total-count"]));
           setPageCount(Number(response.headers["x-total-pages"]));
-          console.log("345")
         })
         .catch((error) => {
           console.error("Error fetching rider data:", error);
@@ -372,7 +365,6 @@ const NonRegisteredRiders = () => {
               setRiderData(response.data);
               setTotalCount(Number(response.headers["x-total-count"]));
               setPageCount(Number(response.headers["x-total-pages"]));
-              console.log("3")
             })
             .catch((error) => {
               console.error("Error fetching user data:", error);

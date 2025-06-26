@@ -10,7 +10,6 @@ const useVendors = () => {
     const fetchVendors = async () => {
       try {
          await axiosInstance.get(`${BASE_URL}/api/v1/admin/third-party-users`) .then((response) => {
-          console.log("response",response)
           setVendors(response.data || []);
         }
       )
