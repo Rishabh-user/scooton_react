@@ -427,7 +427,7 @@ const RiderDetail = () => {
         const token = localStorage.getItem("jwtToken");
         try {
             const response = await axiosInstance.delete(
-                `${BASE_URL}/login/delete/${riderId}`,
+                `${BASE_URL}/rider/rider-delete/${riderId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

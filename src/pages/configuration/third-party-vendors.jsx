@@ -15,7 +15,7 @@ import Sidebar from "../../components/partials/sidebar";
 import { format } from "date-fns";
 
 const Third_Party_Vendors = (vendorlist) => {
-  
+
   const [loading, setLoading] = useState(true);
   const [roleList, setRoleList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -180,18 +180,26 @@ const Third_Party_Vendors = (vendorlist) => {
     setFieldErrors([]);
 
     const errors = [];
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{10}$/;
+    
     if (!modalFormValues.userName) {
       errors.push({ fieldName: "userName", fieldError: "User Name is required" });
     }
     if (!modalFormValues.email) {
       errors.push({ fieldName: "email", fieldError: "Email Id is required" });
+    } else if (!emailRegex.test(modalFormValues.email)) {
+      errors.push({ fieldName: "email", fieldError: "Invalid Email Id" });
     }
+
     if (!modalFormValues.clientId) {
       errors.push({ fieldName: "clientId", fieldError: "ClientId Id is required" });
     }
 
     if (!modalFormValues.mobileNumber) {
       errors.push({ fieldName: "mobileNumber", fieldError: "Mobile Number is required" });
+    } else if (!phoneRegex.test(modalFormValues.mobileNumber)) {
+      errors.push({ fieldName: "mobileNumber", fieldError: "Invalid Mobile Number" });
     }
 
     if (errors.length > 0) {
@@ -253,7 +261,7 @@ const Third_Party_Vendors = (vendorlist) => {
                 isDeliveryOtpEnabled: true,
               });
               setIsEditModal(true);
-              setFieldErrors([]); 
+              setFieldErrors([]);
             }}
           >
             + Third Party Vendors
