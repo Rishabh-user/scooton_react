@@ -36,13 +36,7 @@ const Third_Party_Vendors = (vendorlist) => {
     createdDate: "createdDate",
     active: 'Active',
     deleted: 'Deleted',
-    billingAddress: "Billing Address",
-    shippingAddress: "Shipping Address",
-    gstNo: "GST Number",
-    tds: "TDS",
-    pan: "PAN",
     thirdPartyEnum: "ThirdParty Enum",
-    fcmId: "FCMID",
     deviceOs: "DeviceOs",
     isPickupOtpEnabled: 'Pickup Otp Enabled',
     isDeliveryOtpEnabled: 'Delivery Otp Enabled',
@@ -182,7 +176,7 @@ const Third_Party_Vendors = (vendorlist) => {
     const errors = [];
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^[0-9]{10}$/;
-    
+
     if (!modalFormValues.userName) {
       errors.push({ fieldName: "userName", fieldError: "User Name is required" });
     }
@@ -256,7 +250,7 @@ const Third_Party_Vendors = (vendorlist) => {
                 mobileNumber: "",
                 clientId: "",
                 active: true,
-                thirdPartyEnum: "THIRD_PARTY_USER",
+                thirdPartyEnum: "THIRD_PARTY",
                 isPickupOtpEnabled: true,
                 isDeliveryOtpEnabled: true,
               });
@@ -379,9 +373,14 @@ const Third_Party_Vendors = (vendorlist) => {
                           [key]: e.target.value,
                         }))
                       }
-                      disabled={key === "id" || (!isCreating && !["userName", "email", "mobileNumber", "clientId", "thirdPartyEnum", "fcmId"].includes(key))}
+                      disabled={
+                        key === "id" ||
+                        key === "thirdPartyEnum" || 
+                        (!isCreating && !["userName", "email", "mobileNumber", "clientId", "fcmId"].includes(key))
+                      }
                     />
-                  )}
+                  )
+                  }
                   {fieldErrors.some((error) => error.fieldName === key) && (
                     <div className="text-red-600 text-sm">
                       {fieldErrors.find((error) => error.fieldName === key)?.fieldError}

@@ -20,6 +20,7 @@ import axiosInstance from "../../api";
 import dayjs from "dayjs";
 import { GoogleMap, LoadScript, useLoadScript, Marker } from '@react-google-maps/api';
 import getRole from "../../store/utility";
+import { format } from "date-fns";
 
 const RejectionType = ["Information Rejected", "Document Rejected"];
 const DocumentStatus = ["Approve", "Reject", "VERIFICATION_PENDING"]
@@ -129,7 +130,7 @@ const RiderDetail = () => {
 
                     // setDocumentDetail(documentResponse.data.jsonData.documentDetails || []);
                     setDocumentDetail(
-                        (documentResponse.data.jsonData.documents || []).map(order => ({
+                        (documentResponse.data.jsonData.documentsDetails || []).map(order => ({
                             ...order,
                             filteredStatus:
                                 order.status === "Approve" || order.status === "Reject"
@@ -139,15 +140,15 @@ const RiderDetail = () => {
                     );
 
                     setDeviceDetails(documentResponse.data.jsonData);
-                    setVehicleDetails(documentResponse.data.jsonData);
-                    setDriverDetails(documentResponse.data.jsonData)
-                    setDocumentRejectDetails(documentResponse.data.jsonData.rejectDetails)
-                    setLanguage(documentResponse.data.jsonData)
-                    const fetchedDriverDetails = documentResponse.data.jsonData;
+                    setVehicleDetails(documentResponse.data.jsonData.vehicleDetails);
+                    setDriverDetails(documentResponse.data.jsonData.riderDetails)
+                    setDocumentRejectDetails(documentResponse.data.jsonData.rejectDetail)
+                    setLanguage(documentResponse.data.jsonData.riderDetails)
+                    const fetchedDriverDetails = documentResponse.data.jsonData.riderDetails;
                     setIsDriverActive(fetchedDriverDetails?.isRiderOnline || false);
                     setDriverRegistrationFee(fetchedDriverDetails?.isRegistrationFeesPaid || false);
                     setDriverRole(fetchedDriverDetails?.isOnGoingTrip || false);
-                    setAccountDetails(documentResponse.data.jsonData.accountInfo[0])
+                    setAccountDetails(documentResponse.data.jsonData.accountDetail[0])
 
                 }
             } catch (error) {
@@ -340,10 +341,10 @@ const RiderDetail = () => {
             ownerName: vehicleDetails?.ownerName,
             ownerMobileNumber: vehicleDetails?.ownerMobileNumber,
             vehicleType: vehicleDetails?.vehicleType,
-            driverName: driverDetails?.riderName,
+            driverName: driverDetails?.name,
             city: driverDetails?.city,
             state: driverDetails?.state,
-            driverMobileNumber: driverDetails?.riderMobileNumber,
+            mobileNumber: driverDetails?.mobileNumber,
             riderReferralCode: driverDetails?.riderReferralCode,
             fcmId: driverDetails?.fcmId,
             documentDetails: documentDetail,
@@ -711,7 +712,13 @@ const RiderDetail = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <div>Created Date : {driverDetails?.createdDate}</div>
+                                    <div>
+                                        Created Date:{" "}
+                                        {driverDetails?.createdDate
+                                            ? format(new Date(driverDetails.createdDate), "MMM dd, yyyy h:mm:ss a")
+                                            : "N/A"}
+                                    </div>
+
                                     <div>Document Submit : {driverDetails?.documentSubmit}</div>
                                     <div>Rider OnBoard : {driverDetails?.riderOnboard} </div>
                                 </div>
@@ -759,18 +766,18 @@ const RiderDetail = () => {
                                 <div className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
                                     <TextField
                                         label="Driver Name"
-                                        id="riderName"
+                                        id="name"
                                         type="text"
-                                        name="riderName"
-                                        value={driverDetails?.riderName || ""}
+                                        name="name"
+                                        value={driverDetails?.name || ""}
                                         onChange={handleDriverDetails}
                                     />
                                     <TextField
                                         label="Driver Mobile Number"
-                                        id="riderMobileNumber"
+                                        id="mobileNumber"
                                         type="text"
-                                        name="riderMobileNumber"
-                                        value={driverDetails?.riderMobileNumber || ""}
+                                        name="mobileNumber"
+                                        value={driverDetails?.mobileNumber || ""}
                                         onChange={handleDriverDetails}
                                     />
                                     <TextField
@@ -883,7 +890,7 @@ const RiderDetail = () => {
                                             ) : (
                                                 documentDetail?.map((order, index) => (
                                                     <tr key={index}>
-                                                        <td className="px-6 py-3">{index + 1}</td>
+                                                        <td className="px-6 py-3" style={{ wordWrap: 'normal' }}>{index + 1}</td>
                                                         <td className="px-6 py-3">
                                                             <Textinput defaultValue={order.mediaId} />
                                                         </td>
@@ -912,7 +919,7 @@ const RiderDetail = () => {
                             <div className="mb-5">
                                 <h6 className="mt-4 mb-3">Reject Details</h6>
                                 <div className="grid xl:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
-                               
+
                                     <Select
                                         label="Rejected Type"
                                         id="rejectedType"
@@ -920,7 +927,7 @@ const RiderDetail = () => {
                                         value={documentRejectDetails?.rejectedType || ""}
                                         onChange={handleDocumentRejection}
                                     />
-                              
+
                                     <div>
                                         <label className="form-label">Rejected Reason</label>
                                         <textarea
@@ -938,47 +945,47 @@ const RiderDetail = () => {
                             <div className="mb-5">
                                 <h6 className="mt-4 mb-3">Account Details</h6>
                                 <div className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
-                                 
-                                        <TextField
-                                            label="Account Type"
-                                            id="accountType"
-                                            type="text"
-                                            name="accountType"
-                                            value={accountDetails?.accountType || ""}
-                                            onChange={handleAccountDetails}
-                                        />
-                                        <TextField
-                                            label="Account IFSC Code"
-                                            id="accountIFSCCode"
-                                            type="text"
-                                            name="accountIFSCCode"
-                                            value={accountDetails?.accountIFSCCode || ""}
-                                            onChange={handleAccountDetails}
-                                        />
-                                        <TextField
-                                            label="Account Number"
-                                            id="accountNumber"
-                                            type="text"
-                                            name="accountNumber"
-                                            value={accountDetails?.accountNumber || ""}
-                                            onChange={handleAccountDetails}
-                                        />
-                                        <TextField
-                                            label="UPI ID"
-                                            id="upiID"
-                                            type="text"
-                                            name="upiID"
-                                            value={accountDetails?.upiID || ""}
-                                            onChange={handleAccountDetails}
-                                        />
-                                        <TextField
-                                            label="Account HolderName"
-                                            id="accountHolderName"
-                                            type="text"
-                                            name="accountHolderName"
-                                            value={accountDetails?.accountHolderName || ""}
-                                            onChange={handleAccountDetails}
-                                        />
+
+                                    <TextField
+                                        label="Account Type"
+                                        id="accountType"
+                                        type="text"
+                                        name="accountType"
+                                        value={accountDetails?.accountType || ""}
+                                        onChange={handleAccountDetails}
+                                    />
+                                    <TextField
+                                        label="Account IFSC Code"
+                                        id="accountIFSCCode"
+                                        type="text"
+                                        name="accountIFSCCode"
+                                        value={accountDetails?.accountIFSCCode || ""}
+                                        onChange={handleAccountDetails}
+                                    />
+                                    <TextField
+                                        label="Account Number"
+                                        id="accountNumber"
+                                        type="text"
+                                        name="accountNumber"
+                                        value={accountDetails?.accountNumber || ""}
+                                        onChange={handleAccountDetails}
+                                    />
+                                    <TextField
+                                        label="UPI ID"
+                                        id="upiID"
+                                        type="text"
+                                        name="upiID"
+                                        value={accountDetails?.upiID || ""}
+                                        onChange={handleAccountDetails}
+                                    />
+                                    <TextField
+                                        label="Account HolderName"
+                                        id="accountHolderName"
+                                        type="text"
+                                        name="accountHolderName"
+                                        value={accountDetails?.accountHolderName || ""}
+                                        onChange={handleAccountDetails}
+                                    />
                                 </div>
                             </div>
                             <div className="mb-5">
