@@ -40,16 +40,6 @@ export const menuItems = [
         childlink: "create-orders",
         childicon: "heroicons:presentation-chart-line",
         child: [
-          // {
-          //   childtitle: "ShipRocket",
-          //   childlink: "ShipRocket",
-          //   childicon: "heroicons:presentation-chart-line",
-          // },
-          // {
-          //   childtitle: "DAAKIT",
-          //   childlink: "DAAKIT",
-          //   childicon: "heroicons:presentation-chart-line",
-          // },
          
         ],
       }
@@ -138,11 +128,6 @@ export const menuItems = [
     icon: "heroicons-outline:cog-8-tooth",
     link: "configuration",
     child: [
-      // {
-      //   childtitle: "Settings",
-      //   childlink: "setting",
-      //   childicon: "heroicons:presentation-chart-line",
-      // },
       {
         childtitle: "Logout from all devices",
         childlink: "logout-from-all-devices",
@@ -418,11 +403,6 @@ export const topMenu = [
             m_childtitle: "Pricing",
             m_childlink: "pricing",
           },
-
-          // {
-          //   m_childtitle: "Testimonial",
-          //   m_childlink: "testimonial",
-          // },
           {
             m_childtitle: "FAQ",
             m_childlink: "faq",

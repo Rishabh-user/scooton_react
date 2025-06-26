@@ -81,7 +81,6 @@ const Third_Party_Vendors = (vendorlist) => {
       {
         Header: "ID",
         accessor: "id",
-    
       },
       {
         Header: "User Name",
