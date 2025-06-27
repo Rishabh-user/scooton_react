@@ -35,13 +35,30 @@ const Third_Party_Vendors = (vendorlist) => {
     clientId: "ClientId",
     createdDate: "createdDate",
     active: 'Active',
-    deleted: 'Deleted',
     thirdPartyEnum: "ThirdParty Enum",
     deviceOs: "DeviceOs",
     isPickupOtpEnabled: 'Pickup Otp Enabled',
     isDeliveryOtpEnabled: 'Delivery Otp Enabled',
     id: "Id",
   };
+  const CLIENT_ID_LENGTH = 10;
+  const ALPHA_POOL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const CHAR_POOL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const RANDOMS = Math.random;
+
+  function generateUniqueClientId() {
+    let clientId = '';
+
+    const randomIndexForAlpha = Math.floor(RANDOMS() * ALPHA_POOL.length);
+    clientId += ALPHA_POOL.charAt(randomIndexForAlpha);
+
+    for (let i = 1; i < CLIENT_ID_LENGTH; i++) {
+      const randomIndex = Math.floor(RANDOMS() * CHAR_POOL.length);
+      clientId += CHAR_POOL.charAt(randomIndex);
+    }
+
+    return clientId;
+  }
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
@@ -62,6 +79,16 @@ const Third_Party_Vendors = (vendorlist) => {
         });
     }
   }, [currentPage, pagesizedata]);
+
+  useEffect(() => {
+    if (isCreating) {
+      setModalFormValues((prev) => ({
+        ...prev,
+        clientId: generateUniqueClientId(),
+      }));
+    }
+  }, [isCreating]);
+
 
 
   const columns = useMemo(
@@ -248,7 +275,7 @@ const Third_Party_Vendors = (vendorlist) => {
                 userName: "",
                 email: "",
                 mobileNumber: "",
-                clientId: "",
+                clientId: generateUniqueClientId(),
                 active: true,
                 thirdPartyEnum: "THIRD_PARTY",
                 isPickupOtpEnabled: true,
@@ -375,10 +402,12 @@ const Third_Party_Vendors = (vendorlist) => {
                       }
                       disabled={
                         key === "id" ||
-                        key === "thirdPartyEnum" || 
-                        (!isCreating && !["userName", "email", "mobileNumber", "clientId", "fcmId"].includes(key))
+                        key === "thirdPartyEnum" ||
+                        (!isCreating && !["userName", "email", "mobileNumber", "clientId"].includes(key)) ||
+                        key === "clientId"
                       }
                     />
+
                   )
                   }
                   {fieldErrors.some((error) => error.fieldName === key) && (

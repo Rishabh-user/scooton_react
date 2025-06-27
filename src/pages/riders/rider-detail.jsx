@@ -23,7 +23,7 @@ import getRole from "../../store/utility";
 import { format } from "date-fns";
 
 const RejectionType = ["Information Rejected", "Document Rejected"];
-const DocumentStatus = ["Approve", "Reject", "VERIFICATION_PENDING"]
+const DocumentStatus = ["Approve", "Reject", "PENDING"]
 
 
 const mapContainerStyle = {
@@ -98,19 +98,27 @@ const RiderDetail = () => {
     const [earningCurrentPage, setEarningCurrentPage] = useState(0);
     const [earningpagesize, setEarningPageSize] = useState(30);
     const [earningpageCount, setEarningPageCount] = useState(0);
-    const [accountDetails, setAccountDetails] = useState(null);
+    const [comment, setComment] = useState("");
+    const [accountDetails, setAccountDetails] = useState([
+        {
+            accountType: "",
+            accountIFSCCode: "",
+            accountNumber: "",
+            upiID: "",
+            accountHolderName: "",
+        },
+    ]);
+    const accountFields = [
+        { label: "Account Type", name: "accountType" },
+        { label: "Account IFSC Code", name: "accountIFSCCode" },
+        { label: "Account Number", name: "accountNumber" },
+        { label: "UPI ID", name: "upiID" },
+        { label: "Account Holder Name", name: "accountHolderName" },
+    ];
 
 
 
-    // useEffect(() => {
-    //     if (mapRef.current && window.google) {
-    //       new window.google.maps.marker.AdvancedMarkerElement({
-    //         map: mapRef.current,
-    //         position: center,
-    //         title: "Advanced Marker",
-    //       });
-    //     }
-    // }, []);
+
 
     useEffect(() => {
         const fetchRiderOrderDetail = async () => {
@@ -134,7 +142,7 @@ const RiderDetail = () => {
                             ...order,
                             filteredStatus:
                                 order.status === "Approve" || order.status === "Reject"
-                                    ? DocumentStatus.filter(status => status !== "VERIFICATION_PENDING")
+                                    ? DocumentStatus.filter(status => status !== "PENDING")
                                     : DocumentStatus
                         }))
                     );
@@ -146,9 +154,10 @@ const RiderDetail = () => {
                     setLanguage(documentResponse.data.jsonData.riderDetails)
                     const fetchedDriverDetails = documentResponse.data.jsonData.riderDetails;
                     setIsDriverActive(fetchedDriverDetails?.isRiderOnline || false);
+                    setComment(documentResponse?.data?.jsonData?.riderDetails?.comment)
                     setDriverRegistrationFee(fetchedDriverDetails?.isRegistrationFeesPaid || false);
                     setDriverRole(fetchedDriverDetails?.isOnGoingTrip || false);
-                    setAccountDetails(documentResponse.data.jsonData.accountDetail[0])
+                    setAccountDetails(documentResponse.data.jsonData.accountDetail)
 
                 }
             } catch (error) {
@@ -193,6 +202,13 @@ const RiderDetail = () => {
         const { name, value } = e.target;
         setRechageAmount((prev) => ({ ...prev, [name]: value }));
     };
+    const handleAccountDetailsChange = (index, e) => {
+        const { name, value } = e.target;
+        const updatedAccounts = [...accountDetails];
+        updatedAccounts[index][name] = value;
+        setAccountDetails(updatedAccounts);
+    };
+
 
 
     const driverActive = async (id) => {
@@ -719,8 +735,18 @@ const RiderDetail = () => {
                                             : "N/A"}
                                     </div>
 
-                                    <div>Document Submit : {driverDetails?.documentSubmit}</div>
-                                    <div>Rider OnBoard : {driverDetails?.riderOnboard} </div>
+                                    <div>
+                                        Document Submit:{" "}
+                                        {driverDetails?.documentSubmitDate
+                                            ? format(new Date(driverDetails?.documentSubmitDate), "MMM dd, yyyy h:mm:ss a")
+                                            : "N/A"}
+                                    </div>
+                                    <div>
+                                        Rider OnBoard:{" "}
+                                        {driverDetails?.onboardDate
+                                            ? format(new Date(driverDetails?.onboardDate), "MMM dd, yyyy h:mm:ss a")
+                                            : "N/A"} 
+                                    </div>
                                 </div>
                             </div>
                             <div className="mb-5">
@@ -860,6 +886,20 @@ const RiderDetail = () => {
                                 </div>
                             </div>
                             <div className="mb-5">
+                                <h6 className="mt-4 mb-3">Comment</h6>
+                                <textarea
+                                    id="comment"
+                                    name="comment"
+                                    rows={6}
+                                    cols={6}
+                                    value={comment || ""}
+                                    onChange={(e) => setComment(e.target.value)}
+                                    className="form-control"
+                                    placeholder="Enter your comment"
+                                />
+
+                            </div>
+                            <div className="mb-5">
                                 <h6 className="mt-4">Document Details</h6>
                                 <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
                                     <table className="w-full border-collapse table-fixed dark:border-slate-700 dark:border">
@@ -944,49 +984,25 @@ const RiderDetail = () => {
                             </div>
                             <div className="mb-5">
                                 <h6 className="mt-4 mb-3">Account Details</h6>
-                                <div className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
+                                {accountDetails.map((account, index) => (
+                                    <div
+                                        key={index}
+                                        className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow mb-6 p-4 border rounded-md"
+                                    >
+                                        {accountFields.map((field) => (
+                                            <TextField
+                                                key={field.name}
+                                                label={field.label}
+                                                id={`${field.name}-${index}`}
+                                                type="text"
+                                                name={field.name}
+                                                value={account[field.name] || ""}
+                                                onChange={(e) => handleAccountDetailsChange(index, e)}
+                                            />
+                                        ))}
+                                    </div>
+                                ))}
 
-                                    <TextField
-                                        label="Account Type"
-                                        id="accountType"
-                                        type="text"
-                                        name="accountType"
-                                        value={accountDetails?.accountType || ""}
-                                        onChange={handleAccountDetails}
-                                    />
-                                    <TextField
-                                        label="Account IFSC Code"
-                                        id="accountIFSCCode"
-                                        type="text"
-                                        name="accountIFSCCode"
-                                        value={accountDetails?.accountIFSCCode || ""}
-                                        onChange={handleAccountDetails}
-                                    />
-                                    <TextField
-                                        label="Account Number"
-                                        id="accountNumber"
-                                        type="text"
-                                        name="accountNumber"
-                                        value={accountDetails?.accountNumber || ""}
-                                        onChange={handleAccountDetails}
-                                    />
-                                    <TextField
-                                        label="UPI ID"
-                                        id="upiID"
-                                        type="text"
-                                        name="upiID"
-                                        value={accountDetails?.upiID || ""}
-                                        onChange={handleAccountDetails}
-                                    />
-                                    <TextField
-                                        label="Account HolderName"
-                                        id="accountHolderName"
-                                        type="text"
-                                        name="accountHolderName"
-                                        value={accountDetails?.accountHolderName || ""}
-                                        onChange={handleAccountDetails}
-                                    />
-                                </div>
                             </div>
                             <div className="mb-5">
                                 <h6 className="mt-4 mb-3">Language</h6>
