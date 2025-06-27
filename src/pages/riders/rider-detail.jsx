@@ -104,7 +104,7 @@ const RiderDetail = () => {
             accountType: "",
             accountIFSCCode: "",
             accountNumber: "",
-            upiID: "",
+            upiId: "",
             accountHolderName: "",
         },
     ]);
@@ -112,7 +112,7 @@ const RiderDetail = () => {
         { label: "Account Type", name: "accountType" },
         { label: "Account IFSC Code", name: "accountIFSCCode" },
         { label: "Account Number", name: "accountNumber" },
-        { label: "UPI ID", name: "upiID" },
+        { label: "UPI ID", name: "upiId" },
         { label: "Account Holder Name", name: "accountHolderName" },
     ];
 
@@ -787,6 +787,20 @@ const RiderDetail = () => {
                                     />
                                 </div>
                             </div>
+                             <div className="mb-5">
+                                <h6 className="mt-4 mb-3">Comment</h6>
+                                <textarea
+                                    id="comment"
+                                    name="comment"
+                                    rows={6}
+                                    cols={6}
+                                    value={comment || ""}
+                                    onChange={(e) => setComment(e.target.value)}
+                                    className="form-control"
+                                    placeholder="Enter your comment"
+                                />
+
+                            </div>
                             <div className="mb-5">
                                 <h6 className="mt-4 mb-3">Driver Details</h6>
                                 <div className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow">
@@ -885,20 +899,7 @@ const RiderDetail = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="mb-5">
-                                <h6 className="mt-4 mb-3">Comment</h6>
-                                <textarea
-                                    id="comment"
-                                    name="comment"
-                                    rows={6}
-                                    cols={6}
-                                    value={comment || ""}
-                                    onChange={(e) => setComment(e.target.value)}
-                                    className="form-control"
-                                    placeholder="Enter your comment"
-                                />
-
-                            </div>
+                           
                             <div className="mb-5">
                                 <h6 className="mt-4">Document Details</h6>
                                 <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
