@@ -409,3 +409,10 @@ div[data-tippy-root] div{ width: auto; word-wrap: break-word;}
 
 
   .order-detail-list tbody td:first-child{ width: 70%;}
+
+  .primary{
+    position: absolute;
+    left: 50px;
+    z-index: 99;
+    transform: translateY(-12px);
+  }

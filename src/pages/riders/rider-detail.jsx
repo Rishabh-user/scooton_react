@@ -745,7 +745,7 @@ const RiderDetail = () => {
                                         Rider OnBoard:{" "}
                                         {driverDetails?.onboardDate
                                             ? format(new Date(driverDetails?.onboardDate), "MMM dd, yyyy h:mm:ss a")
-                                            : "N/A"} 
+                                            : "N/A"}
                                     </div>
                                 </div>
                             </div>
@@ -787,7 +787,7 @@ const RiderDetail = () => {
                                     />
                                 </div>
                             </div>
-                             <div className="mb-5">
+                            <div className="mb-5">
                                 <h6 className="mt-4 mb-3">Comment</h6>
                                 <textarea
                                     id="comment"
@@ -899,7 +899,7 @@ const RiderDetail = () => {
                                     />
                                 </div>
                             </div>
-                           
+
                             <div className="mb-5">
                                 <h6 className="mt-4">Document Details</h6>
                                 <div className="mx-auto shadow-base dark:shadow-none my-3 rounded-md overflow-x-auto">
@@ -986,10 +986,17 @@ const RiderDetail = () => {
                             <div className="mb-5">
                                 <h6 className="mt-4 mb-3">Account Details</h6>
                                 {accountDetails.map((account, index) => (
+                                    <>
+                                     {account.primaryAccount == true && (
+                                            <span className="badge text-bg-primary primary">
+                                                Primary
+                                            </span>
+                                        )}
                                     <div
                                         key={index}
-                                        className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow mb-6 p-4 border rounded-md"
+                                        className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 common-box-shadow mb-6 p-4 border rounded-md relative"
                                     >
+                                       
                                         {accountFields.map((field) => (
                                             <TextField
                                                 key={field.name}
@@ -1002,6 +1009,7 @@ const RiderDetail = () => {
                                             />
                                         ))}
                                     </div>
+                                    </>
                                 ))}
 
                             </div>
